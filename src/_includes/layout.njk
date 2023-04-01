@@ -8,7 +8,7 @@
 
   {{ content | safe }}
 
-  {%- if tags || category -%}
+  {%- if tags or category -%}
   <footer>
     {%- for tag in tags -%}
       <a href="/tags/{{ tag | wp_tag_slug }}" class="responsive-margin">{{ tag }}</a>

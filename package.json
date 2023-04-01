@@ -6,6 +6,7 @@
   "devDependencies": {
     "@11ty/eleventy": "^2.0.1",
     "@sindresorhus/slugify": "^1.1.2",
+    "eleventy-plugin-highlightjs": "^1.1.0",
     "luxon": "^1.21.2",
     "normalize.css": "^8.0.1",
     "sass": "^1.60.0"
