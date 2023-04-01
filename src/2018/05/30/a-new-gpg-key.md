@@ -11,20 +11,26 @@ tags:
 title: A New GPG Key
 type: post
 ---
-<p>It's been 12 years since I created my first GPG key and 11 since I've created the one I actually use.  That is far too long, so I decided to create a new pair and deprecate the old.  <a href="https://pgp.mit.edu/pks/lookup?search=john%40velvetcache.org&op=index">In 2013 I started this process</a>, but I didn't follow through and I've since lost access to those keys.  I know where they are, but the machine died so I need to hook up it's HDD and pull the keys out.</p>
-<p>Regardless, it is time for new ones, and I did some reading to get a real plan for this.  I would generate a new, strong key offline, with a subkey for each capability. The subkeys would go onto a smart card, in my case a <a href="https://www.yubico.com/product/yubikey-4-series/#yubikey-4" target="_blank">Yubikey 4</a>.  The primary key material would go to offline backup to keep it safe.</p>
-<h2>Disclaimer</h2>
-<p>Nothing in this post is new or novel, but rather collected from many other posts.  I've tried to link to any relevant posts below each section, and I encourage you to read these sources.  Any mistakes I've made I would be glad if you send me an email (GPG encrypted of course ;) to point it out.</p>
-<h2>Yubikey Configuration</h2>
-<p>After I ordered my Yubikey, I had to configure it.  The Yubikey docs expect a fair amount of knowledge before you start, but the steps are pretty simple when you understand it.  Basically, it boils down to:
-<ol>
-<li>Change the Admin PIN</li>
-<li>Change the PIN</li>
-<li>Set a Reset Code</li>
-<li>Fill in optional metadata</li>
-</ol></p>
-<p>Plug in your card and proceed as follows:
-<pre>
+It's been 12 years since I created my first GPG key and 11 since I've created the one I actually use.  That is far too long, so I decided to create a new pair and deprecate the old.  [In 2013 I started this process](https://pgp.mit.edu/pks/lookup?search=john%40velvetcache.org&op=index), but I didn't follow through and I've since lost access to those keys.  I know where they are, but the machine died so I need to hook up it's HDD and pull the keys out.
+
+Regardless, it is time for new ones, and I did some reading to get a real plan for this.  I would generate a new, strong key offline, with a subkey for each capability. The subkeys would go onto a smart card, in my case a [Yubikey 4](https://www.yubico.com/product/yubikey-4-series/#yubikey-4).  The primary key material would go to offline backup to keep it safe.
+
+## Disclaimer
+
+Nothing in this post is new or novel, but rather collected from many other posts.  I've tried to link to any relevant posts below each section, and I encourage you to read these sources.  Any mistakes I've made I would be glad if you send me an email (GPG encrypted of course ;) to point it out.
+
+## Yubikey Configuration
+
+After I ordered my Yubikey, I had to configure it.  The Yubikey docs expect a fair amount of knowledge before you start, but the steps are pretty simple when you understand it.  Basically, it boils down to:
+
+1. Change the Admin PIN
+2. Change the PIN
+3. Set a Reset Code
+4. Fill in optional metadata
+
+Plug in your card and proceed as follows:
+
+```console
 $ gpg --card-edit
 
 Reader ...........: Yubico Yubikey 4 OTP U2F CCID
@@ -124,18 +130,21 @@ Encryption key....: [none]
 Authentication key: [none]
 General key info..: [none]
 
-gpg/card> quit</pre>
+gpg/card> quit
+```
 
-<h5>Links</h5>
-<ul>
-<li><small><a href="https://developers.yubico.com/PGP/Card_edit.html">https://developers.yubico.com/PGP/Card_edit.html</a></small></li>
-<li><small><a href="https://developers.yubico.com/yubikey-piv-manager/PIN_and_Management_Key.html">https://developers.yubico.com/yubikey-piv-manager/PIN_and_Management_Key.html</a></small></li>
-</ul>
-</p>
+#### Links
 
-<h2>Generating Keys</h2>
-<p>Next, I created my keys. Be sure you set up a clean environment for this, ideally a random directory in <tt>/tmp</tt>, better still on a <tt>ramfs</tt> of an offline, live CD machine.  But that's a bit drastic for my use case.</p>
-<p><pre>$ export GNUPGHOME="/tmp/$(pwgen 30 1)/gnupg"
+- [https://developers.yubico.com/PGP/Card_edit.html](https://developers.yubico.com/PGP/Card_edit.html)
+- [https://developers.yubico.com/yubikey-piv-manager/PIN_and_Management_Key.html](https://developers.yubico.com/yubikey-piv-manager/PIN_and_Management_Key.html)
+
+
+## Generating Keys
+
+Next, I created my keys. Be sure you set up a clean environment for this, ideally a random directory in `/tmp`, better still on a `ramfs` of an offline, live CD machine.  But that's a bit drastic for my use case.
+
+```console
+$ export GNUPGHOME="/tmp/$(pwgen 30 1)/gnupg"
 $ echo $GNUPGHOME
 /tmp/mah1zakioboo1Caipa3ORu5ielohga/gnupg
 $ mkdir -p "$GNUPGHOME"
@@ -143,10 +152,12 @@ $ cd "$GNUPGHOME/.."
 $ chmod 0700 gnupg
 $ ls -l
 total 0
-drwx------  2 johnhobbs  wheel  64 May 30 14:23 gnupg</pre></p>
+drwx------  2 johnhobbs  wheel  64 May 30 14:23 gnupg
+```
 
-<p>You'll want a good base config file in there too.
-<pre>
+You'll want a good base config file in there too.
+
+```console
 $ cat <<EOF > gnupg/gpg.conf
 # Show long key IDs, not short: https://gwolf.org/node/4070
 keyid-format 0xlong
@@ -173,11 +184,12 @@ s2k-digest-algo SHA512
 # Refuse to run if GnuPG cannot get secure memory.
 require-secmem
 EOF
-</pre></p>
+```
 
-<p>With the directory in place, I can create a primary key, option 4. 4096-bits is as strong as GPG allows right now, and I set it not to expire because I will be keeping offline and it should be ok to revoke manually if needed.</p>
+With the directory in place, I can create a primary key, option 4. 4096-bits is as strong as GPG allows right now, and I set it not to expire because I will be keeping offline and it should be ok to revoke manually if needed.
 
-<p><pre>$ gpg --full-gen-key
+```console
+$ gpg --full-gen-key
 gpg (GnuPG/MacGPG2) 2.2.3; Copyright (C) 2017 Free Software Foundation, Inc.
 This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.
@@ -235,26 +247,33 @@ gpg: depth: 0  valid:   1  signed:   0  trust: 0-, 0q, 0n, 0m, 0f, 1u
 -----------------------------------------------------
 sec   rsa4096/0xCF469E79A0A20E10 2018-05-30 [SC]
       Key fingerprint = 5A4B 39AA 4C64 4429 718D  6EAA CF46 9E79 A0A2 0E10
-uid                   [ultimate] John Hobbs <john@velvetcache.org></pre></p>
+uid                   [ultimate] John Hobbs <john@velvetcache.org>
+```
 
-<p>Now it's time to create subkeys.  There are four capabilities that a PGP key can have.</p>
+Now it's time to create subkeys.  There are four capabilities that a PGP key can have.
 
-<h4><tt>C</tt> is for Certify</h4>
-<p>Your primary key will have the capability of Certification.  Certify is essentially the ability to sign other keys.  A key with Certify can be "parent" to subkeys, create new subkeys, and edit existing ones.  You also need this capability to sign another users public key.</p>
+### `C` is for Certify
 
-<h4><tt>S</tt> is for Sign</h4>
-<p>A key with the Sign capability can sign files and messages, allowing others to verify their integrity.</p>
+Your primary key will have the capability of Certification.  Certify is essentially the ability to sign other keys.  A key with Certify can be "parent" to subkeys, create new subkeys, and edit existing ones.  You also need this capability to sign another users public key.
 
-<h4><tt>E</tt> is for Encrypt</h4>
-<p>A key with the Encrypt capability is used for encrypting files. Simple.</p>
+### `S` is for Sign
 
-<h4><tt>A</tt> is for Authenticate</h4>
-<p>An Authentication key is generally used for SSH authentication.</p>
+A key with the Sign capability can sign files and messages, allowing others to verify their integrity.
 
-<hr/>
+### `E` is for Encrypt
 
-<p>Generating the subkeys is a bit tedious, but so it goes.</p>
-<p><pre>$ gpg --edit-key 0xCF469E79A0A20E10
+A key with the Encrypt capability is used for encrypting files. Simple.
+
+### `A` is for Authenticate
+
+An Authentication key is generally used for SSH authentication.
+
+---------------
+
+Generating the subkeys is a bit tedious, but so it goes.
+
+```console
+$ gpg --edit-key 0xCF469E79A0A20E10
 gpg (GnuPG/MacGPG2) 2.2.3; Copyright (C) 2017 Free Software Foundation, Inc.
 This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.
@@ -332,11 +351,18 @@ ssb  rsa4096/0xC8A284D483920085
      created: 2018-05-30  expires: 2022-05-29  usage: E
 [ultimate] (1). John Hobbs <john@velvetcache.org>
 
-gpg> save</pre></p>
+gpg> save
+```
 
-<p>The authentication key requires <strong>E X P E R T  M O D E</strong>. Git gud.</p>
+The authentication key requires **E X P E R T  M O D E**. Git gud.
 
-<p><pre>$ gpg --expert --edit-key 0xCF469E79A0A20E10
+<!-- todo: aside here? -->
+> **Note** 2023-03-31
+>
+> An RSA key is probably not what you want anymore, consider an ECC key, I used ed25519 when renewing this subkey.
+
+```console
+$ gpg --expert --edit-key 0xCF469E79A0A20E10
 gpg (GnuPG/MacGPG2) 2.2.3; Copyright (C) 2017 Free Software Foundation, Inc.
 This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.
@@ -434,26 +460,29 @@ ssb  rsa4096/0xED7858737F087831
      created: 2018-05-30  expires: 2022-05-29  usage: A
 [ultimate] (1). John Hobbs <john@velvetcache.org>
 
-gpg> save</pre><p>
+gpg> save
+```
 
-<p>That's it!  We're in business.</p>
+That's it!  We're in business.
 
-<h5>Links</h5>
-<p><ol>
-<li><small><a href="https://spin.atomicobject.com/2013/11/24/secure-gpg-keys-guide/">https://spin.atomicobject.com/2013/11/24/secure-gpg-keys-guide/</a></small></li>
-<li><small><a href="https://www.linode.com/docs/security/authentication/gpg-key-for-ssh-authentication/">https://www.linode.com/docs/security/authentication/gpg-key-for-ssh-authentication/</a></small></li>
-<li><small><a href="https://gist.github.com/abeluck/3383449">https://gist.github.com/abeluck/3383449</a></small></li>
-<li><small><a href="https://alexcabal.com/creating-the-perfect-gpg-keypair/">https://alexcabal.com/creating-the-perfect-gpg-keypair/</a></small></li>
-<li><small><a href="https://gist.github.com/graffen/37eaa2332ee7e584bfda">https://gist.github.com/graffen/37eaa2332ee7e584bfda</a></small></li>
-</ol></p>
 
-<h2>Backups</h2>
+#### Links
 
-<p>Before we do anything else, we need to back that thang up.</p>
+  - [https://spin.atomicobject.com/2013/11/24/secure-gpg-keys-guide/](https://spin.atomicobject.com/2013/11/24/secure-gpg-keys-guide/)
+  - [https://www.linode.com/docs/security/authentication/gpg-key-for-ssh-authentication/](https://www.linode.com/docs/security/authentication/gpg-key-for-ssh-authentication/)
+  - [https://gist.github.com/abeluck/3383449](https://gist.github.com/abeluck/3383449)
+  - [https://alexcabal.com/creating-the-perfect-gpg-keypair/](https://alexcabal.com/creating-the-perfect-gpg-keypair/)
+  - [https://gist.github.com/graffen/37eaa2332ee7e584bfda](https://gist.github.com/graffen/37eaa2332ee7e584bfda)
 
-<p>I'm choosing two methods: backup to a USB key that will live in a fire safe (who has a safety deposit box these days?), and a printed backup in case the USB key fails.  Ideally these two articles would not be co-located.</p>
-<p>First we export the keys and move them to the USB stick.  The <tt>export-secret-subkeys</tt> output is less important than the <tt>export-secret-key</tt> output as it doesn't contain a viable certification key, but would be useful as a "middle tier" of backup that wouldn't expose your primary key to risk.</p>
-<p><pre>
+## Backups
+
+Before we do anything else, we need to back that thang up.
+
+I'm choosing two methods: backup to a USB key that will live in a fire safe (who has a safety deposit box these days?), and a printed backup in case the USB key fails.  Ideally these two articles would not be co-located.
+
+First we export the keys and move them to the USB stick.  The `export-secret-subkeys` output is less important than the `export-secret-key` output as it doesn't contain a viable certification key, but would be useful as a "middle tier" of backup that wouldn't expose your primary key to risk.
+
+```console
 $ # Dump the public key, for giggles.
 $ gpg --armor --export 0xCF469E79A0A20E10 > 0xCF469E79A0A20E10.public.asc
 $ # This is the all the secret keys together.
@@ -466,9 +495,11 @@ total 64
 -rw-r--r--   1 johnhobbs  wheel  14134 May 30 14:50 0xCF469E79A0A20E10.public.asc
 -rw-r--r--   1 johnhobbs  wheel  12338 May 30 14:50 0xCF469E79A0A20E10.subkeys.asc
 drwx------  13 johnhobbs  wheel    416 May 30 14:20 gnupg
-</pre></p>
-<p>Now, we could take these ascii armored keys and just print them, but that's a lot of bytes to pray for OCR to recognize.  Instead, we can use a piece of software called Paperkey which strips out everything but the most secret parts of the key and gives you something much shorter to type in.</p>
-<p><pre> 
+```
+
+Now, we could take these ascii armored keys and just print them, but that's a lot of bytes to pray for OCR to recognize.  Instead, we can use a piece of software called Paperkey which strips out everything but the most secret parts of the key and gives you something much shorter to type in.
+
+```console
 $ gpg --export-secret-key | paperkey --output 0xCF469E79A0A20E10.master.paper
 $ cat 0xCF469E79A0A20E10.master.paper
 # Secret portions of key 5A4B39AA4C644429718D6EAACF469E79A0A20E10
@@ -500,11 +531,15 @@ $ cat 0xCF469E79A0A20E10.master.paper
   1: 00 04 5A 4E 39 AA 4C 64 44 29 71 8D 6E AA CF 46 9E 79 A0 A2 0E 10 745BFD
   ...
   248: 36 96 66 39 EE 0B36C4
-  249: D3A56B</pre></p>
-<p>Still not fun to type it all in, but it's better and this is a last ditch sort of thing anyway.</p>
-<h4>Recovery</h4>
-<p>Backups you don't test aren't backups, they are hopes and dreams.  So let's try recovering from our paperkey output!</p>
-<p><pre>
+  249: D3A56B</pre>
+
+Still not fun to type it all in, but it's better and this is a last ditch sort of thing anyway.
+
+#### Recovery
+
+Backups you don't test aren't backups, they are hopes and dreams.  So let's try recovering from our paperkey output!
+
+<pre>
 $ mkdir recovery/
 $ # Paperkey wants the public component to be raw.
 $ gpg --dearmor 0xCF469E79A0A20E10.public.asc
@@ -522,18 +557,19 @@ ssb   rsa4096/0xC8A284D483920085 2018-05-30 [E] [expires: 2022-05-29]
 ssb   rsa4096/0xED7858737F087831 2018-05-30 [A] [expires: 2022-05-29]
 
 gpg: Total number processed: 1
-gpg:       secret keys read: 1</pre></p>
+gpg:       secret keys read: 1
+```
 
-<h5>Links</h5>
-<p>
-<ol>
-<li><small><a href="http://www.jabberwocky.com/software/paperkey/">http://www.jabberwocky.com/software/paperkey/</a></small></li>
-</ol>
-</p>
+#### Links
 
-<h2>The certificate revoke you, secret key!</h2>
-<p>While not required, we can generate a revocation certificate while we still have the primary key on this machine.</p>
-<p><pre>$ gpg --output 0xCF469E79A0A20E10.revocation-certificate.asc --gen-revoke 0xCF469E79A0A20E10
+  - [http://www.jabberwocky.com/software/paperkey/](http://www.jabberwocky.com/software/paperkey/)
+
+## The certificate revoke you, secret key!
+
+While not required, we can generate a revocation certificate while we still have the primary key on this machine.
+
+```console
+$ gpg --output 0xCF469E79A0A20E10.revocation-certificate.asc --gen-revoke 0xCF469E79A0A20E10
 
 sec  rsa4096/0xCF469E79A0A20E10 2018-05-30 John Hobbs <john@velvetcache.org>
 
@@ -558,17 +594,20 @@ Please move it to a medium which you can hide away; if Mallory gets
 access to this certificate he can use it to make your key unusable.
 It is smart to print this certificate and store it away, just in case
 your media become unreadable.  But have some caution:  The print system of
-your machine might store the data and make it available to others!</pre></p>
-<p>Throw that onto your backup drive too while you're at it.</p>
+your machine might store the data and make it available to others!
+```
 
-<h5>Links</h5>
-<ol>
-<li><a href="https://www.hackdiary.com/2004/01/18/revoking-a-gpg-key/">https://www.hackdiary.com/2004/01/18/revoking-a-gpg-key/</a></li>
-</ol>
+Throw that onto your backup drive too while you're at it.
 
-<h2>Sign!</h2>
-<p>Ok.  Everything is generated, we have a good backup, we are ready to transition.  To indicate that this key is your new key, you can sign it with your old one, then send it up to the keyservers in the sky (if you're into that)</p>
-<p><pre>
+#### Links
+
+  - [https://www.hackdiary.com/2004/01/18/revoking-a-gpg-key/](https://www.hackdiary.com/2004/01/18/revoking-a-gpg-key/)
+
+## Sign!
+
+Ok.  Everything is generated, we have a good backup, we are ready to transition.  To indicate that this key is your new key, you can sign it with your old one, then send it up to the keyservers in the sky (if you're into that)
+
+```console
 $ # --local-user lets us specify which key we want to sign with.
 $ gpg --local-user 0x2580c0be34eb9490 --sign-key 0xCF469E79A0A20E10
 $ gpg --list-sigs 0xCF469E79A0A20E10
@@ -585,20 +624,22 @@ sub   rsa4096/0xA93E031FD5AB0841 2018-05-30 [S] [expires: 2022-05-29]
 sig          0xCF469E79A0A20E10 2018-05-30  John Hobbs <john@velvetcache.org>
 $ # Send it all off to the keyservers!
 $ gpg --send-keys 0xCF469E79A0A20E10
-gpg: sending key 0xCF469E79A0A20E10 to hkps://hkps.pool.sks-keyservers.net</pre></p>
+gpg: sending key 0xCF469E79A0A20E10 to hkps://hkps.pool.sks-keyservers.net
+```
 
-<h5>Links</h5>
-<ol>
-<li><a href="https://www.apache.org/dev/key-transition.html">https://www.apache.org/dev/key-transition.html</a></li>
-</ol>
+#### Links
 
-<h2>To The Smart Card Robin!</h2>
+  - [https://www.apache.org/dev/key-transition.html](https://www.apache.org/dev/key-transition.html)
 
-<p><img src="http://static.velvetcache.org/pages/2018/05/31/a-new-gpg-key/batman.gif" alt="I'm Batman" style="width: 80%;" /></p>
+## To The Smart Card Robin!
 
-<p>Moving the keys onto a smart card helps protect them.  They won't exist on your filesystem anymore, only on the card.  That means they can't be read out and stolen by a malicious process, but you can still use them by providing your smart card pin and key password.</p>
-<p>Keep in mind, this is a one way trip.  Make sure your backups are really, truly in place. We want to move our Signing, Encryption and Authentication keys onto the card.  The Certification key we will only store offline, as mentioned before.</p>
-<p><pre>
+![I'm Batman](http://static.velvetcache.org/pages/2018/05/31/a-new-gpg-key/batman.gif)
+
+Moving the keys onto a smart card helps protect them.  They won't exist on your filesystem anymore, only on the card.  That means they can't be read out and stolen by a malicious process, but you can still use them by providing your smart card pin and key password.
+
+Keep in mind, this is a one way trip.  Make sure your backups are really, truly in place. We want to move our Signing, Encryption and Authentication keys onto the card.  The Certification key we will only store offline, as mentioned before.
+
+```console
 $ gpg --list-secret-keys
 /tmp/mah1zakioboo1Caipa3ORu5ielohga/gnupg/pubring.kbx
 -----------------------------------------------------
@@ -740,15 +781,16 @@ ssb* rsa4096/0xED7858737F087831
      created: 2018-05-30  expires: 2022-05-29  usage: A
 [ultimate] (1). John Hobbs <john@velvetcache.org>
 
-gpg> save</pre></p>
+gpg> save
+```
 
-<h2>HOYB</h2>
+## HOYB
 
-<p><img src="http://static.velvetcache.org/pages/2018/05/31/a-new-gpg-key/hoyb.gif" alt="Hold onto your butts." style="width: 80%;" /></p>
+![Hold onto your butts.](http://static.velvetcache.org/pages/2018/05/31/a-new-gpg-key/hoyb.gif)
 
-<p>This is it.  The big moment.  Take out that smart card, secure your backups, and let's delete our primary key material.</p>
+This is it.  The big moment.  Take out that smart card, secure your backups, and let's delete our primary key material.
 
-<p><pre>
+```console
 $ gpg --delete-secret-key 0xCF469E79A0A20E10
 gpg (GnuPG/MacGPG2) 2.2.3; Copyright (C) 2017 Free Software Foundation, Inc.
 This is free software: you are free to change and redistribute it.
@@ -760,9 +802,11 @@ sec  rsa4096/0xCF469E79A0A20E10 2018-05-30 John Hobbs <john@velvetcache.org>
 Delete this key from the keyring? (y/N) y
 This is a secret key! - really delete? (y/N) y
 $ gpg --list-secret-keys
-</pre></p>
-<p>Now you can have gpg create key stubs for all the keys on your smart card.</p>
-<p><pre>
+```
+
+Now you can have gpg create key stubs for all the keys on your smart card.
+
+```console
 $ gpg --card-status
 Reader ...........: Yubico Yubikey 4 OTP U2F CCID
 Application ID ...: D2760001240102010006075857980000
@@ -780,9 +824,11 @@ ssb>  rsa2048/0xC8A284D483920085  created: 2018-05-30  expires: 2022-05-29
                                   card-no: 0006 07------
 ssb>  rsa4096/0xED7858737F087831  created: 2018-05-30  expires: 2022-05-29
                                   card-no: 0006 07------
-</pre></p>
-<p>Now when we list keys, we see that our primary key has a <tt>#</tt> next to it, showing we don't have access to that secret key.  The subkeys have a <tt>&gt;</tt> next to them showing they are stubs for the keys on the smart card.  Success!</p>
-<p><pre>
+</pre>
+
+Now when we list keys, we see that our primary key has a `#` next to it, showing we don't have access to that secret key.  The subkeys have a `&gt;` next to them showing they are stubs for the keys on the smart card.  Success!
+
+<pre>
 $ gpg --list-secret-keys
 /tmp/mah1zakioboo1Caipa3ORu5ielohga/gnupg/pubring.kbx
 -----------------------------------------------------
@@ -791,39 +837,45 @@ sec#   rsa4096/0xCF469E79A0A20E10 2018-05-30 [SC]
 uid                   [ultimate] John Hobbs <john@velvetcache.org>
 ssb>  rsa4096/0xA93E031FD5AB0841 2018-05-30 [S] [expires: 2022-05-29]
 ssb>  rsa4096/0xC8A284D483920085 2018-05-30 [E] [expires: 2022-05-29]
-ssb>  rsa4096/0xED7858737F087831 2018-05-30 [A] [expires: 2022-05-29]</pre></p>
+ssb>  rsa4096/0xED7858737F087831 2018-05-30 [A] [expires: 2022-05-29]
+```
 
-<h2>Fin!</h2>
+## Fin!
 
-<p>That's it.  There is, of course, more to do, like setting up <a href="https://developers.yubico.com/PGP/Git_signing.html">git signing</a>, <a href="https://developers.yubico.com/PGP/SSH_authentication/">SSH access</a>, etc.  But the new keypair is created, and it's on the Yubikey, so that's all for now.</p>
+That's it.  There is, of course, more to do, like setting up [git signing](https://developers.yubico.com/PGP/Git_signing.html), [SSH access](https://developers.yubico.com/PGP/SSH_authentication/), etc.  But the new keypair is created, and it's on the Yubikey, so that's all for now.
 
-<hr style="margin: 40px 0; border-top: 4px solid black; background: none;"/>
+---------
 
-<h2>Update: Git Signing</h2>
+## Update: Git Signing
 
-<p>Turns out git signing is a cinch.  Just throw a couple items into your git config and it's automatic and transparent.</p>
+Turns out git signing is a cinch.  Just throw a couple items into your git config and it's automatic and transparent.
 
-<p><pre>
+```toml
 [user]
-	signingKey = 0xF79C72E6EDC70E38
+  signingKey = 0xF79C72E6EDC70E38
 [commit]
-	gpgSign = true
+  gpgSign = true
 [log]
-	showSignature = true
+  showSignature = true
 [merge]
-	verifySignatures = true
-</pre></p>
+  verifySignatures = true
+```
 
-<h4><tt>user.signingKey</tt></h4>
-<p>Tells git which key to use for signing, unset it just uses the default key.</p>
+#### `user.signingKey`
 
-<h4><tt>commit.gpgSign</tt></h4>
-<p>Makes it sign all commits by default, instead of passing <tt>-S</tt> to every <tt>git commit</tt>.</p>
+Tells git which key to use for signing, unset it just uses the default key.
 
-<h4><tt>log.showSignature</tt></h4>
-<p>By default, git won't show you if a commit is GPG signed.  You can see it with <tt>gpg log --show-signature</tt>, or you can set it as default with this config option.</p>
-<p>It makes signed commits much chunkier, so be aware of the reduced screen real estate.
-<pre>
+#### `commit.gpgSign`
+
+Makes it sign all commits by default, instead of passing `-S` to every `git commit`.
+
+#### `log.showSignature`
+
+By default, git won't show you if a commit is GPG signed.  You can see it with `gpg log --show-signature`, or you can set it as default with this config option.
+
+It makes signed commits much chunkier, so be aware of the reduced screen real estate.
+
+```
 commit 6f02c4df4fac400841bf3970c1022c7358298333 (HEAD -> gpg-demo)
 gpg: Signature made Wed Jun  6 11:52:40 2018 CDT
 gpg:                using RSA key 44DC4F5A950F24A65D3F305801FC8AE9E5070C1D
@@ -831,36 +883,38 @@ gpg: Good signature from "John Hobbs <john@velvetcache.org>" [ultimate]
 Primary key fingerprint: 5616 12FF A10D 9D7A 7FFB  75F4 F79C 72E6 EDC7 0E38
      Subkey fingerprint: 44DC 4F5A 950F 24A6 5D3F  3058 01FC 8AE9 E507 0C1D
 Author: John Hobbs <john@velvetcache.org>
-Date:   Wed Jun 6 11:49:33 2018 -0500</pre></p>
+Date:   Wed Jun 6 11:49:33 2018 -0500
+```
 
-<h4><tt>merge.verifySignatures</tt></h4>
-<p>This is the only one I am <em>not</em> setting by default.  If you have it enabled, all merges that include unsigned commits will be rejected.  This really only works if everyone in your organization is signing all their commits.</p>
+#### `merge.verifySignatures`
 
-<h5>Links</h5>
-<ol>
-<li><a href="https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work">https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work</a></li>
-<li><a href="https://git-scm.com/docs/git-config">https://git-scm.com/docs/git-config</a></li>
-</ol>
+This is the only one I am _not_ setting by default.  If you have it enabled, all merges that include unsigned commits will be rejected.  This really only works if everyone in your organization is signing all their commits.
 
-<hr style="margin: 40px 0; border-top: 4px solid black; background: none;"/>
+#### Links
 
-<h2>Update: One-Touch Actions</h2>
+  - [https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work](https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work)
+  - [https://git-scm.com/docs/git-config](https://git-scm.com/docs/git-config)
 
-<p>By default, with the smart card in, GPG will happily sign and decrypt things after you enter your PIN the first time, with no further interaction from you.  The Yubikey offers a mode where these actions require a touch on the key to complete, which I like because it makes the action more explicit without requiring me to remove the key between operations.</p>
+---------------------------
 
-<p>To enable this, you need a special script, `yubitouch.sh`.  To make it work with my GPG Tools install, I had to hard code the path to `gpg-connect-agent` (`/usr/local/MacGPG2/bin/gpg-connect-agent`) and my admin PIN, since pinentry wasn't working and I didn't want it in my bash history.</p>
+## Update: One-Touch Actions
 
-<p><pre>$ ./yubitouch.sh sig on
+By default, with the smart card in, GPG will happily sign and decrypt things after you enter your PIN the first time, with no further interaction from you.  The Yubikey offers a mode where these actions require a touch on the key to complete, which I like because it makes the action more explicit without requiring me to remove the key between operations.
+
+To enable this, you need a special script, `yubitouch.sh`.  To make it work with my GPG Tools install, I had to hard code the path to `gpg-connect-agent` (`/usr/local/MacGPG2/bin/gpg-connect-agent`) and my admin PIN, since pinentry wasn't working and I didn't want it in my bash history.
+
+```console
+$ ./yubitouch.sh sig on
 All done!
 $ ./yubitouch.sh aut on
 All done!
 $ ./yubitouch.sh dec on
-All done!</pre></p>
+All done!
+```
 
-<p>Now, when GPG needs to sign something, my Yubikey flashes at me until I touch it and give my permission.  Neat.</p>
+Now, when GPG needs to sign something, my Yubikey flashes at me until I touch it and give my permission.  Neat.
 
-<h5>Links</h5>
-<ol>
-<li><a href="https://developers.yubico.com/PGP/Card_edit.html">https://developers.yubico.com/PGP/Card_edit.html</a></li>
-<li><a href="https://github.com/a-dma/yubitouch">https://github.com/a-dma/yubitouch</a></li>
-</ol>
+#### Links
+
+  - [https://developers.yubico.com/PGP/Card_edit.html](https://developers.yubico.com/PGP/Card_edit.html)
+  - [https://github.com/a-dma/yubitouch](https://github.com/a-dma/yubitouch)
