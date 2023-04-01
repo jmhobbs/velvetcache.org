@@ -1,0 +1,35 @@
+---
+category:
+- Consume
+- Geek
+creator: admin
+date: 2010-08-17T00:33:45
+layout: layout.njk
+tags:
+- Apache
+- BASH
+- DreamHost
+- Logs
+- Programming
+- Snippet
+title: Finding 500 Errors On DreamHost
+type: post
+---
+<p>Recently I've been getting 500 errors once in a while on my DH account.  This is usually because a process is long running and the DH monitor kills it for consuming too many resources.  Meh.  The real cause is putting waaay to much stuff on a shared account.</p>
+<p>So, to see what my culripts are I wrote a quick script that I'm hooking to a cron job.  First I'll see what domains are generating 500 errors, and then later I'll try to locate the exact scripts and clean them up.</p>
+<p><b>500-Error-Finder.sh</b><br/><pre lang="bash" line="1">#!/bin/bash
+
+cd /home/jmhobbs/logs
+
+for i in *; do
+  if [ -d "$i" ] && [ -f "$i/http/error.log.0" ]; then
+    ERRS=$( grep internal_error.html $i/http/error.log.0 | wc -l )
+    if [ "0" != "$ERRS" ]; then
+      echo "# $i - $ERRS"
+    fi
+  fi
+done
+</pre></p>
+<p>The output looks like this.<pre>[pristina]$ ./500-Error-Finder.sh 
+# gallery.velvetcache.org - 11
+[pristina]$</pre></p>

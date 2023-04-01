@@ -1,0 +1,43 @@
+---
+category:
+- Geek
+creator: admin
+date: 2008-02-26T23:08:52
+layout: layout.njk
+tags:
+- C
+- CameraBooth
+- Graphics
+- OpenCV
+- Programming
+- Projects
+title: Playing with OpenCV
+type: post
+---
+<p>OpenCV is a cross platform video library I've been playing with.  Today I coded up a horizontal mirror effect, took about 30 minutes.  I worked out all the byte manipulations on a piece of paper, that took the longest.  Coding was a breeze with OpenCV, and I tried out some of the built in effects too, stacking them on top of each other.</p>
+<p>Here's my first version source for the mirror effect, it's rough since I just translated what I had written down into code. "<tt>frame</tt>" is a captured IplImage.
+<pre lang="cpp" line="1">int halfsies = frame->width/2;
+for(int i = 0; i < frame->height; i++) {
+  int offset = i*frame->width*3;
+  for(int j = 0; j < halfsies; j++) {
+    frame->imageData[offset+(frame->width*3-1)-2-(j*3)] = frame->imageData[offset+(j*3)];
+    frame->imageData[offset+(frame->width*3-1)-1-(j*3)] = frame->imageData[offset+(j*3)+1];
+    frame->imageData[offset+(frame->width*3-1)-(j*3)] = frame->imageData[offset+(j*3)+2];
+  }
+}</pre></p>
+<p>Here is the reformed version, cleaner by far.
+<pre lang="cpp" line="1">int halfFrame = frame->width/2;
+int frameBytes = frame->width*3-1;
+for(int i = 0; i < frame->height; i++) {
+  int offset = i*frame->width*3;
+  for(int j = 0; j < halfFrame; j++) {
+    int jBytes = offset+frameBytes-(j*3);
+    int ojBytes = offset+(j*3);
+    frame->imageData[jBytes-2] = frame->imageData[ojBytes];
+    frame->imageData[jBytes-1] = frame->imageData[ojBytes+1];
+    frame->imageData[jBytes] = frame->imageData[ojBytes+2];
+  }
+}</pre></p>
+<p>And here is what it looks like. The first one is without any other effects, the second is with the OpenCV effect "erode".<div style="text-align: center"> <img src="http://static.velvetcache.org/pages/2008/2/26/playing-with-opencv/fxTest_capture_1204065504.jpg"/><br/> <img src="http://static.velvetcache.org/pages/2008/2/26/playing-with-opencv/fxTest_capture_1204066418.jpg"/></div></p>
+<p>You can get the full source of my fxTest.cpp <a href="http://static.velvetcache.org/pages/2008/2/26/playing-with-opencv/fxTest.cpp" target="_blank">here</a> if you want it.</p>
+<p>The <a href="http://www.cs.iit.edu/~agam/cs512/lect-notes/opencv-intro/index.html" target="_blank">Introduction to programming with OpenCV</a> was a great resource for me.</p>

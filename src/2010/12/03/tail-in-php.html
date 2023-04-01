@@ -1,0 +1,65 @@
+---
+category:
+- Geek
+creator: admin
+date: 2010-12-03T06:34:34
+layout: layout.njk
+tags:
+- Fun
+- Linux
+- PHP
+- Programming
+- Snippets
+- Tail
+title: Tail In PHP
+type: post
+---
+<p>So I'm working on a little admin interface and I decided to tail some logs.  It's in PHP and Google came up with some stuff, but they were all a bit finickey and not well documented.  So I wrote my own!</p>
+<p>Here's the basic concept:<ol><li>Open File</li><li>Seek To End</li><li>Loop:<ol><li>Seek Back By Chunk Size</li><li>Read Chunk</li><li>Count Newlines</li><li>Stash In Buffer</li><li>Break If Enough Newlines Total</li></ol></li><li>Trim Extra Line &amp; Cruft</li><li>Done!</li></ol></p>
+<p>Here's the code:</p>
+<p><pre lang="php" line="1">function tail ( $file, $lines, $max_chunk_size = 4096 ) {
+
+  // We actually want to look for +1 newline so we can get the whole first line
+  $rows = $lines + 1;
+
+  // Open up the file
+  $fh = fopen( $file, 'r' );
+
+  // Go to the end
+  fseek( $fh, 0, SEEK_END );
+  $position = ftell( $fh );
+
+  $buffer = '';
+  $found_newlines = 0;
+
+  $break = false;
+  while( ! $break ) {
+    // If we are at the start then we are done.
+    if( $position <= 0 ) { break; }
+
+    // We can't seek past the 0 position obviously, so figure out a good chunk size
+    $chunk_size = ( $max_chunk_size > $position ) ? $position : $max_chunk_size;
+
+    // Okay, now seek there and read the chunk
+    $position -= $chunk_size;
+    fseek( $fh, $position );
+    $chunk = fread( $fh, $chunk_size );
+
+    // See if there are any newlines in this chunk, count them if there are
+    if( false != strpos( $chunk, "\n" ) ) {
+      if( substr( $chunk, -1 ) == "\n" ) { ++$found_newlines; }
+      $found_newlines += count( explode( "\n", $chunk ) );
+    }
+
+    // Have we exceeded our desired rows?
+    if( $found_newlines > $rows ) { $break = true; }
+
+    // Prepend
+    $buffer = $chunk . $buffer;
+  }
+
+  // Now extract only the lines we requested
+  $buffer = explode( "\n", $buffer );
+  return implode( "\n", array_slice( $buffer, count( $buffer ) - $lines ) );
+}</pre></p>
+<p>You can give it a try on some junk data here: <a href="http://static.velvetcache.org/pages/2010/12/03/tail-in-php/">http://static.velvetcache.org/pages/2010/12/03/tail-in-php/</a></p>

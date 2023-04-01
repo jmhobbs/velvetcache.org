@@ -1,0 +1,38 @@
+---
+category:
+- Geek
+creator: admin
+date: 2012-02-28T00:02:17
+layout: layout.njk
+tags:
+- CLI
+- Linux
+- Tools
+title: Sneaker-netting Huge Files with split and cat
+type: post
+---
+<p>Big files happen, and sometimes they need to be moved.</p>
+<p>I've found that moving big files between local computers is often fastest with a USB drive and my shoes, especially since I don't really have access to a wired network usually.</p>
+<p>But sometimes, files are just too big for your thumb drive. Some of us don't carry huge drives around, I usually only have a spare 2GB on me.</p>
+<p>Suppose you have a 4.4GB ZIP file (don't ask, just suppose).  I've only got a 2GB (1.9GB usable) thumb drive on me, but I need to move it over to another machine and I don't have all day.</p>
+<p>In the past I've use <tt>dd</tt> tricks, but I knew there had to be a better way.</p>
+<p>Enter <tt>split</tt> and <tt>cat</tt>. <tt>cat</tt> concatenates files, and it's cousin <tt>split</tt>, well, splits them.</p>
+<p>Perfect! Just what I needed! I'll split my file into chunks with <tt>split</tt>, sneaker it over the other machine and <tt>cat</tt> it all back together.</p>
+<h3>Split</h3>
+<p><pre lang="bash">computer-one $ split -b 1500M big.zip
+(...wait...)
+computer-one $ ls -l
+-rw-rw-r--  1 jmhobbs jmhobbs 1572864000 2012-02-27 14:44 xaa
+-rw-rw-r--  1 jmhobbs jmhobbs 1572864000 2012-02-27 14:45 xab
+-rw-rw-r--  1 jmhobbs jmhobbs 1572864000 2012-02-27 14:46 xac
+-rw-rw-r--  1 jmhobbs jmhobbs    7637844 2012-02-27 14:46 xad
+computer-one $</pre></p>
+<h3>Move</h3>
+<p><img src="http://static.velvetcache.org/pages/2012/02/27/sneaker-netting-huge-files-with-split-and-cat/sneaker.jpg" alt="Sneaker" /></p>
+<h3>Join</h3>
+<p><pre lang="bash">computer-two $ cat xaa xab xac xad > big.zip
+(...wait...)
+computer-two $</pre></p>
+<h3>Enjoy!</h3>
+<p><pre lang="bash">computer-two $ ls -l
+-rw-rw-r--  1 jmhobbs jmhobbs 4726229844 2012-02-27 15:02 big.zip</pre></p>

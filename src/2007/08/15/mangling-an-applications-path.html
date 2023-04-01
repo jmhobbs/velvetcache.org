@@ -1,0 +1,48 @@
+---
+category:
+- Geek
+creator: admin
+date: 2007-08-15T19:38:28
+layout: layout.njk
+tags:
+- C
+- Programming
+- Work
+title: Mangling An Applications Path
+type: post
+---
+<p>I was looking to get rid of using some environment variables in the app I do at work for several reasons. One, you can't grab fresh environment variables on the fly (or at least I can't) so if anything needs to be changed, you have to do a hard kill and restart the program.  Two is that requiring some obscure, application specific environment variables seems a little silly to me, it's excessive and adds bothersome configuration.</p>
+<p>What I really needed was a way to open a config file that always resides in the same directory as the application.  To do that I had to take the execution path (e.g. <tt>argv[0]</tt>) and chop it up a bit so that I can always get to that directory.  I'm sure there is a better way to do this, and it wouldn't work if you had the application in your <tt>$PATH</tt>, because then <tt>argv[0]</tt> would just be the executable name.  Regardless of the caveats, it works nicely for me and makes me feel better about myself now that I can frag the environment variables.</p>
+<p><pre lang="cpp" line="1">#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+int main (int argc, char* argv[]) {
+
+  cout << "File: " << argv[0] << endl;
+
+  size_t found;
+  string str = argv[0];
+
+  found=str.rfind("/");
+  if (found!=string::npos)
+    str.replace(found,str.length(),"/");
+
+  cout << "Trimmed: " << str << endl;
+  fstream filestr;
+
+  str += "test.conf";
+  cout << "To Conf: " << str << endl;
+
+  filestr.open (str.c_str(), fstream::in);
+  string temp;
+
+  getline(filestr,temp);
+  cout << temp << endl;
+
+  filestr.close();
+
+  return 0;
+}</pre></p>

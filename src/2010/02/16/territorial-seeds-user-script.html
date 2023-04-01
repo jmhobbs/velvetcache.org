@@ -1,0 +1,35 @@
+---
+category:
+- Geek
+- Life
+creator: admin
+date: 2010-02-17T01:04:37
+layout: layout.njk
+tags:
+- Greasemonkey
+- JavaScript
+- Programming
+- Snippets
+title: Territorial Seeds User Script
+type: post
+---
+<p>So I was buying our garden seeds at <a href="http://www.territorialseed.com/" target="_blank">Territorial Seed</a> and they had a stupid 90's "no right click" script installed. Lame, I need my tabs!</p><p>So I took a look and then wrote my first Greasemonkey script.  Check it out if you need it, it should work on other sites that try the same trick.</p>
+<p><b><a href="http://static.velvetcache.org/pages/2010/02/16/territorial-seeds-user-script/territorial.seed.no.right.click.user.js">territorial.seed.no.right.click.user.js</a></b><br/><pre lang="javascript" line="1">// Version 0.1
+// Copyright (c) 2010, John Hobbs
+// Released under the GPL license
+// http://www.gnu.org/copyleft/gpl.html
+//
+// ==UserScript==
+// @name          Territorial Seed No Right Click
+// @namespace     http://www.velvetcache.org/
+// @description   Disable the disable right click script on Territorial Seed
+// @include       http://www.territorialseed.com/*
+// ==/UserScript==
+
+window.addEventListener (
+  'load',
+  function () {
+    setTimeout( "document.oncontextmenu = null;", 150 );
+  },
+  true
+);</pre></p>

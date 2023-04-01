@@ -1,0 +1,96 @@
+---
+category:
+- Geek
+creator: admin
+date: 2007-12-01T00:14:05
+layout: layout.njk
+tags:
+- BASH
+- Linux
+- Programming
+title: HowTo's
+type: post
+---
+<p>Do you ever spend 20 minutes figuring out the perfect way to do some arcane task on the command line, only to forget it and need it again in a month? I do. A lot.</p>
+<p>I started keeping a directory with little plain text documents that had the command line I wanted inside them.  I recently uploaded them to my static site and wrote a script to use them easier.</p>
+<p>It's real simple, just download the howto bash script in the following directory <a href="http://static.velvetcache.org/howtos/">http://static.velvetcache.org/howtos/</a> and place it in your path.  Now make a directory for your HowTo's somewhere and put the whole path into a file in your home directory called ".howto".</p><p>You should be able to call <tt>$ howto --sync</tt> and it will pull down a tar of the most current files, then expand it into your HowTo directory.</p><p>If you download the howto.tar.gz by itself, be warned that it is a tar bomb and will rudely scatter its files all over your directory.</p><p>Lastly, onceyou have some HowTo's installed, just use <tt>$ howto -l</tt> to list out the possible choices, then <tt>$ howto print-unix-timestamp</tt>, replacing "print-unix-timestamp" with the name or number of the HowTo you want.</p>
+<p>Below is the howto shell script, because I like including code in my posts whenever I can.
+<pre lang="bash" line="1">#!/bin/bash
+
+function printUsage {
+	echo "Usage: howto [-l | --list] file-name"
+	exit 1
+}
+
+if [ $# -ne 1 ]; then
+	printUsage
+fi
+
+if [ ! -f ~/.howto ]; then
+	echo "No .howto file found in your home directory!"
+	exit 1
+fi
+
+HOWTODIR=$(cat ~/.howto)
+
+if [ "$1" == "--sync" ]; then
+	LRECENT=$(cat $HOWTODIR/CURRENT)
+	SRECENT=$(wget -O - http://static.velvetcache.org/howtos/CURRENT 2> /dev/null)
+	if [ $? -ne 0 ]; then
+		echo "Can't contact download server."
+		exit 1
+	fi
+	if [ "$LRECENT" != "$SRECENT" ]; then
+		cd $HOWTODIR
+		if [ $? -ne 0 ]; then
+			echo "Can't change to the HowTo directory."
+			exit 1
+		fi
+		wget -O howtos.tar.gz http://static.velvetcache.org/howtos/howtos.tar.gz
+		if [ $? -ne 0 ]; then
+			echo "Can't download new files."
+			exit 1
+		fi
+		tar -zxf howtos.tar.gz
+		if [ $? -ne 0 ] ; then
+			echo "Can't untar the updates."
+			exit 1
+		fi
+		rm -f howtos.tar.gz
+		exit 0
+	else
+		echo 'Nothing new to download.'
+		exit 0
+	fi
+fi
+
+if [ "$1" == "--list" ] || [ "$1" == "-l" ]; then
+	COUNTER=0
+	for howto in `ls $HOWTODIR`; do 
+		echo "$COUNTER $howto"
+		COUNTER=$(expr $COUNTER + 1)
+	done	
+	exit 0
+fi
+
+echo $1 | grep '^[0-9][0-9]*$' > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+	COUNTER=0
+	for howto in `ls $HOWTODIR`; do
+		if [ $COUNTER -eq $1 ]; then
+			cat $HOWTODIR/$howto
+			exit 0
+		fi
+		COUNTER=$(expr $COUNTER + 1)
+	done
+	echo 'That HowTo was not found.'
+	exit 1
+elif [ ! -f "$HOWTODIR/$1" ]; then
+	echo 'That HowTo was not found.'
+	exit 1
+fi
+
+cat $HOWTODIR/$1
+
+exit 0
+</pre></p>

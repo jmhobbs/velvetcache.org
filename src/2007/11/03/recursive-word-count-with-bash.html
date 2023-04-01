@@ -1,0 +1,90 @@
+---
+category:
+- Geek
+creator: admin
+date: 2007-11-03T18:13:39
+layout: layout.njk
+tags:
+- BASH
+- Linux
+- Programming
+title: Recursive Word Count With Bash
+type: post
+---
+<p>I was curious how many lines were in the new OurUNO rewrite, so I decided to write a little script to find out.  Well, that all got out of hand and I kept adding things and masks and depth recursion limiting and I managed to stop myself before I added color to the script, so I did okay I guess.</p><p>Anyway, here it is.  I'm sure there is some really clever way to do an equivalent one-liner of this, but hey, that's life.</p><p><pre lang="bash" line="1">#!/bin/sh
+
+function printUsage {
+
+  echo "Usage: countLines directory [options]"
+  echo
+  echo "Options:"
+  echo " -m=XX   --mask=XX    - The mask may be any grep style regular expression."
+  echo " -d=XX   --depth=XX   - The maximum depth of recursion. Defaults to 20."
+  echo
+  exit
+}
+
+if [ $# -le 0 ]; then
+  printUsage
+  exit
+fi
+
+if [  "$1" == "-v" ]; then
+  printUsage
+  exit
+fi
+
+TOTALCOUNT=0
+FILEMASK=''
+MAXDEPTH=20
+
+# Drag out our options...
+for i in $@; do
+  if [ `echo $i | sed 's/^\(-m=\).*$/\1/'` == "-m=" ]; then
+     FILEMASK=`echo $i | sed 's/^-m=\(.*\)$/\1/'`
+  elif [ `echo $i | sed 's/^\(--mask=\).*$/\1/'` == "--mask=" ]; then
+    FILEMASK=`echo $i | sed 's/^--mask=\(.*\)$/\1/'`
+  elif [ "$i" == "$1" ]; then
+     continue;
+  elif [ `echo $i | sed 's/^\(-d=\)[0-9]*$/\1/'` == "-d=" ]; then
+    MAXDEPTH=`echo $i | sed 's/^-d=\(.*\)$/\1/'`
+  elif [ `echo $i | sed 's/^\(--depth=\)[0-9]*$/\1/'` == "--depth=" ]; then
+    MAXDEPTH=`echo $i | sed 's/^--depth=\(.*\)$/\1/'`
+  else
+    printUsage
+    exit
+  fi
+done
+
+CURDEPTH=0
+
+function wcDir {
+  FILES=`ls -l $1 | grep ^- | awk '{print $8}' | grep -e "$FILEMASK"`
+
+  for i in $FILES; do
+    LINES=`wc -l $1/$i | awk '{print $1}'`
+    TOTALCOUNT=$(($LINES + $TOTALCOUNT))
+  done
+}
+
+function recurseDir {
+  COUNT=`ls -l $1 | grep ^d | awk '{print $8}' | wc -l`
+
+  CURDEPTH=$(($CURDEPTH + 1))
+
+  if [ $COUNT != 0 ] && [ $CURDEPTH -lt $MAXDEPTH ]; then
+    for i in `ls -l $1 | grep ^d | awk '{print $8}'`; do
+      recurseDir $1/$i
+    done
+  fi
+
+  wcDir $1
+
+  CURDEPTH=$(($CURDEPTH - 1))
+}
+
+recurseDir $1
+
+echo $TOTALCOUNT
+</pre></p><p>Bonus!  Here's a tip for posting scripts on the interwebs.  Replace your tabs with spaces before copying them into your posts with: <br/><b><tt>$ cat scriptOrCodeSource | sed 's/\t/  /g'</tt></b></p>
+<div class="update"><b>Update (11/08/07)</b>So that doesn't work as advertised.  I think it's doing some double counting or something. I'll post the rewrite when I finish it.<br/></div>

@@ -1,0 +1,43 @@
+---
+category:
+- Consume
+- Geek
+creator: admin
+date: 2010-07-05T22:27:11
+layout: layout.njk
+tags:
+- Programming
+- Python
+- Streaming
+- Tweepy
+- Twitter
+title: Streaming Tweets With Tweepy
+type: post
+---
+<p>I've been meaning to check out the <a href="http://github.com/joshthecoder/tweepy" target="_blank">Tweepy</a> for a while and got around to it today.  It's a Python library for interacting with Twitter.  The feature I'm most interested in is the streaming API support, which isn't advertised much by Tweepy but seems pretty solid.</p>
+<p>Tweepy has pretty good <a href="http://joshthecoder.github.com/tweepy/docs/index.html" target="_blank">documentation</a>, and the code is terse and readable, but what I found most useful was the examples repository, which had the only <a href="http://github.com/joshthecoder/tweepy-examples/blob/master/streamwatcher.py" target="_blank">example of streaming with Tweepy</a> that I could find in the official documentation.</p>
+<p>It's really straightforward.  Implement a <tt>tweepy.streaming.StreamListener</tt> to consume data, set up a <tt>tweepy.streaming.Stream</tt> with that listener, then pull the trigger on the streaming function you want to use.</p>
+<p>Here's a quick example I set up to track the filter keyword "omaha".</p>
+<p><pre lang="python"># -*- coding: utf-8 -*-
+
+from tweepy.streaming import StreamListener, Stream
+
+class Listener ( StreamListener ):
+  def on_status( self, status ):
+    print '-' * 20
+    print status.text
+    return
+
+if __name__ == "__main__":
+
+  USERNAME = "YourUsernameHere"
+  PASSWORD = "YourPasswordHere"
+
+  listener = Listener()
+  stream = Stream(
+    USERNAME,
+    PASSWORD,
+    listener
+  );
+
+  stream.filter( track=( "omaha", ) )</pre></p>

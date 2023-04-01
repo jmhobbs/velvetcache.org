@@ -1,0 +1,48 @@
+---
+category:
+- Geek
+creator: admin
+date: 2011-01-26T02:43:38
+layout: layout.njk
+tags:
+- AWS
+- PHP
+- Programming
+- Simple Email Service
+- Swiftmailer
+title: Swiftmailer Transport for Amazon Simple Email Service
+type: post
+---
+<div class="update"><p><b>Updated (2011-02-03)</b></p><p>On the suggestions of <a href="http://www.w3style.co.uk/" target="_blank">Chris Corbyn</a> I re-wrote my class to use direct access and the Swiftmailer byte stream interface, no cURL anymore.  It's <u>way</u> faster, and way cooler, if I do say so myself.  You can get the latest at <a href="https://github.com/jmhobbs/Swiftmailer-Transport--AWS-SES" target="_blank">https://github.com/jmhobbs/Swiftmailer-Transport--AWS-SES</a></p></div><p>So, today Amazon debuted <a href="http://aws.amazon.com/about-aws/whats-new/2011/01/25/introducing-amazon-simple-email-service/" target="_blank">Simple Email Service</a>.  The gist of it is, send mail with them instead of your own servers.  Like a feature reduced <a href="http://sendgrid.com/" target="_blank">SendGrid</a> or <a href="http://postmarkapp.com/" target="_blank">Postmark</a>.</p>
+<p>Not a lot of stuff out there for it so I thought I'd jump the gun a bit and write a transport for PHP's <a href="http://swiftmailer.org/" target="_blank">Swiftmailer</a>.  If you have to send e-mail from your sever and from PHP, Swiftmailer is your best friend.</p>
+<p>Never dug into Swiftmailer's guts before, but it's pretty well laid out.  All you have to do for a new transport is implement the send method of the <a href="https://github.com/swiftmailer/swiftmailer/blob/master/lib/classes/Swift/Transport.php" target="_blank">Transport</a> interface and you are done.</p>
+<p>I knocked mine together pretty quick, and the only code I cribbed was the HMAC code from <a href="https://github.com/tylerhall/php-aws" target="_blank">php-aws</a>, because AWS was rejecting the output from <tt>hash_hmac</tt>. (Which I literally <em>just</em> figured out while I wrote that paragraph.  <a href="https://github.com/jmhobbs/Swiftmailer-Transport--AWS-SES/commit/a224bf18488a085b66b585fca781921add229ff4" target="_blank">Works now</a>.)</p>
+<p>So how hard is it to use? Easy as any other transport in Swiftmailer.</p>
+<p><pre lang="php" line="1"><?php
+  require_once 'lib/swift_required.php';
+
+  //Create the Transport
+  $transport = new Swift_AWSTransport(
+    'AWS_ACCESS_KEY',
+    'AWS_SECRET_KEY'
+  );
+
+  //Create the Mailer using your created Transport
+  $mailer = Swift_Mailer::newInstance($transport);
+
+  //Create the message
+  $message = Swift_Message::newInstance()
+  ->setSubject("What up?")
+  ->setFrom(array('you@yourdomain.com'))
+  ->setTo(array('them@theirdomain.com'))
+  ->setBody("
+<p>
+  Dude, I'm <b>totally</b> sending you email via AWS.
+</p>
+  ", 'text/html');
+
+  $mailer->send( $message );</pre></p>
+<p style="text-align: center;"><img src="http://static.velvetcache.org/pages/2011/01/25/swiftmailer-transport-for-amazon-simple-email-service/aws-1.png" />
+<p>So, yeah, it works.</p>
+<p>I know there is a <u>ton</u> of stuff I didn't implement that I need to before this could be "production" ready, but it was a very satisfying little project.</p>
+<p>You can grab it here: <a href=" https://github.com/jmhobbs/Swiftmailer-Transport--AWS-SES" target="_blank">https://github.com/jmhobbs/Swiftmailer-Transport--AWS-SES</a></p>

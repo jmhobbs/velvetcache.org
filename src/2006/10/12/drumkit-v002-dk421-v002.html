@@ -1,0 +1,19 @@
+---
+category:
+- Geek
+creator: admin
+date: 2006-10-12T22:14:43
+layout: layout.njk
+tags:
+- DK421
+- DrumKit
+- Java
+- Programming
+- Projects
+title: DrumKit V0.02 -> DK421 V0.02
+type: post
+---
+<p>I've been working on my <a href="http://www.velvetcache.org/2006/09/30/drumkit-v001/" target="_blank">DrumKit</a> again, since I <a href="http://www.velvetcache.org/2006/10/11/nokia-770-review/" target="_blank">don't get to play with my Nokia 770</a>. I came up with a better name for this revision, DK421.  It doesn't mean anything.  Well, it kinda does.  It came from a Stormtrooper in ANH ("TK421, Why aren't you at your post? TK421, respond.")</p>
+<p>There isn't a lot of change in this version.  I re-read the API for javax.sound.sampled and re-wrote the <tt>SoundClip</tt> class (formerly <tt>KitClip</tt>) from scratch.  It think it's cleaner and more usefull for other projects now.</p>
+<p>I also added in a file chooser class, <tt>DrumChooser</tt> so there aren't any absolute paths in the source anymore.  I also added to that class a minor key-fetching function.  I hope to make the kit's expandable, as many drums as you can until you hit a <tt>LineUnavailableException</tt>.</p>
+<p>The GUI hasn't changed a lick, and I need to clean it up and develop a new layout for it and for the "multiple-drum" expandable version.  It's surprising what you can learn from an API.</p>

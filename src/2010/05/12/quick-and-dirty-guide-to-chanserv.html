@@ -1,0 +1,22 @@
+---
+category:
+- Geek
+creator: admin
+date: 2010-05-12T18:55:13
+layout: layout.njk
+tags:
+- ChanServ
+- IRC
+- Tutorial
+title: Quick and Dirty Guide to ChanServ
+type: post
+---
+<p>I never, ever remember the commands for ChanServ on Freenode. I'm always looking them up, so this time I made a quick cheat-sheet to help me out. You can basically follow this from top to bottom.</p>
+<p><b>Register Your Channel</b><pre lang="text">/msg ChanServ register #<channel> <password></pre><i>Tells ChanServ about your channel and makes you the founder.</i></p>
+<p><b>Make ChanServ Stick Around</b><pre lang="text">/msg ChanServ set #<channel> guard on</pre><i>Makes ChanServ hang out in your channel.</i></p>
+<p><b>Protect Your Topic</b><pre lang="text">/msg ChanServ set #<channel> topiclock on</pre><i>Makes it so you can only change the topic through ChanServ.</i></p>
+<p><b>Set A Topic</b><pre lang="text">/msg ChanServ set #<channel> topic <topic></pre><i>Set the channel topic via ChanServ.</i></p>
+<p><b>Make Your Topic Sticky</b><pre lang="text">/msg ChanServ set #<channel> keeptopic on</pre><i>ChanServ keeps your topic even when there is no one in the channel.</i></p>
+<p><b>Set The Channel URL</b><pre lang="text">/msg ChanServ set #<channel> url <url></pre><i>Sets the URL for the channel if someone does an INFO query.</i></p>
+<p><b>Set The Channel Description</b><pre lang="text">/msg chanserv set #<channel> desc <description></pre><i>Sets the description for the channel if someone does an INFO or LIST query.</i></p>
+<p><b>Sources:</b><ul><li><a href="http://www.soundsnwaves.net/cgi-bin/content/cgi/pm.cgi?action=show&temp=chanserv" target="_blank">soundsnwaves.net</a></li><li><a href="http://docs.dal.net/docs/chanserv.html">dal.net</a></li></ul></p>

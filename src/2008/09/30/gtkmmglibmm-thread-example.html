@@ -1,0 +1,271 @@
+---
+category:
+- Geek
+creator: admin
+date: 2008-09-30T21:33:16
+layout: layout.njk
+tags:
+- C
+- GTK+
+- Programming
+- Qt
+- Work
+title: Gtkmm/Glibmm Thread Example
+type: post
+---
+<div style="background: #fff384;padding: 5px 10px;font-size: small;border: 1px solid #d6cc6d;"><p><strong>Heads Up!</strong></p>
+    <p>This post uses a deprecated API.  You can learn more here: <a href="https://developer.gnome.org/glibmm/stable/group__Threads.html" target="_blank" rel="noopener noreferrer">https://developer.gnome.org/glibmm/stable/group__Threads.html</a></p></div>
+<p>
+After dealing with threads in Qt and seeing how nice and simple it was, I decided to try again with the Gtkmm/Glibmm threading system.  I think the crucial piece for me with the Qt threads was the excellent documentation, so I'm going to show you my full example here and document it in detail. As a quick disclaimer, I do not know if this is the 100% "right" way to do threads, but it matches up with everything I've read and, more importantly, it works.
+</p>
+<p>
+<b>Where to start...</b><br/>
+I'm going to start with a brief description of what is going to happen.  We will develop a threaded worker class, a trivial <tt>Gtk::Window</tt> class and a trivial main function.  Let's get the first two out of the way early, since they are the easy ones.
+</p>
+<p>
+<b>int main ()</b><br/>
+<pre lang="cpp" line="82">int main (int argc , char ** argv) {
+
+  if(!Glib::thread_supported()) Glib::thread_init();
+
+  Gtk::Main kit (argc, argv);
+  MyWindow win;
+  Gtk::Main::run (win);
+  return 0;
+}</pre>
+This is a pretty standard main function, with one notable nod to Glibmm, and that is line 84. <pre lang="cpp" line="84">if(!Glib::thread_supported()) Glib::thread_init();</pre> You only ever call <tt>Glib::thread_init();</tt> once, otherwise it will abort with an error. So what we are doing is asking Glib "Are you already handling threads?" and if it isn't we initialize the threading system.  This has the additional perk of aborting the program if threads are not supported at all.
+</p>
+<p>If the rest of this function doesn't make sense to you, walk away from this tutorial and go read the Gtkmm one.
+</p>
+<p>
+<b>MyWindow</b><br/>
+Next we are going to implement that <tt>Gtk::Window</tt> class that we use in <tt>main</tt>, ever so imaginatively called <tt>MyWindow</tt>.  There is nothing much special going on, so I'll show you the full listing then pick out the important bits.</p>
+<p><pre lang="cpp" line="47">class MyWindow : public Gtk::Window {
+
+  public:
+    MyWindow () : thrashHive("Go!") {
+      bee = NULL;
+      thrashHive.signal_clicked().connect(sigc::mem_fun(*this, &MyWindow::go));
+      add(thrashHive);
+      show_all();
+    }
+
+    void go () {
+      if(bee != NULL)
+        return;
+
+      bee = new Worker();
+      bee->sig_done.connect(sigc::mem_fun(*this, &MyWindow::beeDone));
+      bee->start();
+
+      thrashHive.set_sensitive(false);
+      thrashHive.set_label("Working");
+    }
+
+    void beeDone () {
+      delete bee;
+      bee = NULL;
+      thrashHive.set_sensitive(true);
+      thrashHive.set_label("Go!");
+    }
+
+  private:
+    Gtk::Button thrashHive;
+    Worker * bee;
+
+};</pre>
+</p>
+<p>
+As you can tell, this is a simple <tt>Gtk::Window</tt> with just a single button (<tt>thrashHive</tt>) in it.  In the constructor we connect this button to a method <tt>go()</tt> at line 52.  <tt>go()</tt> is important to us because it is where we create and launch our thread, which is represented as the class <tt>Worker</tt> of which we have a pointer declared at line 78 called <tt>bee</tt>.  Let's run through <tt>go()</tt> line by line.
+</p>
+<p><pre lang="cpp" line="58">      if(bee != NULL)
+        return;</pre> In lines 58 and 59 we are protecting our memory from trying to create multiple instances of a <tt>Worker</tt> thread, a good idea to stay safe in an asynchronous environment.
+<pre lang="cpp" line="61">      bee = new Worker();
+      bee->sig_done.connect(sigc::mem_fun(*this, &MyWindow::beeDone));
+      bee->start();</pre> At line 61 we instantiate a new <tt>Worker</tt> class.  Next at line 62 we connect the signal <tt>sig_done</tt> to our <tt>beeDone()</tt> method, which essentially just undoes everything we do in <tt>go()</tt>.  We do this because this is a non-blocking, asynchronous working thread and we need to know when it is finished running.  When we get to the implementation of the <tt>Worker</tt> class, you'll see that this "signal" is not a given, but rather something we implement ourselves, and we can have as many "signals" for events as needed.  Lastly we start our thread at line 63.
+ <pre lang="cpp" line="65">      thrashHive.set_sensitive(false);
+      thrashHive.set_label("Working");</pre> Here we disable our button and change it's text.  Why do this here and not before thread creation? In most cases that would be a good idea, but here we want to demonstrate that the main thread is still working, so we do updates to the GUI after we start the worker thread.
+</p>
+<p>
+<b>Worker</b><br/>
+The <tt>Worker</tt> class is actually fairly simple.  It has a basic set of steps:
+<ol>
+<li>Create and wait to be started.</li>
+<li>Get started, create thread and run.</li>
+<li>Do work, emit signals, check for being aborted.</li>
+<li>Return when done, then wait around until cleaned up.</li>
+</ol>
+Just breeze over the full listing then we'll go over each of those points one at a time.
+</p>
+<p>
+<pre lang="cpp" line="4">class Worker {
+  public:
+ 
+    Worker() : thread(0), stop(false) {}
+ 
+    // Called to start the processing on the thread
+    void start () {
+      thread = Glib::Thread::create(sigc::mem_fun(*this, &Worker::run), true);
+    }
+ 
+    // When shutting down, we need to stop the thread
+    ~Worker() {
+      {
+        Glib::Mutex::Lock lock (mutex);
+        stop = true;
+      }
+      if (thread)
+        thread->join(); // Here we block to truly wait for the thread to complete
+    }
+ 
+    Glib::Dispatcher sig_done;
+ 
+  protected:
+    // This is where the real work happens
+    void run () {
+ 
+      while(true) {
+        {
+          Glib::Mutex::Lock lock (mutex);
+          if (stop) break;
+        }
+        sleep(5);
+        std::cout << "Thread write!" << std::endl;
+        sig_done();
+        break;
+      }
+    }
+ 
+    Glib::Thread * thread;
+    Glib::Mutex mutex;
+    bool stop;
+};</pre>
+</p>
+<p>
+We don't have anything to deal with for the first point. In the constructor we just initialize the <tt>Glib::Thread</tt> to 0 and our sentinel boolean, <tt>stop</tt> to false.
+</p>
+<p>
+For the second point, we need to look at <tt>start()</tt> and <tt>run()</tt>.
+</p>
+<p><tt>start()</tt> is our public method, and it creates and runs the actual <tt>Glib::Thread</tt>.  Doing that is fairly straight forward:
+<pre lang="cpp" line="10">    void start () {
+      thread = Glib::Thread::create(sigc::mem_fun(*this, &Worker::run), true);
+    }</pre>
+</p>
+<p>
+The <tt>run()</tt> method is where our blocking operations go so that we don't have to worry about gumming up the UI, this is where the work actually happens (i.e. step 3). 
+<pre lang="cpp" line="27">    void run () {
+ 
+      while(true) {
+        {
+          Glib::Mutex::Lock lock (mutex);
+          if (stop) break;
+        }
+        sleep(5);
+        std::cout << "Thread write!" << std::endl;
+        sig_done();
+        break;
+      }
+    }</pre>
+In my <tt>run()</tt> I just wait five seconds and write to stdout, but if you are doing a lengthy process, you should occasionally check the <tt>stop</tt> variable for an abort condition by using lines 30 - 33.  Always put your <tt>Glib::Mutex::Lock</tt> inside of their own block, it is easier to handle them that way as the destructor does the cleanup work for you.
+</p>
+<p>
+On line 37 we see a "signal" being emitted.  This is actually a <tt>Glib::Dispatcher</tt>, which uses pipes for asynchronous communication between threads.  In practical application just treat it like a <tt>sigc::signal <void></tt>.  If you need to communicate data, emit the <tt>Glib::Dispatcher</tt> and have the receiving thread do method calls to get the information from stored values in the sending thread.
+</p>
+<p>
+One easy to miss caveat when using gthreads, you have to throw in some extra libraries with <tt>pkg-config --libs gthread-2.0</tt>, here is the command line to compile this demo application.
+<pre lang="bash">g++ -Wall -o bee gthread.cpp `pkg-config gtkmm-2.4 --cflags --libs` `pkg-config --libs gthread-2.0`</pre>
+</p>
+<p>
+That is the guts of a simple Gtkmm/Glibmm worker thread, I hope that I was clear if not concise.  Here is the complete listing of the program for your reading/borrowing/compiling pleasure.
+<pre lang="cpp" line="1">#include <iostream>
+#include <gtkmm.h>
+
+class Worker {
+  public:
+
+    Worker() : thread(0), stop(false) {}
+
+    // Called to start the processing on the thread
+    void start () {
+      thread = Glib::Thread::create(sigc::mem_fun(*this, &Worker::run), true);
+    }
+
+    // When shutting down, we need to stop the thread
+    ~Worker() {
+      {
+        Glib::Mutex::Lock lock (mutex);
+        stop = true;
+      }
+      if (thread)
+        thread->join(); // Here we block to truly wait for the thread to complete
+    }
+
+    Glib::Dispatcher sig_done;
+
+  protected:
+    // This is where the real work happens
+    void run () {
+
+      while(true) {
+        {
+          Glib::Mutex::Lock lock (mutex);
+          if (stop) break;
+        }
+        sleep(5);
+        std::cout << "Thread write!" << std::endl;
+        sig_done();
+        break;
+      }
+    }
+
+    Glib::Thread * thread;
+    Glib::Mutex mutex;
+    bool stop;
+};
+
+class MyWindow : public Gtk::Window {
+
+  public:
+    MyWindow () : thrashHive("Go!") {
+      bee = NULL;
+      thrashHive.signal_clicked().connect(sigc::mem_fun(*this, &MyWindow::go));
+      add(thrashHive);
+      show_all();
+    }
+
+    void go () {
+      if(bee != NULL)
+        return;
+
+      bee = new Worker();
+      bee->sig_done.connect(sigc::mem_fun(*this, &MyWindow::beeDone));
+      bee->start();
+
+      thrashHive.set_sensitive(false);
+      thrashHive.set_label("Working");
+    }
+
+    void beeDone () {
+      delete bee;
+      bee = NULL;
+      thrashHive.set_sensitive(true);
+      thrashHive.set_label("Go!");
+    }
+
+  private:
+    Gtk::Button thrashHive;
+    Worker * bee;
+
+};
+
+int main (int argc , char ** argv) {
+
+  if(!Glib::thread_supported()) Glib::thread_init();
+
+  Gtk::Main kit (argc, argv);
+  MyWindow win;
+  Gtk::Main::run (win);
+  return 0;
+}</pre>
+</p>

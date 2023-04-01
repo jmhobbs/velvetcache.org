@@ -1,0 +1,32 @@
+---
+category:
+- Consume
+- Geek
+creator: admin
+date: 2010-08-05T23:21:44
+layout: layout.njk
+tags:
+- Markdown
+- MarkedUp
+- Programming
+- Projects
+- Python
+- Qt4
+title: 'MarkedUp: The Power of Python'
+type: post
+---
+<p>Yesterday I was stuck at the office while Darcy got a flat replaced.  I decided to make a <a href="http://daringfireball.net/projects/markdown/">Markdown</a> editor real quick, since I'm always using the web dingus to preview it, and that gets old.</p>
+<p>I found the <a href="http://code.google.com/p/python-markdown2/" target="_blank">python-markdown2</a> library, and then decided to try out the WebKit integration in Qt4.</p>
+<p>The best word for it is painless.  Seriously, I got the <a href="http://github.com/jmhobbs/MarkedUp/blob/7e7956076ab9d6c404f8fe510be0beb471c53a65/MarkedUp.py" target="_blank">first version</a> glued together in about ten minutes, including finding the markdown library and reading all the docs for QWebView.  It's a brutal hack, but it worked just fine, and only took up <b>45</b> lines of code.</p>
+<p>I've since dropped in three more markup languages, as well as cleaned it up to something readable.  But I doubt I have more than a couple hours invested thus far.</p.
+<p>I think this is a quintessential demonstration of the power of Python, which breaks down to three things.</p>
+<p>
+<ol>
+<li style="margin-bottom: 5px;"><b>Fast development</b><br/>No compile cycle, it reduces the barrier to creating a prototype.</li>
+<li style="margin-bottom: 5px;"><b>Huge Ecosystem</b><br/>There is a library for <u>everything</u> and it's all easy to get to and use.</li>
+<li><b>Good Documentation & Intuitive Behavior</b><br/>Most packages have good documentation, and those that don't still behave intuitively. Just pydoc around until you find what you need.</li>
+</ol>
+</p>
+<p>MarkedUp is now feature complete, stable, and available at your local <a href="http://github.com/jmhobbs/MarkedUp/tree/0.1.0" target="_blank">github</a>.</p>
+<p>
+<a href="http://static.velvetcache.org/pages/2010/08/05/markedup-the-power-of-python/marked-up-edit.png" taqrget="_blank"><img src="http://static.velvetcache.org/pages/2010/08/05/markedup-the-power-of-python/marked-up-edit.sm.png" alt="The MarkedUp Editor" /></a></p>

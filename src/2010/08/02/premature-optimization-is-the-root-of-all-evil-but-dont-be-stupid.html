@@ -1,0 +1,45 @@
+---
+category:
+- Geek
+creator: admin
+date: 2010-08-02T23:00:02
+layout: layout.njk
+tags:
+- Files
+- Hashing
+- Memory
+- PHP
+- Programming
+- Python
+title: Premature optimization is the root of all evil. But don't be stupid.
+type: post
+---
+<p>There is a relatively prevalent quote in the programming world, bandied about by programmers of all creeds.</p>
+<p><blockquote>"Premature optimization is the root of all evil."</blockquote></p>
+<p style="text-align: right; font-weight: bold;">- Donald Knuth</p>
+<p>I agree.  What we intuit about optimization is usually wrong.  And what's more, until you hit a bottleneck, it's often a waste of time.  Moore has been good to us, and CPU bound problems aren't as common as they once were.</p>
+<p>That said, I think people should not cling to this.  It's dumb.</p>
+<p>Today I was looking for a better way to compute sha1 file hashes in PHP.  I know about <tt><a href="http://www.php.net/manual/en/function.sha1.php" target="_blank">sha1()</a></tt> obviously, but that's not how it should be done for files.</p>
+<p>Python provides the excellent <a href="http://docs.python.org/library/hashlib.html" target="_blank">hashlib</a> that lets you update a hash with blocks of data.  It's excellent for file hashing, because you can read in data in chunks and update the hash as you go, thus avoiding reading the whole file into memory at once.  Here, have a sample program that reads in 512 byte chunks.</p>
+<p><pre lang="python" line="1">>>> import hashlib
+>>> hash = hashlib.sha1()
+>>> with open( 'test.jpg', 'r' ) as handle:
+...     while True:
+...             data = handle.read(512)
+...             if not data:
+...                     break
+...             hash.update( data )
+... 
+>>> hash.hexdigest()
+'9e8d5ee361c6988baf7f75999f2c854a765f3eca'</pre></p>
+<p>So I quickly found the <tt><a href="http://www.php.net/manual/en/function.sha1-file.php" target="_blank">sha1_file()</a></tt> function.  Perfect, I'm sure this reads in chunks, otherwise they would not have bothered to make the function.</p>
+<p>Then I scroll down to check the user contributed notes for anything interesting.  The top two notes are examples of using this snippet to get a sha1 hash of a file:<pre lang="php" line="0">$hash = sha1( file_get_contents( $file ) );</pre></p>
+<p>I was stunned.  The definition of <tt><a href="http://www.php.net/manual/en/function.file-get-contents.php" target="_blank">file_get_contents()</a></tt> is as follows:<blockquote>"Reads entire file into a string."</blockquote></p>
+<p>Surely they are not suggesting that I read the entire file into memory, as a PHP variable, and then pass it on to the hashing function?  Who would think that is a good solution, when there is a perfectly good built in function to do this for you, in chunks, in a neater fashion?</p>
+<p>My only explanation is ignorance, or utter lack of consideration.  I gave it a test with these two PHP scripts.<pre lang="php" line="1"><?php
+        echo sha1( file_get_contents( 'test.jpg' ) ) . "\n";
+        echo memory_get_peak_usage() . "\n";</pre><pre lang="php" line="1"><?php
+        echo sha1_file( 'test.jpg' ) . "\n";
+        echo memory_get_peak_usage() . "\n";</pre></p>
+<p>The first version weighed in as using slightly more memory than second one.  About 89k actually.  And test.jpg is 88k.</p><p>Imagine if that picture was a few megs bigger.  Imagine if I could somehow trigger this process on your website, over and over again with ab or something.  It's a DOS in the making.</p>
+<p>Develop however you want to, just please, please don't be stupid.</p>

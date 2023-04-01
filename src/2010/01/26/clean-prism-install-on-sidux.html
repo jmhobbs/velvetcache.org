@@ -1,0 +1,31 @@
+---
+category:
+- Geek
+creator: admin
+date: 2010-01-26T22:11:25
+layout: layout.njk
+tags:
+- Debian
+- Linux
+- Mozilla
+- Prism
+- Sidux
+- Tutorial
+title: Clean Prism Install on Sidux
+type: post
+---
+<p><img src="http://static.velvetcache.org/pages/2010/01/26/clean-prism-install-on-sidux/logo_prism.png" alt="Mozilla Prism" style="width: 200px; height: 96px; float: left; margin-right: 5px; margin-bottom: 5px;" />Prism is a sandboxed web-app tool, essentially it is Firefox for one application at a time.  It's been a while since I played with it, so I'm taking another look.</p><p>This should work on any Debian based system really, but I did it on Sidux.  Here's how I installed the latest version on my machine.</p><p><pre lang="text"># wget http://prism.mozilla.com/downloads/1.0b1/prism-1.0b1.en-US.linux-i686.tar.bz2
+--2010-01-26 16:01:08--  http://prism.mozilla.com/downloads/1.0b1/prism-1.0b1.en-US.linux-i686.tar.bz2
+Resolving prism.mozilla.com... 63.245.208.216
+Connecting to prism.mozilla.com|63.245.208.216|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 9101612 (8.7M) [application/x-bzip2]
+Saving to: â€œprism-1.0b1.en-US.linux-i686.tar.bz2â€
+
+100%[==========================================================================================================================================================================================================>] 9,101,612    212K/s   in 42s
+
+2010-01-26 16:01:55 (213 KB/s) - â€œprism-1.0b1.en-US.linux-i686.tar.bz2â€ saved [9101612/9101612]
+
+# mv prism /opt/prism-1.0b1
+# ln -s /opt/prism-1.0b1/prism /usr/bin
+</pre></p><p>At that point it should be in your path and ready to invoke!</p>

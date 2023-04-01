@@ -1,0 +1,45 @@
+---
+category:
+- Geek
+creator: admin
+date: 2015-12-09T00:18:05
+layout: layout.njk
+tags:
+- DreamHost
+- guide
+- ssl
+- tls
+title: Using Let's Encrypt With Dreamhost
+type: post
+---
+<div class="update"><h4>2016-01-28</h4><p>As pointed out in the comments, <a href="https://www.dreamhost.com/blog/2015/12/03/lets-encrypt-and-dreamhost/" target="_blank">Dreamhost now supports Let's Encrypt</a> in the panel.  No more workaround needed!</p></div>
+<p>Let's Encrypt has <a href="https://letsencrypt.org/2015/12/03/entering-public-beta.html" target="_blank">entered public beta</a>, which means I should probably play with it!</p>
+<p>This website is hosted on Dreamhost, which has a round about way of installing SSL certs, but it's not too bad.</p>
+<p>First, you have to go to your Dreamhost panel, then "Secure Hosting" and select "Add Secure Hosting"</p>
+<p style="text-align: center;"><img src="http://static.velvetcache.org/pages/2015/12/08/add-secure-hosting.png" alt="Add Secure Hosting" style="width: 80%;" /></p>
+<p>From here, you pick your domain you want to secure.  It's a little bit wonky, in that it doesn't show <strong>www.</strong> domains as subdomains in this list, so if you use that, you'll need to just select the parent domain.</p>
+<p>Doing this will issue you a self-signed certificate which will throw up scary browser warnings.  We will fix that next.</p>
+<p>I chose to run Let's Encrypt on my laptop, so I followed the <a href="http://letsencrypt.readthedocs.org/en/latest/using.html" target="_blank">user guide</a> to get things installed.  Basically just a git clone.</p>
+<p>Next you have to begin the request process.</p>
+<p><pre class="lang:sh decode:true">./letsencrypt-auto certonly --manual --debug</pre></p>
+<p><ul><li><tt>certonly</tt> states that we only want a certificate generated, not installed.</li><li><tt>--manual</tt> means that we are going to manually authenticate it.</li><li><tt>--debug</tt> is used with the OS X version because it is experimental.</li></ul></p>
+<p>This will probably download some junk with homebrew, then it's going to ask you some questions, the greatest of which is what domain you want to use.</p>
+<p>With this in hand, it will generate an authentication string that you need to put into a file on the server.</p>
+<p><pre class="lang:sh decode:true " >[claw]$ cd velvetcache.org
+[claw]$ mkdir -p .well-known/acme-challenge/
+[claw]$ echo -n "EVgSHY-sQeMAy4TTx_-jjrx-mR3Dmr4M5Byt9vBKcLE.9wpTWpx1Ghg8yXEMASBfWbfU-fGgjG6D-ixF4ip3cDU" &gt; .well-known/acme-challenge/EVgSHY-sQeMAy4TTx_-jjrx-mR3Dmr4M5Byt9vBKcLE</pre></p>
+<p>Once you do that, it spits out your certificate into <tt>/etc/letsencrypt/live/[domain]</tt></p>
+<p><pre class="lang:sh decode:true">/etc/letsencrypt/live/www.velvetcache.org âœª ls
+cert.pem	chain.pem	fullchain.pem	privkey.pem</pre></p>
+<p>Back on the Dreamhost panel, you'll want to click on "Edit" for the domain we are securing, then select "Manual Configuration".</p>
+<p style="text-align: center;"><img src="http://static.velvetcache.org/pages/2015/12/08/edit-secure-hosting.png" alt="Edit Secure Hosting" style="max-width: 80%;" /></p>
+<p>You can clear the CSR field and then into the "Certificate" field, enter the content from <tt>cert.pem</tt>.</p>
+<p>Into "Intermediate Certificate" I placed the contents of <tt>chain.pem</tt></p>
+<p>Lastly, we have to change the format of the private key file to one Dreamhost understands.</p>
+<p><pre class="lang:sh decode:true " >/etc/letsencrypt/live/www.velvetcache.org âœª openssl rsa -in privkey.pem -out privkey.key
+writing RSA key</pre></p>
+<p>Then we paste <tt>privkey.key</tt> into the Dreamhost interface for "Private Key", save and wait for our new certificate to get installed.</p>
+<p style="text-align: center;"><img src="http://static.velvetcache.org/pages/2015/12/08/edited-keys.png" title="No, that's not my actual private key." alt="Editing Certificates" style="width: 80%;" /></p>
+<p>It's magic!</p>
+<p style="text-align: center;"><img src="http://static.velvetcache.org/pages/2015/12/08/success.png" alt="Add Secure Hosting" style="max-width: 80%;" /></p>
+<p>Now I just have to fix all my asset URLs too...</p>

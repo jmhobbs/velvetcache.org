@@ -1,0 +1,39 @@
+---
+category:
+- Geek
+creator: admin
+date: 2009-12-21T19:04:26
+layout: layout.njk
+tags:
+- Hardware
+- Python
+title: USB7 + pySerial
+type: post
+---
+<div class="update"><p><b>Update: 2009-12-30</b><br/>I put a bunch of scripts together into a collection on github, called <a href="http://github.com/jmhobbs/pyUSB7" target="_blank">pyUSB7</a>. Check that out for lots of this sort of thing.</p></div>
+<p>I recently dug out my USB7 and thought I would play with it. I don't know if it has to do with my distro (<a href="http://www.sidux.com/" target="_blank">sidux</a>), or the kernel development in general, but the USB7 works on plug in, contrary to what the <a href="http://spiffie.org/kits/usb7/driver_linux.shtml" target="_blank">product site</a> says.</p><p>Anyway, once I got tired of <tt>echo</tt>ing numbers to the USB7, I thought I'd try writing something with <a href="http://pyserial.sourceforge.net/" target="_blank">pySerial</a>, which I had looked at a long time ago, but never tried.</p><p>It is remarkably easy once you get the settings right.  Here is a little clock program that I wrote which counts up the elapsed seconds in the day, and also has an hour/minutes/seconds layout. These toggle back and forth every 10 seconds.</p><p><pre lang="python"># -*- coding: utf-8 -*-
+import serial
+from time import sleep, mktime
+from datetime import datetime, date
+
+ser = serial.Serial('/dev/ttyACM0', 9600, timeout=0)
+try:
+  swap = True
+  while True:
+    now = datetime.now().timetuple()
+    now_t = mktime( now )
+
+    then_t = mktime(date.today().timetuple() )
+    diff = int( now_t - then_t )
+
+    if 0 == diff % 10:
+      swap = not swap
+
+    if swap:
+      ser.write( "%d\n" % diff )
+    else:
+      ser.write( "%02.0d.%02.0d.%02.0d\n" % ( now[3], now[4], now[5] ) )
+
+    sleep( 1 )
+except:
+  ser.close()</pre></p>

@@ -1,0 +1,61 @@
+---
+category:
+- Geek
+creator: admin
+date: 2007-01-19T23:33:33
+layout: layout.njk
+tags:
+- Nokia 770
+- Perl
+title: Cleaning Up E-Books
+type: post
+---
+<p>I have a large number of ebooks in Microsoft's .lit format.  My Nokia 770 doesn't have any software to read a .lit format book.  In fact, I can't say I've ever seen a .lit reader other than Microsoft's own.</p>
+<p>What I have seen is the nifty and very usefull <a href="http://www.convertlit.com/" target="_blank">ConvertLIT</a> which I use to down convert the files into plain HTML.  I don't even bother with the images.  The problem is, they tend to come out formatted in a hideous fashion.  I came up with a nice combo of <a href="http://tidy.sourceforge.net/" target="_blank">HTML tidy</a> and a perl script.</p>
+<p>Here's my command line for tidy, beware, this will modify your original copy!
+<pre lang="bash">tidy --bare yes --clean yes --drop-font-tags yes --drop-proprietary-attributes yes --enclose-text yes --output-xhtml yes --word-2000 yes --tidy-mark no --write-back yes TARGETFILENAME.htm</pre></p>
+<p>Here is my perl script, it just runs the file through some regex's and writes to the same filename with "NEW" appended.  I also made a nice little progress bar because I was bored.</p>
+<p><pre lang="perl" line="1">#!/usr/bin/perl
+
+$file = $ARGV[0];   # Name the file
+open(INFO, "< ".$file);   # Open the file
+@lines = <INFO>;    # Read it into an array
+close(INFO);      # Close the file
+
+$size = @lines;
+$counter = 0;
+$size = $size / 50;
+
+open(FILEWRITE, "> NEW".$file);
+foreach(@lines) {
+  $counter++;
+  if(0 == ($counter % 50) || $counter == @lines) {
+  print "\rProcessing: [";
+  for($i = 0; $i < ($counter / $size); $i++) {
+    print "+";
+  }
+  for($i = 0; $i < (49 - ($counter / $size)); $i++) {
+    print "-";
+  }
+  print "]";
+  }
+
+  # Empty paragraph removal
+  $_ =~ s/<p>\s*<\/p>//mi;
+  if($_ =~ m/^\s*\n$/) {
+    # If the line is just a newline or newline and spaces, scrap it.
+    $_ = '';
+  }
+  else {
+    # Remove excess spaces
+    $_ =~ s/  //mi;
+    # I get these alot...
+    $_ =~ s/&shy;//mi;
+  }
+  print FILEWRITE $_;
+}
+close FILEWRITE;
+print "\n";
+</pre></p>
+<p>You can download it here, but be careful with it.<br/><a href="http://static.velvetcache.org/pages/2007/1/19/cleaning-up-e-books/cleaner.pl.txt">cleaner.pl.txt</a></p>
+<div class="update"><p><b>Update (01/21/07)</b><br/>That perl script has a line <tt>$_ =~ s/  //mi;</tt> which doesn't really make that much sense looking at it now.  I'm thinking <tt>$_ s/\s\s+/ /mi;</tt> for a replacement.  Also, for some reason the server throws up a 500 error on trying to get that file, I'm working on it.</p></div>

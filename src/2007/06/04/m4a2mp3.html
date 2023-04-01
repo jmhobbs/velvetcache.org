@@ -1,0 +1,32 @@
+---
+category:
+- Geek
+creator: admin
+date: 2007-06-05T02:56:47
+layout: layout.njk
+tags:
+- BASH
+- Computers
+- Linux
+- Music
+- Programming
+title: m4a2mp3
+type: post
+---
+<p>I had some m4a encoded files I wanted in mp3 (don't judge me) so I cooked up a modified script from one found <a href="http://gimpel.gi.funpic.de/wiki/index.php?title=Howto:convert_aac/mp4_to_wav/mp3/ogg_on_Linux#aac.2Fm4a_to_mp3" target="_blank">here</a>, that does the trick.</p>
+<p><pre lang="bash" line="1">#!/bin/bash
+#
+# m4a2mp3
+#
+for i in *.m4a; do
+  mplayer -vc null -vo null -ao pcm:fast "$i" -ao pcm:file="${i%.m4a}.wav"
+done
+for i in *.wav; do
+  lame -h -V2 --vbr-new "$i" "$(i%.wav}.mp3"
+done
+
+rm *.wav</pre></p>
+
+<div class="update"><b>Update (06/19/07)</b><br/>Just a quick note, you can use this to convert any supported audio file by replacing all the <tt>m4a</tt> with the correct extension.  E.G. For flac replace <tt>m4a</tt> with <tt>fla</tt>.  A nice little vim command for that would be <tt>:%s/m4a/fla/g</tt></div>
+
+<div class="update"><b>Update (03/18/08)</b><br/>I posted a version to go from anything (that mplayer can play) to mp3 without editing the script.  Check it out <a href="http://www.velvetcache.org/2008/03/18/any2mp3">here</a>.</div>

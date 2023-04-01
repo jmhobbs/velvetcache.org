@@ -1,0 +1,13 @@
+---
+category:
+- Geek
+creator: admin
+date: 2008-01-16T23:07:37
+layout: layout.njk
+tags:
+- Linux
+- School
+title: Submitting Assignments In Blackboard With Linux
+type: post
+---
+<p>It seems to be an off and on thing, but in some Blackboard installations (like at <a href="http://myuno.unomaha.edu/">UNO</a>) there is a piece of JavaScript that makes it impossible to submit assignment files from Linux.  I had some difficulty finding a fix online, so I thought I'd document it here.</p><p>Just select your file as usual, and then escape the slashes, like so:<pre>/home/jmhobbs/AssignmentOne.zip</pre>becomes<pre>\/home\/jmhobbs\/AssignmentOne.zip</pre></p><p>It's pretty stupid coding, but that's life.  My source for this fix is the thread found <a href="http://ubuntuforums.org/showthread.php?s=7794855a9f963589a55b96a21dd07ffc&t=476126&page=2">here</a>.</p>

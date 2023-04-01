@@ -1,0 +1,98 @@
+---
+category:
+- Geek
+creator: admin
+date: 2012-01-11T15:00:08
+layout: layout.njk
+tags:
+- Caching
+- Kohana
+- PHP
+- Programming
+title: Cache Control With Kohana 3
+type: post
+---
+<p>I recently did some work with cache control in Kohana and found the documentation a little thin out there, so I thought I would share what I learned.</p><p>Kohana has nice built in functionality for ETag validations, so you don't really need to roll your own cache headers.</p><p>If you need to brush up on web caching in general, I would recommend a quick read of <a href="http://www.mnot.net/cache_docs/" target="_blank">Caching Tutorial for Web Authors and Webmasters</a>, an excellent and concise reference.</p>
+<h2>Setup</h2>
+<p>For the purposes of this example, I'm creating a small controller which will use a short string as it's response body.  The implementation here is trivial.</p>
+<p><pre lang="php" line="1"><?php defined('SYSPATH') or die('No direct script access.');
+
+  class Controller_Example extends Controller {
+
+    public function action_index () {
+      $this->response->body( 'Hello, world!' );
+    }
+
+  } // Controller_Example
+</pre></p>
+<p>Let's look at the headers that are returned by default.  Your headers may vary, so adjust accordingly.</p>
+<p><a href="http://static.velvetcache.org/pages/2012/01/11/cache-control-with-kohana-3/01.png" target="_blank"><img src="http://static.velvetcache.org/pages/2012/01/11/cache-control-with-kohana-3/01_sm.png"></a></p>
+<p>If you look at the response headers from this request, you will note that there no Cache-Control, Last-Modified or ETag headers are returned.  That gives us a blank slate to work with.</p>
+<h2>ETag</h2>
+<p>An ETag is a unique identifier string describing your content for cache validation.  ETags have an advantage over Last-Modified headers in that there is no need to worry about clock synchronization.  The server can determine how to generate ETags in any manner it desires.</p>
+<p>The <tt>Response</tt> object in Kohana provides two methods useful for ETag based caching.  The first is <tt><a href="http://kohanaframework.org/3.2/guide/api/Response#generate_etag" target="_blank">Response::generate_etag()</a></tt>, the second is <tt><a href="http://kohanaframework.org/3.2/guide/api/Response#check_cache" taret="_blank">Response::check_cache()</a></tt>.</p>
+<h3>Response::generate_etag()</h3>
+<p>This method uses the <tt>sha1</tt> hash to create a unique ETag based on the content of the rendered response.  Because it renders and hashes the response before returning a result, there is a memory and CPU time hit, which increases with the size of your response.</p>
+<h3>Response::check_cache()</h3>
+<p>This method is the one we will use directly, as it compares the ETag of the response to request headers and takes the appropriate action.</p>
+<p>It's signature is <tt>($etag = NULL, Request $request = NULL)</tt>. This is a bit odd, because although both are NULL by default, and the <tt>Request</tt> parameter is second, it is not optional while <tt>$etag</tt> is.</p>
+<p>If you provide <tt>NULL</tt> for <tt>$etag</tt> the method will use <tt>Response::generate_etag()</tt> to get a valid ETag.  As mentioned above, this is not always the optimal choice, so if you have a unique identifier that you can provide, you should.</p>
+<p>Since this is a simplistic example, I will let <tt>Response::generate_etag()</tt> create my ETag value.</p>
+<p><pre lang="PHP" line="1"><?php defined('SYSPATH') or die('No direct script access.');
+
+  class Controller_Example extends Controller {
+
+    public function after () {
+      parent::after();
+      $this->response->check_cache( null, $this->request );
+    }
+
+    public function action_index () {
+      $this->response->body( 'Hello, world!' );
+    }
+
+  } // Controller_Example
+</pre></p>
+<p>Let's see the response headers for this version. We now have an ETag header, at the very bottom.</p>
+<p><a href="http://static.velvetcache.org/pages/2012/01/11/cache-control-with-kohana-3/02.png" target="_blank"><img src="http://static.velvetcache.org/pages/2012/01/11/cache-control-with-kohana-3/02_sm.png"></a></p>
+<p>If we refresh the page again, we see that the browser sends an "If-None-Match" request header, which <tt>Response::check_cache()</tt> compares to the ETag.  Finding that they match, the method returns a 304 response and immediately exits the script, causing the browser to use the cached version and saving the time it would take to send those bytes.</p>
+<p><a href="http://static.velvetcache.org/pages/2012/01/11/cache-control-with-kohana-3/03.png" target="_blank"><img src="http://static.velvetcache.org/pages/2012/01/11/cache-control-with-kohana-3/03_sm.png"></a></p>
+<p>To demonstate how the ETag is generated let's modify our response body so that it returns new content for every request (well, every second at least).</p>
+<p><pre lang="php" line="1"><?php defined('SYSPATH') or die('No direct script access.');
+
+  class Controller_Example extends Controller {
+
+    public function after () {
+      parent::after();
+      $this->response->check_cache( null, $this->request );
+    }
+
+    public function action_index () {
+      $this->response->body( 'Hello, world at ' . date( DATE_RSS ) . '!' );
+    }
+
+  } // Controller_Example
+</pre></p>
+<p>After refreshing we get a new body, and a new ETag, breaking the cache and re-sending the entire page.</p>
+<p><a href="http://static.velvetcache.org/pages/2012/01/11/cache-control-with-kohana-3/04.png" target="_blank"><img src="http://static.velvetcache.org/pages/2012/01/11/cache-control-with-kohana-3/04_sm.png"></a></p>
+<p>Remember, if you implement this, you should try to use an alternate ETag value if you can.</p>
+<h2>Cache Control</h2>
+<p>ETags aren't useful without a Cache-Control header, but you can set that yourself with <tt><a href="http://kohanaframework.org/3.2/guide/api/Response#headers" target="_blank">Response::headers()</a></tt>, just be aware that <tt>Response::check_cache()</tt> will append <tt>must-revalidate</tt> to your header value, so don't add that part yourself.</p>
+<p><pre lang="php" line="1"><?php defined('SYSPATH') or die('No direct script access.');
+
+  class Controller_Example extends Controller {
+
+    public function after () {
+      parent::after();
+      $this->response->headers( 'cache-control', 'private' );
+      $this->response->check_cache( null, $this->request );
+    }
+
+    public function action_index () {
+      $this->response->body( 'Hello, world at ' . date( DATE_RSS ) . '!' );
+    }
+
+  } // Controller_Example
+</pre></p>
+<p><a href="http://static.velvetcache.org/pages/2012/01/11/cache-control-with-kohana-3/05.png" target="_blank"><img src="http://static.velvetcache.org/pages/2012/01/11/cache-control-with-kohana-3/05_sm.png"></a></p>
+<p>Hopefully that clears up how to use the built in browser cache handling in Kohana 3, please leave your own tips or experiences in the comments!</p>

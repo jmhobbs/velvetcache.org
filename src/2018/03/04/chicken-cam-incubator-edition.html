@@ -1,0 +1,41 @@
+---
+category:
+- Geek
+- Life
+creator: admin
+date: 2018-03-05T04:55:00
+layout: layout.njk
+tags:
+- Chickens
+- Electronics
+- go
+- golang
+- Projects
+- Raspberry Pi
+title: 'Chicken Cam: Incubator Edition'
+type: post
+---
+<p style="text-align: center;"><a href="http://static.velvetcache.org/pages/2018/03/04/chicken-cam-incubator-edition/lizzy.jpg"><img src="http://static.velvetcache.org/pages/2018/03/04/chicken-cam-incubator-edition/lizzy.sm.jpg" /></a></p>
+<p>It's been over a year since we've had chickens and we've missed them, so this Christmas we got Lizzy and Charlotte an incubator so that we could try hatching some this spring.</p>
+<p>When we went to purchase eggs, we found that you could most easily get them 10 at a time from the hatchery we have used in the past, <a href="https://www.mcmurrayhatchery.com/">Murray McMurray</a>.  Since the incubator we got the girls could only hold seven, we would need something for the other three.  Some searching found that you could use a styrofoam cooler and a lamp to create a makeshift incubator, so I planned on that.</p>
+<p>Once I had a plan to create an incubator, I knew I would have to overcomplicate things.  Four years ago I built a <a href="http://www.velvetcache.org/2013/10/08/building-the-chicken-cam" target="_blank">webcam for our chicks</a> so I figured I would do that this time too.  Also, just setting a lamp and thermometer in and hoping for the best seemed like a potential waste of good eggs, so I wanted to monitor the temperature and humidity, and regulate them.</p>
+<p>My initial design was a Raspberry Pi connected to a cheap DHT11 temperature and humidity sensor, controlling a relay that could turn the light on and off.  All of it would be hooked up through a PID controller to keep the temperatures right where we want them. Eventually, I added a thermocouple with a MAX6675 for more accurate temperature readings.</p>
+<p style="text-align: center;"><a href="http://static.velvetcache.org/pages/2018/03/04/chicken-cam-incubator-edition/IMG_0090.jpg"><img src="http://static.velvetcache.org/pages/2018/03/04/chicken-cam-incubator-edition/IMG_0090.sm.jpg" /></a>
+<div class="caption muted">Raspberry Pi, Relay and a mess of wires.</div>
+</p>
+<p>The server side would be designed similarly to the previous chicken cam, except written in Go.  The stats would be tracked in InfluxDB and Grafana would be used for viewing them.</p>
+<p>After I got all the parts I did a little testing, then soldered things up and tested it to see how it ran.</p>
+<p style="text-align: center;"><a href="http://static.velvetcache.org/pages/2018/03/04/chicken-cam-incubator-edition/live.jpg"><img src="http://static.velvetcache.org/pages/2018/03/04/chicken-cam-incubator-edition/live.jpg" /></a></p>
+<p>Initially I wrote everything in Go, but the DHT11 reading was very spotty.  Sometimes it would respond once every few seconds, and sometimes it would go a minute or more failing to read.  I wired on a second DHT11 and tried reading from both, but I didn't get that much better performance.</p>
+<p>Eventually I tried them from the Adafruit Python library and had much better luck, so I decided to just read those from Python and send them to my main Go application for consumption. I still have trouble with the DHT11's, but I suspect it's my fault more than the sensors fault.</p>
+<p>My next issue was that it was extremely jittery, the readings would vary by degrees one second to another, so I collected readings in batches of 5 seconds then averaged them. That smoothed it out enough that graphs looked reasonable.</p>
+<p style="text-align: center;"><img src="http://static.velvetcache.org/pages/2018/03/04/chicken-cam-incubator-edition/jittery.png" style="width: 80%; min-width: 200px;" /><div class="caption muted">On. Off. On. Off. On. Off.</div></p>
+<p>Temperature was now well regulated, but the air wasn't humid enough.  I switched to a sponge and found I could manage it much easier that way. I briefly tried a 40W bulb thinking I could spend more time with the lamp off, but temperatures still plunged at the same rate when the light was off, so I mostly just created quicker cycles.</p>
+<p>After putting the 25W bulb back in, I still wanted a longer, smoother cycle, so I wrapped up a brick (for cleanliness) and stuck that in there.  That got me longer cycles with better recovery at the bottom, it didn't get too cold before the lamp came back on. Some slight improvements to the seal of my lid helped as well. I had trouble with condensation and too much humidity, but some vent holes and better water management took care of that.</p>
+<p style="text-align: center;"><img src="http://static.velvetcache.org/pages/2018/03/04/chicken-cam-incubator-edition/30mins-without-brick-incubator.png" style="width: 80%; min-width: 200px;" /><div class="caption muted">Before the brick.</div></p>
+<p style="text-align: center;"><img src="http://static.velvetcache.org/pages/2018/03/04/chicken-cam-incubator-edition/30mins-with-brick-incubator.png" style="width: 80%; min-width: 200px;" /><div class="caption muted">After the brick.</div></p>
+<p>For the server side, I mostly duplicated the code from the previous Chicken cam, but in Go.  Then I used the InfluxDB library to get the most recent temperature and humidity readings for display.</p>
+<p style="text-align: center;"><img src="http://static.velvetcache.org/pages/2018/03/04/chicken-cam-incubator-edition/web-interface.png" style="max-width: 80%;" /></p>
+<p>At this point, I felt ready for the eggs, which was good because they had arrived!  We placed them in the incubator and we're just waiting now.  On day 8 we candled them with a homebuilt lamp i.e. a cardboard box with a hole cut in it.</p>
+<p style="text-align: center;"><a href="http://static.velvetcache.org/pages/2018/03/04/chicken-cam-incubator-edition/candling.jpg"><img src="http://static.velvetcache.org/pages/2018/03/04/chicken-cam-incubator-edition/candling.sm.jpg" style="max-width: 80%;" /></a><div class="caption muted">Candling</div></p>
+<p>Things <i>seem</i> to be progressing well so far, so here's hoping something hatches!</p>

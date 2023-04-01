@@ -1,0 +1,138 @@
+---
+category:
+- Geek
+creator: admin
+date: 2011-11-20T21:49:33
+layout: layout.njk
+tags:
+- Fundamentals
+- Hashing
+- JavaScript
+- Programming
+title: 'Fundamentals: Hashing'
+type: post
+---
+<h2>What the hash?</h2>
+<p>This post is about a fundamental programming concept, hashing.</p>
+<blockquote><p>"A hash function is any algorithm or subroutine that maps large data sets to smaller data sets, called keys."</p><p style="text-align: right;"><em><a href="http://en.wikipedia.org/wiki/Hash_function" target="_blank">Hash function</a></em><br/>Wikipedia - 2011/11/15</p></blockquote>
+<p>So, a hashing function can turn this:</p><p><tt>Hello, my name is John Hobbs. I like hashes.</tt></p><p>into this:</p><p><tt>8ced81aa42cd91930024054f26ed92ea</tt></p>
+<p>Doesn't seem super useful, does it?  The content looses its semantic value. <tt>8ced81aa42cd91930024054f26ed92ea</tt> is not the same as a personal introduction.</p>
+<p>That's okay though, we can find a use for a hash that won't be seen by a human.</p>
+<p>But first, let's try our hand at writing a hash function.</p>
+<h2>Mapping to keys</h2>
+<p>So, the principal function of a hashing algorithm is to reduce a large block of data into a smaller block of data.</p>
+<p>Let's set up some arbitrary limits for developing our function.</p>
+<p>For simplicity, let's work at hashing values into a one byte integer, so eight bits.</p><p>Let's also focus on only hashing ASCII strings, since ASCII characters are conveniently one byte long.</p>
+<p>Now that that is established, let me propose a hashing function in pseudo-code:<pre lang="text" line="0">let hash = 0
+for each character in string:
+  let hash = hash XOR character</pre></p>
+<p>For those of you not familiar with <tt>XOR</tt>, I mean <a href="http://en.wikipedia.org/wiki/Exclusive_or" target="_blank">exclusive or</a>.  This means comparing the bytes bit by bit.  If the bits are the same, the result is zero. If they are different, the result is one.  The common notation for <tt>XOR</tt> is <tt>^</tt>.  Here's an example of <tt>5 ^ 117</tt>:<pre lang="text" line="0">  00000101 =   5
+^ 01110101 = 117
+----------------
+  01110000 = 112</pre></p>
+<p>Working at a byte by byte level like this ensures that our hash will not exceed 8 bits in length, or an integer value of 128.</p>
+<h2>Buckets</h2>
+<p>With our shiny little hash function in mind, let's use find a use.</p>
+<p>One great use is lookup tables. These are sometimes called dictionaries, associated arrays, hash tables, etc.</p>
+<p>Basically, they map a key to a value. So you tell a table that "my name" is "john", and then later, if you ask it for "my name" is tells you "john".  Great tool for amnesiacs.</p>
+<p>Hashing is perfect here for faster lookups, and for giving bound memory performance.</p>
+<p>Think of it as a finite line of buckets. When you want to store something you hand it to the walrus, and say "Please keep this fish in a bucket called 'Salmon'."</p><p>Now, the walrus only has so many buckets, and none of them are labeled "Salmon".</p>
+<p>So, he uses a special walrus method (a hashing function) that deterministically says "Salmon == 5", and puts the fish in the fifth bucket.</p>
+<p>Later, when you come back and ask for the fish from the "Salmon" bucket, he knows to get the fish out of the fifth bucket because he can derive that "Salmon == 5" using the same method as before.</p>
+<p>Unfortunately, he ate the fish already, so there is nothing to give you</p><p>Walrus are selfish that way.</p>
+<h3>Implementation</h3>
+<p>Now that we have a use case, let's implement our hashing function.</p><p>I chose JavaScript here.</p>
+<p><pre lang="javascript" line="1">function hash ( string ) {
+  var c = 0;
+  for( var i = 0; i < string.length; i++ ) {
+    c = c ^ string[i].charCodeAt();
+  }
+  return c;
+};</pre></p><p>Let's give it a try:<pre lang="javascript" line="1">console.log( hash( "hello" ) );
+// prints "98"
+console.log( hash( "goodbye" ) );
+// prints "125"</pre></p><p>Cool! Now there is just a little more glue to make this complete. We have to have a <tt>get</tt> and a <tt>set</tt> for values, and an array to store them in.</p><p><pre lang="javascript" line="1">var SimpleHashTable = function () {
+
+  // these are the buckets
+  this.table = new Array(128);
+
+  // hand it to the walrus
+  this.set = function ( key, value ) {
+    this.table[this.hash( key )] = value;
+  };
+
+  // get it from the walrus
+  this.get = function ( key ) {
+    return this.table[this.hash( key )];
+  };
+
+  // walrus math
+  this.hash = function ( string ) {
+    var c = 0;
+    for( var i = 0; i < string.length; i++ ) {
+      c = c ^ string[i].charCodeAt();
+    }
+    return c;
+  };
+
+};</pre></p><p>The <tt>get</tt> and <tt>set</tt> functions are pretty similar. You hash the key, and use that integer as the index to either set, or retrieve a value in the <tt>table</tt> array.</p><p>Let's give it a try!</p><p><pre lang="javascript">var ht = new SimpleHashTable();
+ht.set( "salutations", "Hello, good sir." );
+console.log( ht.get( "salutations" ) );
+// prints "Hello, good sir."</pre></p><p>Perfect!</p>
+<h3>Collision course</h3>
+<p>Now let's use our <tt>SimpleHashTable</tt> to store some stuff!</p>
+<p><pre lang="javascript" line="1">ht.set( "salutations", "Hello, good sir." );
+console.log( ht.get( "salutations" ) );
+// prints "Hello, good sir."
+ht.set( "q", "BARF!" )
+console.log( ht.get( "salutations" ) );
+// prints "BARF!"</pre></p><p>Wait, what the heck just happened?!</p><p>It shouldn't have printed the value for <tt>q</tt>, we asked for <tt>salutations</tt>!</p>
+<p>This is known as a <a href="http://en.wikipedia.org/wiki/Collision_(computer_science)" target="_blank">collision</a>, and it happens.</p>
+<p>What happened is that the hash value we compute for <tt>q</tt> is the same value as the hash for <tt>salutations</tt>.  It's bound to happen, we only have 128 possible buckets and an infinite amount of possible keys.</p><p>So we have several ways to improve this situation.</p><p>One option is more buckets.</p><p>We can also improve the hashing function, but this only buys us fewer, more predictable collision rates.</p><p>Another common fix is a second level to each bucket keeping the exact key, value tuple, and doing a scan on collisions.</p><p>That would be like the walrus putting a sticky note that says "Salmon" on the fish before tossing it into the bucket.  Then, when you ask for the "Salmon", he rifles through the bucket, checking each fish until he finds one labeled "Salmon".</p>
+<p>I'll leave these as an exercise for the reader, because it's time we got moving on.</p>
+<h2>Real hashes</h2>
+<p>Okay, so now you have an example of a simple hash you could use for table lookups. That's cool and everything, but in general we should leave details like that to the neckbeards. It's good to know roughly how it works, but we don't need to do it ourselves.</p>
+<p>What else are hashes good for?  Well, there is a specie of hash called a <a href="http://en.wikipedia.org/wiki/Cryptographic_hash_function" target="_blank">cryptographic hash</a>. These hashes are cryptographic primitives, with strong promises of distribution and collision avoidance.</p>
+<p>Examples you may have come across are <a href="http://en.wikipedia.org/wiki/MD5" target="_blank">MD5</a>, or the <a href="http://en.wikipedia.org/wiki/Secure_Hash_Algorithm" target="_blank">SHA family</a> of algorithms.</p>
+<h3>Implementation</h3>
+<p>These algorithms are considerably more complex than the hash function we created earlier, so I would urge you not to write your own except as an exercise.</p>
+<p>Implementations are available in a variety of languages, so Google wisely.</p>
+<h3>Uses</h3>
+<p>This class of hash has several every day uses that apply to developer-types.</p>
+<h4>Data Integrity</h4>
+<p>Since hashes are deterministic functions, the output can be used as a fingerprint for the input.  Passing data and the hash of that data allows for others to quickly check and make sure that the data has not become corrupted or tampered with in transit.</p>
+<p>This assumes a secure channel for the hash, so use it wisely.</p>
+<p>If you are on a Linux machine, you can quickly get the fingerprint for a file.  In this example I'll use the sha1 algorithm to verify the <a href="http://code.google.com/p/redis/downloads/detail?name=redis-2.4.2.tar.gz&can=1&q=" target="_blank">Redis 2.4.2 source code</a>.</p>
+<p><pre lang="text" line="0">jmhobbs@Cordelia:~/Downloads$ sha1sum redis-2.4.2.tar.gz 
+d2c9288dcfe16b4718e39a0f8ad7b21f4ffc6de0  redis-2.4.2.tar.gz
+jmhobbs@Cordelia:~/Downloads$</pre></p><p>Comparing that hash to the Redis website, it looks like my download completed without errors. Huzzah!</p>
+<h4>Secret Verification</h4>
+<p>Another common use of hashing is to verify secrets, without storing the secret in the clear.</p>
+<p>Say I was writing a system login, and I needed to use usernames and passwords.</p>
+<p>I know it's bad to store passwords in plaintext on my server. What if my <a href="http://www.huffingtonpost.com/2011/10/12/sony-hack-october-2011-playstation-network_n_1006661.html" target="_blank">server gets hacked</a> and the user table is stolen?</p>
+<p>I can't store my passwords in the clear, but I need to reliably verify them.</p>
+<p>Hashes make for a great solution to this problem.</p>
+<p>You hash the password and store it in your database. Then, when a user wants to login, you hash the password they provide and compare it to the one in the database.</p>
+<p>If they match, you log them in.</p>
+<p>Doing this properly is a bit more complicated than that, so if you need to work with passwords like this, I recommend you <a href="http://chargen.matasano.com/chargen/2007/9/7/enough-with-the-rainbow-tables-what-you-need-to-know-about-s.html" target="_blank">read up</a>.</p>
+<h4>Data Authenticity</h4>
+<p>We can also use hashes to confirm the authenticity of a message.</p>
+<p>Say we both know a secret phrase, and no one else does.</p>
+<p>If you want to send a message to me, and want it to be provably from you, you can send me the message along with a hash of the message concatenated to the secret.</p>
+<p>Then, when I get the message, I also take the hash of the message plus the secret and compare it to your provided hash.</p>
+<p>If they match, then I know it's from you.</p>
+<p>This is encapsulated in something called a <a href="http://en.wikipedia.org/wiki/HMAC" target="_blank">Hashed Message Authentication Code, or HMAC</a>.</p>
+<h4>File De-duplication</h4>
+<p>One final case that I regularly use is file de-duplication.</p>
+<p>If you host uploads for a website, it's a nice trick to store upload meta data (user, original name, upload time, etc.) separate from the file itself.</p>
+<p>By de-coupling these you can hash files on upload, and if you already have a copy of that content, discard it and point the meta data at the existing file.</p>
+<p>Here is an example in pseudo-code:</p>
+<pre lang="text" line="0">let hash = sha1_file( uploaded_file.tmp_path )
+file = uploads.find_by_hash( hash )
+if not file.loaded():
+  file.hash = hash
+  file.save()
+return file.id</pre></p>
+<h2>Conclusion</h2>
+<p>Hashes are useful tools for programmers, so learn the concepts and the applications.</p>
+<p>I hope you learned something from this post! How do you use hashes?</p>

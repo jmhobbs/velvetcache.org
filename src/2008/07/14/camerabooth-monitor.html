@@ -1,0 +1,16 @@
+---
+category:
+- Geek
+creator: admin
+date: 2008-07-15T03:02:46
+layout: layout.njk
+tags:
+- C
+- CameraBooth
+- GTK+
+- Programming
+- Projects
+title: CameraBooth Monitor
+type: post
+---
+<p>I've been working on CameraBooth some more and I separated out a launcher/monitor window for the application.  You can load configurations then run them without having to use the command line.  In that same vein you "should" be able to use it on multiple monitors now, so you can have your launcher on one screen and the booth window on another.  I haven't been able to test that for lack of having multiple monitors.</p><p>This is just a "preview" of what's to come, right now it is super unstable.  I don't thread correctly, I just kind of hijack the glib main loop, so it's a bit prone to crashes.  I'll fix that soon though. Until then here are some preview images of the new monitor screen.</p><p><a href="http://static.velvetcache.org/pages/2008/07/14/camerabooth-monitor/launcher-1.png"><img src="http://static.velvetcache.org/pages/2008/07/14/camerabooth-monitor/launcher-1_sm.png"/></a><br/>Showing a failed booth window launch (didn't plug in camera)</p><p><a href="http://static.velvetcache.org/pages/2008/07/14/camerabooth-monitor/launcher-2.png"><img src="http://static.velvetcache.org/pages/2008/07/14/camerabooth-monitor/launcher-2_sm.png"/></a><br/>Showing the "live" monitor view. You can see what's going on in the booth as well as monitor events like image captures.</p>

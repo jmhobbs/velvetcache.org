@@ -1,0 +1,90 @@
+---
+category:
+- Geek
+creator: admin
+date: 2008-10-24T15:55:45
+layout: layout.njk
+tags:
+- C
+- Internet
+- Programming
+title: Better libcurl from C++
+type: post
+---
+<p>I've been a <a href="http://static.velvetcache.org/projects/tmwbuddy">longtime</a> <a href="http://static.velvetcache.org/projects/kicktweet">fan</a> of <a href="http://curl.haxx.se/libcurl/">libcurl</a>. But I'm a C++ author and so the c level of that is not where I want to be (and <a href="http://rrette.com/textpattern/index.php?s=cURLpp">cURLpp</a> looks ungainly for my minor usage).</p><p>Firing up google on "libcurl C++" yields "<a href="http://www.luckyspin.org/?p=28">Using libcurl from C++ | Luckyspin.org</a>" as the #1 entry.  This article show a good starting example, but it's not quite there.  Here's a cleaned up snippet:
+<pre lang="cpp">// Write all expected data in here
+static string buffer;
+  
+// This is the writer call back function used by curl  
+static int writer(char *data, size_t size, size_t nmemb, std::string *buffer) {
+  int result = 0;  
+  if (buffer != NULL) {
+    buffer->append(data, size * nmemb);  
+    result = size * nmemb;
+  }
+  return result;
+}
+.
+.
+.
+int main(int argc, char* argv[]) {
+.
+.
+.
+  curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writer);
+  curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buffer);
+.
+.
+.
+</pre></p>
+<p>Now that is a totally legitimate use and it works fine. But do you see the problem?
+Yep, the data (<tt>buffer</tt>) is global, as is the writer but that isn't as big a deal. This
+is not good for many applications and is not good C++.</p>
+<p>So let's encapsulate that bad boy shall we?  It's really not all that hard, so here's some example code.
+<pre lang="cpp">#include <string>
+#include <iostream>
+#include <curl/curl.h>
+
+class MyCurlObject {
+  public:
+    MyCurlObject (std::string url) {
+      curl = curl_easy_init();
+      if(!curl)
+        throw std::string ("Curl did not initialize!");
+
+      curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &MyCurlObject::curlWriter);
+      curl_easy_setopt(curl, CURLOPT_WRITEDATA, &curlBuffer);
+      curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+      curl_easy_perform(curl);
+    };
+
+    static int curlWriter(char *data, size_t size, size_t nmemb, std::string *buffer) {
+      int result = 0;
+      if (buffer != NULL) {
+        buffer->append(data, size * nmemb);
+        result = size * nmemb;
+      }
+      return result;
+    }
+
+    std::string getData () { return curlBuffer; }
+
+  protected:
+    CURL * curl;
+    std::string curlBuffer;
+};
+
+int main (int argc, char ** argv) {
+  try {
+    MyCurlObject mco ("http://www.google.com/");
+    MyCurlObject moco ("http://www.yahoo.com/");
+    std::cout << moco.getData() << std::endl;
+    std::cout << "--------------------------------------------" << std::endl;
+    std::cout << mco.getData() << std::endl;
+  }
+  catch (std::string & s) {
+    std::cerr << "Oops! " << s << std::endl;
+  }
+}
+</pre></p>
+<p>Now that example has all kinds of missing things and the object is useless beyond one request but that is not the point, it's a contrived example. The point is that your buffer is no longer global and it's protected by your class. You can make multiple requests without having to grab the data off by yourself. That's the big deal.</p><p>I don't want this to seem like I am putting down LuckySpin. It's a good example, I feel this is just a step better.</p>

@@ -1,0 +1,121 @@
+---
+category:
+- Geek
+creator: admin
+date: 2007-04-17T03:00:58
+layout: layout.njk
+tags:
+- JavaScript
+- OurUNO
+- Programming
+- Projects
+title: Replacing MySQL FULLTEXT With JavaScript
+type: post
+---
+<p>Over at <a href="http://www.ouruno.com/" target="_blank">OurUNO.com</a> I have a few of those ajaxy auto-complete text boxes.  Where you start typing and it presents you with a bunch of likely items from the database.  It's great, really cool looking and all that, but sometimes when the server is slow these things start stacking XHR's and it drags to the point of not being usable. I've got some super-cheap shared hosting, so this isn't the most rare of things.</p>
+<p>I decided to replace this often slow mechanism with some pure JavaScript and no more XHR.  I figure I can do this because I only have about 150 rows x 2 cols of matchable data per autocompleter.<p>
+<p>The core of this script is the <tt>item</tt> class.  I suppose this could be better termed the <tt>dbrow</tt> class or something similar, because it is just used to store rows returned from the database to be used as a look up table.  If you had more fields you wanted to search you would have to add on to the <tt>fields</tt> array of course.  Other important info you don't want to have to run back to the database for can be stored in the class as well.</p>
+<p><pre lang="javascript" line="1">function item(_id,_field1,_field2) {
+  this.id = _id;
+  this.fields = new Array(_field1, _field2);
+}</pre></p>
+<p>Next I use a call to the DB to get my rows. Knowing the number of rows is important, because we use this to create our array and populate it. I've shown the output of that PHP, skipping some rows for brevity :)</p>
+<p><pre lang="javascript" line="1">var items = new Array(115);
+
+items[0] = new item(11,"2710","Introduction to Digital Design Principles");
+items[1] = new item(6,"2830","Java Programming");
+.
+.
+.
+items[113] = new item(1905,"9420","Intelligent Agent Systems");
+items[114] = new item(1906,"9710","Foundations of Software Engineering Research");</pre></p>
+<p>Next up is the <tt>itemMatch</tt> class.  This is a little class to hold information on matches that we make from our search terms to the items we defined.  It just holds some simple information: the <i>items</i> array index of the matching item, the field (type) it was found in, the index in the field where we found the match start, and the length of the search term we matched.</p>
+<p><pre lang="javascript" line="1">function itemMatch(_index,_type,_strstr,_strlen) {
+  this.matchIndex = _index;
+  this.matchType = _type;
+  this.matchStrStr = _strstr;
+  this.matchStrLen = _strlen;
+}</pre></p>
+<p>Now for some magic.  We enter the <tt>ftsearch</tt> function.  The four parameters are: <b>returnArray</b> is the empty, temporary array that we will be stuffing our <tt>itemMatch</tt> objects into.<b>inputArray</b> is the array of <tt>item</tt> objects we want to search through, the <i>items</i> array in this case. <b>fields</b> is the number of fields in each item to search through (you don't have to search them all).  <b>searchTerms</b> is the search string, likely captured from a form field.</p>
+<p><pre lang="javascript">function ftsearch(returnArray,inputArray,fields,searchTerms) {</pre></p>
+<p>The first thing we do is iterate through the entire <i>inputArray</i> and try to match the whole <i>searchTerms</i> string against them.  Notice that I did not use regular expressions.  I chose not to because I figured they would add additional overhead and I'm not too concerned about capitalization in any case.</p>
+<p><pre lang="javascript" line="1">  for(x = 0; x < inputArray.length; x++) {
+    for(y = 0; y < fields; y++) {
+      tempIndex = inputArray[x].fields[y].toLowerCase().indexOf(searchTerms.toLowerCase());
+      if(tempIndex != -1) {
+        returnArray.push(new itemMatch(x,y,tempIndex,searchTerms.length));
+      }
+    }
+  }</pre></p>
+<p>Next we split <i>searchTerms</i> on spaces and repeat our search for each chunk.  We do not search on empty chunks as this returns every item and wastes time.</p>
+<p><pre lang="javascript" line="1">  searchTerms = searchTerms.split(" ");
+  for(j = 0; j < searchTerms.length; j++) {
+    if(searchTerms[j] == '')
+      continue;
+
+    for(x = 0; x < inputArray.length; x++) {
+      for(y = 0; y < fields; y++) {
+        tempIndex = inputArray[x].fields[y].toLowerCase().indexOf(searchTerms[j].toLowerCase());
+        if(tempIndex != -1) {
+          returnArray.push(new itemMatch(x,y,tempIndex,searchTerms[j].length));
+        }
+      }
+    }
+    
+  }</pre></p>
+<p>Okay, now that we have our big array of <tt>itemMatche</tt>s we need to sort them and remove the duplicates.  To sort them I chose a combination of the <tt>matchStrStr</tt> data member and <tt>matchStrLen</tt>.  I reasoned that matches closer to the start of the string were more important than those deeper in, so I sorted numerically ascending on <tt>matchStrStr</tt> I now think this is a little shady, but it works well for my purposes. I then decided that the length of the match is important to, since a match of the full string 20 chars in is far better than a match of a 3 char term at the start of the string.  To handle this I subtracted the <tt>matchStrLen</tt> from the <tt>matchStrStr</tt> to weight longer matches better.</p>
+<p><pre lang="javascript" line="1">  returnArray.sort(
+    function sortMatches(a, b) {
+      a = a.matchStrStr-a.matchStrLen;
+      b = b.matchStrStr-b.machStrLen;
+      return a - b;
+    }
+  );</pre></p>
+<p>Removing duplicates is a simple search and remove, and then <tt>ftsearch</tt> is all done.</p>
+<p><pre lang="javascript" line="1">  for(x = 0; x < returnArray.length; x++) {
+    for(y = x+1; y < returnArray.length; y++) {
+      if(returnArray[x].matchIndex == returnArray[y].matchIndex) {
+        returnArray.splice(y,1);
+      }
+    }
+  }</pre></p>
+<p>So now that we have our searching function we need to use it.  We've generated our items array and so all we need is a function for our autocomplete. This is a relatively custom job, but easy to assemble and it will have some common components.</p>
+<p>First of these is the limiter.  I require a search term length of at least two before I go through the trouble of searching. If I've got enough in my terms I make up an empty array for my <tt>itemMatch</tt>s and let it rip.</p>
+<p><pre lang="javascript" line="1">function autoComplete() {
+  document.getElementById('thisOne').innerHTML = '';
+
+  if(document.getElementById('thisField').value.length < 2)
+    return;
+
+  tempArray = new Array();
+  searchTerms = document.getElementById('thisField').value;
+
+  ftsearch(tempArray,items,2,searchTerms);
+</pre></p>
+<p>At this point we have our array of unique matches and we need to do whatever it is we wanted them for.  In this case it is to display them.  I used the <tt>&& x < 5</tt> to limit the number printed to only 5 items.</p>
+<p><pre lang="javascript" line="1">for(x = 0; x < tempArray.length && x < 5; x++) {
+      tempItem = items[tempArray[x].matchIndex];
+      tempStrStr = tempArray[x].matchStrStr;
+      tempStrLen = tempArray[x].matchStrLen;
+      if(tempArray[x].matchType == 1) {
+        tempString = tempItem.fields[0]+' - ';
+        tempString += tempItem.fields[1].slice(0,tempStrStr);
+        tempString += '<u>';
+        tempString += tempItem.fields[1].slice(tempStrStr,tempStrStr+tempStrLen);
+        tempString += '</u>';
+        tempString += tempItem.fields[1].slice(tempStrStr+tempStrLen,tempItem.fields[1].length)
+      }
+      else {
+        tempString = tempItem.fields[0].slice(0,tempStrStr);
+        tempString += '<u>';
+        tempString += tempItem.fields[0].slice(tempStrStr,tempStrStr+tempStrLen);
+        tempString += '</u>';
+        tempString += tempItem.fields[0].slice(tempStrStr+tempStrLen,tempItem.fields[0].length)
+        tempString += ' - '+tempItem.fields[1];
+      }
+      document.getElementById('thisOne').innerHTML += tempString+'<br/>';
+  }
+}</pre></p>
+<p>So there you have it.  It's not perfect, but it does a fairly good job of replacing my ajax version and its pretty quick.  I ran with a few different sets of terms and averaged about 18.5 ms per running of autocomplete with a set of 115 <tt>item</tt>s and search terms from 1-15 chars.  Your mileage may vary, let me know how it goes for you.</p>
+<p>You can see a demo as described above <a href="http://static.velvetcache.org/pages/2007/4/16/replacing-mysql-fulltext-with-javascript/">here</a>.<br/>You can find a full colorized code view of that demo <a href="http://static.velvetcache.org/external/highlighter/full.php?file_id=14">here</a>.
+<div class="update"><b>Update (03/20/07)</b><br/><p>Turns out I should have done some testing in IE.  IE7 won't let you define an array sort function in the method call, so I had to move it outside.  Easy enough, but kinda bothersome.</p></div>

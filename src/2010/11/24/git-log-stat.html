@@ -1,0 +1,38 @@
+---
+category:
+- Geek
+creator: admin
+date: 2010-11-24T05:20:25
+layout: layout.njk
+tags:
+- git
+- Pro-tips
+title: git log --stat
+type: post
+---
+<p>Sharing a cool trick I just looked up.  If you want to see what files were changed in your git log, use the <tt>--stat</tt> flag, you'll get output like this:</p>
+<p><pre style="background: #000; color: #FFF; overflow: auto; padding: 5px;"><span style="color: #B26717;">commit e2b97c53727bd66c143713d13399ff4242e4ff06</span>
+Author: John Hobbs <john@velvetcache.org>
+Date:   Thu Nov 4 17:01:14 2010 -0500
+
+    Switched to jQuery Mobile. It's awesome.
+
+ application/classes/controller/item.php    |   77 <span style="color: #18B218;">+++++++++++++</span><span style="color: #B21818;">---------------</span>
+ application/classes/controller/project.php |    4 <span style="color: #18B218;">+</span><span style="color: #B21818;">-</span>
+ application/classes/controller/site.php    |    2 <span style="color: #18B218;">+</span>
+ application/classes/controller/user.php    |    5 <span style="color: #18B218;">+</span><span style="color: #B21818;">-</span>
+ application/classes/form.php               |    2 <span style="color: #18B218;">+</span><span style="color: #B21818;">-</span>
+ application/views/item/add.php             |   27 <span style="color: #18B218;">+++</span><span style="color: #B21818;">-------</span>
+ application/views/item/index.php           |   19 <span style="color: #18B218;">++</span><span style="color: #B21818;">-----</span>
+ application/views/item/view.php            |   11 <span style="color: #18B218;">+++</span><span style="color: #B21818;">--</span>
+ application/views/message/basic.php        |   13 <span style="color: #18B218;">+++++</span>
+ application/views/mobile.php               |   64 <span style="color: #18B218;">++++++++++++++++++</span><span style="color: #B21818;">-----</span>
+ application/views/project/add.php          |    5 <span style="color: #18B218;">+</span><span style="color: #B21818;">--</span>
+ application/views/project/index.php        |   28 <span style="color: #18B218;">++++</span><span style="color: #B21818;">------</span>
+ application/views/project/view.php         |   19 <span style="color: #18B218;">++</span><span style="color: #B21818;">-----</span>
+ application/views/user/index.php           |   25 <span style="color: #18B218;">+</span><span style="color: #B21818;">--------</span>
+ application/views/user/login.php           |   14 <span style="color: #18B218;">+++</span><span style="color: #B21818;">--</span>
+ application/views/user/register.php        |   20 <span style="color: #18B218;">++++</span><span style="color: #B21818;">---</span>
+ 16 files changed, 165 insertions(+), 170 deletions(-)
+</pre></p>
+<p>Pretty cool!</p>

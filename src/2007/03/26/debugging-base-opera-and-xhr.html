@@ -1,0 +1,19 @@
+---
+category:
+- Geek
+creator: admin
+date: 2007-03-27T04:45:55
+layout: layout.njk
+tags:
+- JavaScript
+- OurUNO
+- PHP
+- Programming
+- Projects
+title: Debugging, BASE, Opera and XHR
+type: post
+---
+<p>I've been going crazy trying to make my new ajaxy review creation tool cross-browser.  It isn't working out at all.  IE gets stuck and gives terrible, totally non-helpfull debug information.  A line number, but it won't even specify the script it happened in, or what kind of error it was.  Terrible, and I can't find anything on debugging in IE, a plug-in like firebug would be nice.</p>
+<p>I also found out, that as of Opera 9.10, it does not apply the BASE tag to script requests.  I don't know if that's spec or not, but I had to apply absolute paths to a bunch of XHR's to get them working in Opera.  That one took a while to find, but I found the debugging stuff for Opera, and it's not terrible.</p>
+<p>I haven't even thought about Safari, I'm kind of scared of it actually.  Right now I'm going with a second set of scripts that don't use all the fancy stuff in them, and I'm using %{HTTP_USER_AGENT} and mod_rewrite to push browsers to the right place.</p>
+<p>Good times.</p>

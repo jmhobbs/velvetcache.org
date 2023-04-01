@@ -1,0 +1,18 @@
+---
+category:
+- Geek
+creator: admin
+date: 2007-01-14T09:45:57
+layout: layout.njk
+tags:
+- DK421
+- DrumKit
+- Java
+- Programming
+- Projects
+title: Further DK421 Development
+type: post
+---
+<p>After a lengthy break from DK421 development I started up again this evening.  My primary purpose tonight was to learn how to program my arduino and to learn the basics of serial communication with <a href="http://java.sun.com/products/javacomm/" target="_blank">javax.comm</a>.  I wrote a led blinker that also sent some data over the serial connection. 0 when it turned the light on, 1 when it turned it off.  and yes, I know that seems backwards.</p>
+<p>After a short battle I hacked up the config and a sample program to print my data.  It's not printing the right values, but it is printing the wrong ones consistently.  I think it has to do with my function to convert a byte array to an integer.  It also has a small runtime exception that I didn't work out. Regardless, it's working.  I'll install Eclipse on this machine and maybe get it working even further soon.  Next step is to get some piezo's and learn to read them.</p>
+<p>On that front I was thinking about using the velocity of an impact to handle the volume it plays back.  Maybe something of a code, like if a strike is registered with a strength of 100 on pin 0 it could send 0_100 or something.  Thats in the future though.  I am worried about the fact that there are only 6 analog pins though.  That means 6 drums without adding another board.</p>

@@ -1,0 +1,49 @@
+---
+category:
+- Geek
+creator: admin
+date: 2007-03-18T21:39:30
+layout: layout.njk
+tags:
+- JavaScript
+- Programming
+title: Fun with mootools
+type: post
+---
+<p>I was playing with mootools today, and whilst trying to create a swapping pair of content divs, I put together a neat algorithm for handling the callbacks and getting it to do what I want.</p>
+<p>I only wanted one div showing at a time, and I wanted them to swap with a function.  So I set up the following guardian variable and functions.  Check it out.</p>
+<p><pre lang="javascript" line="1">var loadingDiv;
+var contentDiv;
+var transitionState = 0;
+      
+window.onload = function () {
+  loadingDiv = new Fx.Slide('loadingDiv', {onComplete: nextTransition});
+  loadingDiv.hide();
+  contentDiv = new Fx.Slide('contentDiv', {onComplete: nextTransition});
+}
+
+function swapThem() {
+  if(transitionState == 0) {
+    transitionState = 1;
+    contentDiv.slideOut();
+  }
+  else {
+    transitionState = 2;
+    loadingDiv.slideOut();
+  }
+}
+
+function nextTransition() {
+  if(transitionState == 1) {
+    transitionState = 3;
+    loadingDiv.slideIn();
+  }
+  else if (transitionState == 2) {
+    transitionState = 4;
+    contentDiv.slideIn();
+  }
+  else if (transitionState == 4) {
+    transitionState = 0;
+  }
+}</pre></p>
+<p>It might be a little verbose, but it works like a charm.</p>

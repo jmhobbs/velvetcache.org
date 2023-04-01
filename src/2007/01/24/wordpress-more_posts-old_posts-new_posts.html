@@ -1,0 +1,61 @@
+---
+category:
+- Geek
+creator: admin
+date: 2007-01-24T07:20:26
+layout: layout.njk
+tags:
+- PHP
+- Programming
+- Snippets
+- Wordpress
+title: 'WordPress: more_posts, old_posts, new_posts'
+type: post
+---
+<p>I just scratched an itch I've had for a long time. I always hate how on my category pages and my archive pages the little "More Posts" box would display even if there were no posts.  Also, I could never check and see if there were no "Newer" or no "Older" posts so I could still print the words out in non-link form.</p>
+<p>I finally did something about it today.  I started by looking through the <a href="http://codex.wordpress.org/" target="_blank">codex</a>, and finding nothing.  So I started digging through the WP code looking for the <a href="http://codex.wordpress.org/Template_Tags/posts_nav_link" target="_blank"><tt>posts_nav_link()</tt></a> which sorta did what I wanted, but just echoed to the page instead of returning.  I found it in <tt>wp-includes/template-functions-links.php</tt> and started chopping it up.</p>
+<p>In the end I came up with three functions for my 'my-hacks.php' file.  I didn't want to spend the time making it into a plugin since it's not that big a deal.  They aren't terribly efficient, but they work and thats what matters. Also, I pre-pended jh to the function names so there wouldn't be any chance of collisions.</p>
+<p>Returns true if there are more posts, newer or older.
+<pre lang="php" line="1">function jh_more_posts() {
+  global $paged, $result, $request, $posts_per_page, $wpdb, $max_num_pages;
+	if ( isset($max_num_pages) ) {
+		$max_page = $max_num_pages;
+	} else {
+		preg_match('#FROM\s(.*)\sGROUP BY#siU', $request, $matches);
+		$fromwhere = $matches[1];
+		$numposts = $wpdb->get_var("SELECT COUNT(DISTINCT ID) FROM $fromwhere");
+		$max_page = $max_num_pages = ceil($numposts / $posts_per_page);
+	}
+	if( !$paged )
+	  $paged = 1;
+	if($paged == 1 && $paged == $max_page)
+	  return false;
+	else
+	  return true;	
+}</pre></p>
+<p>Returns true if there are more 'older' posts.
+<pre lang="php" line="1">function jh_more_old() {
+  global $paged;
+	if( !$paged  || $paged == 1)
+	  return true;	
+	 else
+	  return false;
+}</pre></p>
+<p>Returns true if there are more 'newer' posts.
+<pre lang="php" line="1">function jh_more_new() {
+  global $paged, $result, $request, $posts_per_page, $wpdb, $max_num_pages;
+	if ( isset($max_num_pages) ) {
+		$max_page = $max_num_pages;
+	} else {
+		preg_match('#FROM\s(.*)\sGROUP BY#siU', $request, $matches);
+		$fromwhere = $matches[1];
+		$numposts = $wpdb->get_var("SELECT COUNT(DISTINCT ID) FROM $fromwhere");
+		$max_page = $max_num_pages = ceil($numposts / $posts_per_page);
+	}
+	if( !$paged )
+	  $paged = 1;
+	if($paged == $max_page)
+	  return true;
+	else
+	  return false;	
+}</pre></p>

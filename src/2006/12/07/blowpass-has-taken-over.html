@@ -1,0 +1,29 @@
+---
+category:
+- Geek
+creator: admin
+date: 2006-12-07T08:29:58
+layout: layout.njk
+tags:
+- BlowPass
+- Internet
+- JavaScript
+- Open Source
+- PHP
+- Programming
+- Projects
+- Security
+title: BlowPass Has Taken Over
+type: post
+---
+<p>So I <a href="http://www.velvetcache.org/2006/12/04/passletcom/" target="_blank">thought that I had moved past BlowPass</a>.  I guess I was wrong.  I've been spending every spare moment working on it.  I found what I feel is a better Blowfish library at <a href="http://www.farfarfar.com/scripts/encrypt/" target="_blank">www.farfarfar.com</a>.  I still can't implement any of the vector tests because they're all in hex and translate into nasty characters.  This means I have no actual idea if the crypt is working. I also quickly stopped trying to write my own Twofish implementation.  I could handle it in C I think, but not JavaScript, I don't know enough of it and it's little oddities.</p>
+<p>Regardless of all that, I've got my prototype AJAX down pat now (okay, AHAH) and I'm working up my own open source version of <a href="http://www.passlet.com/" target="_blank">passlet.com</a>.  Here's a nice list of features/todo's.
+<ul>
+  <li>Uses a non-proprietary algorithm (Blowfish)</li>
+  <li>Has AJAX-y-ness</li>
+  <li>Uses PHP</li>
+  <li>Uses a database abstraction library TODO</li>
+  <li>Slick animations (mootools?) TODO</li>
+</ul>
+You can check out the current version at <a href="http://static.velvetcache.org/projects/blowpass/demo/">http://static.velvetcache.org/projects/blowpass/demo/</a> to play around.
+</p>

@@ -1,0 +1,86 @@
+---
+category:
+- Geek
+creator: admin
+date: 2010-02-24T23:30:37
+layout: layout.njk
+tags:
+- Kohana
+- MVC
+- PHP
+- Programming
+title: Clean Auth module usage in Kohana
+type: post
+---
+<p>I've been learning the <a href="http://www.kohanaphp.com/" target="_blank">Kohana framework</a> for a project at work, and I have to say I really like it.  It has a lot of the things I liked about rails, and it stays out of my way, unlike CakePHP.</p>
+<p>I thought I'd highlight my authentication solution that uses the built in <a href="http://docs.kohanaphp.com/addons/auth" target="_blank">Auth module</a> and a <a href="http://docs.kohanaphp.com/general/controllers#using_a_base_controller_for_your_application" target="_blank">base controller</a> that I call <tt>Site_Controller</tt>.  Keep in mind that all of my controllers derive from this one.</p>
+<p>So, what's it boil down to?  Essentially you set up Auth and my base controller, then in your children controllers you can set <tt>$access_control</tt> to an array of methods you want protected. It works with key == method and value == access level.  For values you can have "*" which means anyone logged in can use the method, or a string providing a specific role. Take a look at the controller then I'll show you an example usage.</p>
+<p>
+	<b><a href="http://static.velvetcache.org/pages/2010/02/24/clean-auth-module-usage-in-kohana/site.phps" target="_blank">application/views/site.php</a></b><br/>
+<pre lang="php" line="0"><?php
+
+  class Site_Controller extends Template_Controller {
+  
+    public $template = 'layout';
+    
+    protected $access_control = array();
+    protected $access_denied = "/user/login";
+    
+    //public $auto_render = false;
+    
+    function __construct () {
+      parent::__construct();
+      $this->session = Session::instance();
+
+      // Check permissions
+      if( array_key_exists( router::$method, $this->access_control ) ) {
+        if( '*' == $this->access_control[router::$method] ) {
+          if( ! Auth::instance()->logged_in() )
+            url::redirect( $this->access_denied );
+        }
+        else if( is_array( $this->access_control[router::$method] ) ) {
+          $can_proceed = false;
+          foreach( $this->access_control[router::$method] as $role )
+            if( Auth::instance()->logged_in( $role ) )
+              $can_proceed = true;
+
+          if( ! $can_proceed )
+            url::redirect( $this->access_denied );
+        }
+        else {
+          if( ! Auth::instance()->logged_in( $this->access_control[router::$method] ) )
+            url::redirect( $this->access_denied );
+        }
+      }
+    }
+
+    public function __call( $method, $arguments ) {
+      $this->template->title = "404";
+      $this->template->content = new View( 'errors/404');
+    }
+  }</pre></p>
+<p>Here's an example controller. In this case anyone can access <tt>login</tt>, anyone logged in can access <tt>index</tt> and only logged in admins can access <tt>adminsonly</tt>.</p>
+<p>
+	<b><a href="http://static.velvetcache.org/pages/2010/02/24/clean-auth-module-usage-in-kohana/user.phps" target="_blank">application/controllers/user.php</a></b><br/>
+<pre lang="php" line="1"><?php
+
+  class User_Controller extends Site_Controller {
+
+    protected $access_control = array( 
+        "index" => "*",
+        "adminsonly" => "admin"
+      );
+
+    function  index () {
+      $this->template->content = "index";
+    }
+    
+    function login () {
+      $this->template->content = "login";
+    }
+    
+    function adminsonly () {
+      $this->template->content = "admins only";
+    }
+  }</pre></p>
+<p>I haven't done a ton of testing and it's not the most robust solution, but I like it and it was easy to write.</p>

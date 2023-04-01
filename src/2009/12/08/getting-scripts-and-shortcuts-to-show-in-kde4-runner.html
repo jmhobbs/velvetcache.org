@@ -1,0 +1,15 @@
+---
+category:
+- Geek
+creator: admin
+date: 2009-12-08T16:18:58
+layout: layout.njk
+tags:
+- Linux
+- Tutorial
+title: Getting scripts and shortcuts to show in KDE4 Runner
+type: post
+---
+<p>I tend to write little <a href="http://www.velvetcache.org/?s=Kolortool" target="_blank">tidbits</a> that I like to use in KDE fairly often, or custom shortcuts for launching applications.  Every time I do this though, I forget how I got the last one to show up in <tt>krunner</tt>. This is just a quick guide to what I do, to remind myself and to show you.</p>
+<p>1. Move script to somewhere in my path (I use <tt>~/System/bin</tt> for no apparent reason)<br/>2. Create a <tt>.desktop</tt> file<br/>3. Move <tt>.desktop</tt> file to <tt>~/.kde/share/applnk/</tt><br/>4. Run <tt><a href="http://linux.die.net/man/8/kbuildsycoca4" target="_blank">kbuildsycoca4</a></tt> to rebuild the KDE4 cache<br/>5. Restart <tt>krunner</tt>.</p>
+<p>I also came across <tt>kappfinder</tt>, pictured below, that finds applications that aren't in the menu system for some reason (only added to Gnome or something).  Not useful for this application, but handy to know, and related.</p><p style="text-align: center;"><img style="width: 450px;" src="http://static.velvetcache.org/pages/2009/12/08/getting-scripts-and-shortcuts-to-show-in-kde4-runner/finder2.png" alt="kappfinder" /></p>

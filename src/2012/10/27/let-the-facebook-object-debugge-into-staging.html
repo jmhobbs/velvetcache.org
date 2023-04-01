@@ -1,0 +1,36 @@
+---
+category:
+- Geek
+creator: admin
+date: 2012-10-27T19:26:50
+layout: layout.njk
+tags:
+- Apache
+- Facebook
+- Programming
+title: Let the Facebook Object Debugger Into Staging
+type: post
+---
+<p>One often important, and often overlooked aspect of modern web development is <a href="http://ogp.me/" target="_blank">Open Graph</a> tags.  You know, those meta tags with weird attributes that break your page validation?  That's a whole other topic though.</p>
+<p>Today, I want to talk about the <a href="http://developers.facebook.com/tools/debug" target="_blank">Facebook Object Debugger</a>, and giving it access to an HTTP Auth protected environment, such as a staging or pre-launch production site. This is Apache specific, so nginx fans will have to look elsewhere.</p>
+<p>Assume you have this setup in your Apache config or htaccess;
+<pre lang="text" line="0">AuthUserFile /var/www/staging/.htpasswd
+AuthType Basic
+AuthName "Secure Area"
+Require valid-user</pre></p>
+<p>The easiest way that I've found to make this work is to accept based on user agent.  I originally tried allowing it based on IP address, but the debugger uses many IP addresses, and after I had added a half dozen I gave up and switched to user agent.</p>
+<p>Be aware, that because of this, it's quite easy for someone to fake their UA and gain access, so I recommend only using this code while you actively use the debugger, and turning it off afterwards.  This also prevents leaks if someone pastes the URL into an actual Facebook comment.</p>
+<p><pre lang="text" line="0">AuthUserFile /var/www/staging/.htpasswd
+AuthType Basic
+AuthName "Secure Area"
+Require valid-user
+
+# Allow from Facebook
+SetEnvIfNoCase User-Agent facebookexternalhit.* facebook
+Order allow,deny
+Allow from env=facebook
+Satisfy Any</pre></p>
+
+<p>Pretty easy!</p>
+
+<p>Check out <a href="http://www.askapache.com/htaccess/setenvif.html" target="_blank">this page at AskApache</a> for a nice guide to <tt>SetEnvIfNoCase</tt>.</p>

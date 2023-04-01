@@ -1,0 +1,32 @@
+---
+category:
+- Geek
+creator: admin
+date: 2008-09-19T18:15:38
+layout: layout.njk
+tags:
+- BASH
+- Internet
+- KickTweet
+- Snippets
+- Updated
+title: SVN to Twitter
+type: post
+---
+<p>I've been really getting into developing my <a href="http://static.velvetcache.org/projects/kicktweet/">KickTweet</a> project and set up a Twitter account for it at <a href="http://twitter.com/KickTweet">http://twitter.com/KickTweet</a>.  I wanted to feed in my subversion commits so I did some searching.</p><p>What I found was <a href="http://code.google.com/p/twitvn/">twitvn</a> a monstrous (50-ish 'real lines) Python script that sends commits to Twitter.  I find that ridiculous.  So here is my version, it drops right into the post-commit script and <i>could</i> be reduced to 2-3 active lines.</p><p><pre lang="bash" line="1">#!/bin/bash
+REPOS="$1"
+REV="$2"
+
+TWEET="SVN Log (r$REV): $(svnlook log $REPOS -r $REV)"
+curl -u KickTweet:mySecretPassword -d status="${TWEET:0:139}" http://twitter.com/statuses/update.xml</pre></p><p>Note that the use of the '${TWEET:0:139}' is a definite bashism, and not portable.</p>
+<div class="update"><p><b>Update (2008-09-22)</b><br/>Little tidbit to add into the script right before the curl call.  If you want ellipses on commit messages over 140 characters, use this version.</p><p><pre lang="bash" line="1">#!/bin/bash
+REPOS="$1"
+REV="$2"
+
+TWEET="SVN Log (r$REV): $(svnlook log $REPOS -r $REV)"
+
+if [ "${#TWEET}" -gt 140 ]; then
+  TWEET="${TWEET:0:137}..."
+fi
+
+curl -u KickTweet:mySecretPassword -d status="${TWEET:0:139}" http://twitter.com/statuses/update.xml</pre></p></div>

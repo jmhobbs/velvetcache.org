@@ -1,0 +1,23 @@
+{% include "_header.njk" %}
+
+<article>
+  <header>
+    <h1>{{ title }}</h1>
+    <time><time datetime="{{ page.date.toISOString() }}">{{ page.date | strftime("LLL d, y") }}</time></time>
+  </header>
+
+  {{ content | safe }}
+
+  {%- if tags || category -%}
+  <footer>
+    {%- for tag in tags -%}
+      <a href="/tags/{{ tag | wp_tag_slug }}" class="responsive-margin">{{ tag }}</a>
+    {%- endfor -%}
+    {%- for category in category -%}
+      <a href="/category/{{ category | wp_category_slug }}" class="responsive-margin">{{ category }}</a>
+    {%- endfor -%}
+  </footer>
+  {%- endif -%}
+</article>
+
+{% include "_footer.njk" %}

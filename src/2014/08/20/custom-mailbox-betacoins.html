@@ -1,0 +1,49 @@
+---
+category:
+- Geek
+creator: admin
+date: 2014-08-20T16:23:11
+layout: layout.njk
+tags:
+- GIF
+- Mailbox
+title: Custom Mailbox Betacoins
+type: post
+---
+<p>Yesterday, <a href="http://www.mailboxapp.com/" target="_blank">Mailbox</a> released their beta Mac app.  One cute thing they did, was that instead of a beta link or code, they distributed cute little animated gif coins which you could then drop into a "tin can" in the app to gain access.</p>
+<p style="text-align: center;"><img src="http://static.velvetcache.org/pages/2014/08/20/custom-mailbox-betacoins/coin113121.gif" alt="A betacoin" /></p>
+<p>I was intrigued by the concept, so I got some used betacoins from my friends and did a little digging to figure out how they were doing it.</p>
+<p>My plan was to diff the coins and see what was changed from coin to coin, but I didn't even need to do that.  A quick inspect with gifsicle revealed an obvious token in the gif comments extension block.</p>
+<pre lang="bash" line="0">jmhobbs@Cordelia:~/Desktop/betacoins âœª gifsicle -I coin113121.gif '#0'
+* coin113121.gif 122 images
+  logical screen 173x130
+  global color table [64]
+  background 44
+  loop forever
+  + image #0 173x130 transparent 45
+    comment "F1699622-5500-4F31-B643-798427D0DBFA"
+    disposal asis delay 0.03s
+jmhobbs@Cordelia:~/Desktop/betacoins âœª </pre>
+<p>From there I checked a couple other coins to see if they had differing comments, and sure enough they did.</p>
+<p>So now the question became, could I add the comment from a valid betacoin to another gif and have it still work?</p>
+<p>I grabbed a lovely gif of a barfing unicorn off the web, and set to work.</p>
+<pre lang="bash" line="0">jmhobbs@Cordelia:~/Desktop/betacoins âœª gifsicle unicorns_puke_rainbows_by_chronicle_vindictive-d56nvl0.gif  --no-comments -c '"F1699622-5500-4F31-B643-798427D0DBFA"' '#0' '#1-' > unicoin.gif
+jmhobbs@Cordelia:~/Desktop/betacoins âœª gifsicle -I unicoin.gif '#0'
+* unicoin-a.gif 9 images
+  logical screen 660x850
+  global color table [256]
+  background 0
+  loop forever
+  + image #0 660x850
+    comment "F1699622-5500-4F31-B643-798427D0DBFA"
+    delay 0.92s
+jmhobbs@Cordelia:~/Desktop/betacoins âœª </pre>
+<p>I then downloaded the beta, crossed my fingers, and dragged the unicoin into the tin can.  I was rewarded with a tinkle of a coin dropping in, and access to the beta.</p>
+<p style="text-align: center; font-weight: strong; font-size: 10px;"><img src="http://static.velvetcache.org/pages/2014/08/20/custom-mailbox-betacoins/unicoin.gif" alt="This is a valid betacoin." style="max-height: 200px;" /><br/>This is a valid betacoin.</p>
+<p>Turns out, Mailbox could care less what else is in your gif.  Just so long as you have a comment with a valid token, it'll use that gif and animate it prettily.</p>
+<p>As an aside, the coin gif has a staggering 122 frames. 122.  Sparkles are expensive, yo.</p>
+<h3>Edit (2014-08-20)</h3>
+<p>I created a service for changing up your Mailbox betacoins, called <a href="http://unicoin.velvetcache.org/">Unicoin</a>.  You're welcome.</p>
+<h3>Second Edit (2014-08-20)</h3>
+<p>Demo!</p>
+<div style="width: 100%; padding-bottom: 56.25%; position: relative;"><iframe style="width: 100%; height: 100%; position: absolute; top: 0; left: 0;" src="//www.youtube.com/embed/9DJxSmGbA84?rel=0" frameborder="0" allowfullscreen></iframe></div>

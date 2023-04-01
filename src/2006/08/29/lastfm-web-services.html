@@ -1,0 +1,18 @@
+---
+category:
+- Geek
+creator: admin
+date: 2006-08-30T00:34:17
+layout: layout.njk
+tags:
+- PHP
+- XML
+title: Last.fm Web Services
+type: post
+---
+Huzzah!  I was looking around the <a target="_blank" href="http://www.audioscrobbler.net/data/webservices/">audioscrobbler.net web services</a> and found my holy grail!
+
+I've tried a bunch of ways to retrieve a cover for the most recent track.Â  I've never been able to figure out Amazon's image naming system, though I found neat hacks at this cool site: <a target="_blank" href="http://aaugh.com/imageabuse.html">http://aaugh.com/imageabuse.html</a> that absorbed way too much time.Â  I've also tried retrieving Google results and regex'ing the <em>whole</em> file, which was slow and rarely worked.
+
+Well, today I found the artist info XML at audioscrobbler. <a target="_blank" href="http://ws.audioscrobbler.com/1.0/album/Metallica/Metallica/info.xml">Example</a>
+I'm going to incorporate this bad boy into my last.fm scripts and put the system up here on the homepage.Â  Maybe I'll try my hand at a WP plugin, just for the heck of it.

@@ -1,0 +1,48 @@
+---
+category:
+- Geek
+creator: admin
+date: 2007-01-22T06:53:35
+layout: layout.njk
+tags:
+- PHP
+- Programming
+- Snippets
+title: Simple BBCode To HTML Function In PHP
+type: post
+---
+<p>While working on a "secret" project I needed a simple BBCode to HTML converter.  I'm sure there are a number of them out there, but I wanted to build my own.  Here it is, a quick and dirty regex filled function.</p>
+<pre lang="php" line="1">function bbc2html($content) {
+  $content = preg_replace('/(\[b\])(.*?)(\[\/b\])/','<strong>$2</strong>',$content);
+  $content = preg_replace('/(\[i\])(.*?)(\[\/i\])/','<em>$2</em>',$content);
+  $content = preg_replace('/(\[u\])(.*?)(\[\/u\])/','<u>$2</u>',$content);
+  $content = preg_replace('/(\[ul\])(.*?)(\[\/ul\])/','<ul>$2</ul>',$content);
+  $content = preg_replace('/(\[li\])(.*?)(\[\/li\])/','<li>$2</li>',$content);
+  $content = preg_replace('/(\[url=)(.*?)(\])(.*?)(\[\/url\])/','<a href="$2" target="_blank">$4</a>',$content);
+  $content = preg_replace('/(\[url\])(.*?)(\[\/url\])/','<a href="$2" target="_blank">$2</a>',$content);
+  return $content;
+}</pre>
+<p>In other news this is post #99 since I started the blog.  Here's to hoping #100 is stellar.</p>
+<div class="update"><b>Update (01/23/07)</b><br/>I just realized that PHP lets you use arrays in preg_replace, so a 'better' version would be...<pre lang="php" line="1">function bbc2html($content) {
+  $search = array (
+    '/(\[b\])(.*?)(\[\/b\])/',
+    '/(\[i\])(.*?)(\[\/i\])/',
+    '/(\[u\])(.*?)(\[\/u\])/',
+    '/(\[ul\])(.*?)(\[\/ul\])/',
+    '/(\[li\])(.*?)(\[\/li\])/',
+    '/(\[url=)(.*?)(\])(.*?)(\[\/url\])/',
+    '/(\[url\])(.*?)(\[\/url\])/'
+  );
+
+  $replace = array (
+    '<strong>$2</strong>',
+    '<em>$2</em>',
+    '<u>$2</u>',
+    '<ul>$2</ul>',
+    '<li>$2</li>',
+    '<a href="$2" target="_blank">$4</a>',
+    '<a href="$2" target="_blank">$2</a>'
+  );
+
+  return preg_replace($search, $replace, $content);
+}</pre></div>

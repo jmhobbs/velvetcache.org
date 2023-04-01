@@ -1,0 +1,57 @@
+---
+category:
+- Geek
+creator: admin
+date: 2007-03-19T23:16:46
+layout: layout.njk
+tags:
+- C
+- Programming
+- Snippets
+title: C++ Print Binary Function
+type: post
+---
+<p>A while back I used a function I found on the web to print off a binary representation of a number while I was working on a <a href="http://www.velvetcache.org/2007/03/08/bitwise-operators-and-blowfish/">blowfish implementation</a> in C++.  I haven't finished the blowfish, but I made some changes to the binary function, and thought I'd post it since it is a handy thing to have.</p>
+<p>Essentially all I did was set it so it grouped the digits by 4 and padded out the MSB set with 0's so they all line up.</p>
+<p><pre lang="cpp" line="1">void binary(int number,int count=0) {
+  int remainder;
+  
+  count++;
+  
+  if(number <= 1) {
+    while(count % 4 != 0) {
+      cout << '0';
+      count++;
+    }
+    cout << number;
+    return;
+  }
+  
+  remainder = number%2;
+  binary(number >> 1, count);
+  if(count % 4 == 0)
+    cout << ' ';
+  cout << remainder;
+}</pre></p>
+<p>Here's an example program, and the results.</p>
+<p><pre lang="cpp" line="1">#include <iostream>
+
+using namespace std;
+
+void binary(int number,int count=0) {
+...
+}
+
+int main () {
+	binary(0);
+	cout << endl;
+	binary(0xFF);
+	cout << endl;
+	binary(9872);
+	cout << endl;
+}</pre></p>
+<p><pre lang="text">jmhobbs@lizzy$ ./a.out
+0000
+1111 1111
+0010 0110 1001 0000
+jmhobbs@lizzy$</pre></p>

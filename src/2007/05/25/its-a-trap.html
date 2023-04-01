@@ -1,0 +1,34 @@
+---
+category:
+- Geek
+creator: admin
+date: 2007-05-25T21:25:44
+layout: layout.njk
+tags:
+- C
+- Programming
+title: It's A Trap!
+type: post
+---
+<p><pre lang="cpp" line="1">#include <signal.h>
+#include <unistd.h>
+#include <iostream>
+
+void theShieldIsUp (int param) {
+  raise(SIGABRT);
+}
+
+void ackbar (int param) {
+  std::cout << "It's A Trap!" << std::endl;
+  exit(1);
+}
+
+int main () {
+  signal(SIGTERM, theShieldIsUp);
+  signal(SIGABRT, ackbar);
+  while(true)
+    sleep(1);
+  return 0;
+}
+</pre></p>
+<p>This was really funny to me earlier when I jotted it down.  It's a signal trap that calls a function that raises a process abort signal.  Get it?  Yeah, not as good as it was when I was working on it...</p><p style="text-align: center;"><img src="http://static.velvetcache.org/pages/2007/5/25/its-a-trap/tarp-30198.jpg" /></p>

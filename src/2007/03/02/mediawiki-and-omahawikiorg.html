@@ -1,0 +1,98 @@
+---
+category:
+- Geek
+creator: admin
+date: 2007-03-02T06:39:06
+layout: layout.njk
+tags:
+- Internet
+- Programming
+- Python
+title: MediaWiki and OmahaWiki.org
+type: post
+---
+<p>A ways back in the past I had a MediaWiki install at <a href="http://www.wikiomaha.org/" target="_blank">WikiOmaha.org</a> with the hopes that a wiki could be formed for the omaha community, by the omaha community (<a href="http://www.velvetcache.org/2007/01/31/whoa-ouruno/">sound familiar?</a>).  Anyway, I never really did much with it, and a few days ago a professor from Creighton contacted me about my domain and pooling resources.</p>
+<p>He has created <a href="http://www.omahawiki.org" target="_blank">OmahaWiki.org</a> which WikiOmaha.org now re-directs to.  He is having students flesh it out.  I came into the picture to help set up some bots to manage the content.</p>
+<p>It turns out there is a cool framework for MediaWiki's called the "<a href="http://sourceforge.net/projects/pywikipediabot/" target="_blank">Python Wikipedia Robot Framework</a>" that is written in python.  I got the scripts working on my machine and then I turned my attention to writing a bot that would do a word-count on every page, and add a stub to that page if it was under a given threshold.</p>
+<p>I had forgotten how awesome Python is.  It really is a good language, I just wish I had call to use it every once in a while.  Anyway, here is my Python bot for that framework. You can grab a file version <a href="http://static.velvetcache.org/pages/2007/3/2/mediawiki-and-omahawiki-org/jmh_addstubs.pys" target="_blank">here</a></p>
+<p><pre lang="python" line="1">#!/usr/bin/python
+# -*- coding: utf-8  -*-
+"""
+-----// Stub Adder //------------------------------------------------------
+File: jmh_addstubs.py
+Version: 1.0
+Author: John Hobbs
+Contact: john@velvetcache.org
+
+This bot will iterate through all pages of the wiki and append a generic
+stub ('{{Stub}}') to them if they do not have one already and have under
+a given number of "words" in them.  Words, here, are counted as _any_ series
+of characters seperated by a space.  The default maximum number of words
+that the bot will work on is 5, so it is recommended that you pass it a more
+realistic value.
+
+Call
+
+python wordcount.py
+
+to have your change be done on all pages of the wiki. If that takes too
+long to work in one stroke, run:
+
+python wordcount.py Pagename
+
+to do all pages starting at pagename.
+
+There are two command line options:
+
+-dryrun
+    This will check and notify you but will not actually change anything.
+    
+-words=XX
+  This is the word threshold. Replace XX with the biggest wordcount that you
+  want the bot to append stubs to.
+  
+"""
+import wikipedia
+import pagegenerators
+import sys
+
+def workon(page):
+    try:
+        text = page.get()
+    except wikipedia.IsRedirectPage:
+        return
+
+    jmh_tokens = text.split(' ')
+    if len(jmh_tokens) <= jmh_count and -1 == text.find('Stub}}'):
+      text += '{{Stub}}'
+      if jmh_dryrun:
+        print '--// MATCH: [['+page.title()+']] -> Dry Run, No Change //--'
+      else:
+        print '--// MATCH: [['+page.title()+']] -> Stub Added //--'
+        page.put(text)
+
+try:
+    start = []
+    test = False
+    jmh_dryrun = False
+    jmh_count = 5
+    for arg in wikipedia.handleArgs():
+        if arg.startswith("-words="):
+            temp = arg.split('=')
+            jmh_count = int(temp[1])
+        elif arg.startswith("-dryrun"):
+            jmh_dryrun = True
+        else:
+            start.append(arg)
+    if start:
+        start = " ".join(start)
+    else:
+        start = "!"
+    mysite = wikipedia.getSite()
+    basicgenerator = pagegenerators.AllpagesPageGenerator(start=start)
+    generator = pagegenerators.PreloadingGenerator(basicgenerator)
+    for page in generator:
+        workon(page)
+
+finally:
+    wikipedia.stopme()</pre></p>

@@ -1,0 +1,254 @@
+@use "sass:color";
+@use "sass:map";
+
+@use "normalize";
+
+$themes: (
+  yellow: #e5b567,
+  green: #b4d273,
+  orange: #e87d3e,
+  purple: #9e86c8,
+  pink: #b05279,
+  blue: #6c99bb
+);
+
+:root {
+  --monokai-background: #2e2e2e;
+  --monokai-comments: #797979;
+  --monokai-white: #d6d6d6;
+  @each $name, $color in $themes {
+    --monokai-#{"" + $name}: #{$color};
+  }
+  --body-font: 'Cardo', 'Iowan Old Style', 'Palatino Linotype', 'URW Palladio L', P052, serif;
+  --mono-font: 'Source Code Pro', 'Cascadia Code', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+  --theme-color: var(--monokai-blue);
+}
+
+@each $name, $color in $themes {
+  body[data-theme=#{"" + $name}] {
+    --theme-color: #{$color};
+    --theme-color-light: #{color.scale($color, $lightness: 25%)};
+    --theme-color-dark: #{color.scale($color, $lightness: -25%)};
+  }
+}
+
+$light_scheme: (
+  background: #dddddd,
+  color: #333333
+);
+
+$dark_scheme: (
+  background: #111111,
+  color: #d6d6d6
+);
+
+@mixin scheme($scheme) {
+  --main-bg-color: #{map.get($scheme, "background")};
+  --main-font-color: #{map.get($scheme, "color")};
+  --main-font-color-light: #{color.scale(map.get($scheme, "color"), $lightness: 50%)};
+  --main-font-color-dark: #{color.scale(map.get($scheme, "color"), $lightness: -50%)};
+}
+
+body {
+  @include scheme($light_scheme)
+}
+
+body[data-scheme=dark] {
+  @include scheme($dark_scheme)
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    @include scheme($dark_scheme)
+  }
+
+  body[data-scheme=light] {
+    @include scheme($light_scheme)
+  }
+}
+
+html, body {
+  background-color: var(--main-bg-color);
+  font-family: var(--body-font); 
+  color: var(--main-font-color);
+  font-size: 1.05rem;
+  line-height: 1.5rem;
+}
+
+a, a:visited, a:active {
+  color: var(--main-font-color-light);
+  text-decoration-color: var(--theme-color);
+}
+
+a:hover {
+  color: var(--theme-color-light);
+  text-decoration-color: var(--main-font-color-dark);
+}
+
+q {
+  font-style: italic;
+}
+
+p, figure, table, pre {
+  margin: 1.5rem 0 0 0;
+}
+
+figure {
+  text-align: center;
+}
+
+img {
+  width: 100%;
+  margin: auto;
+}
+
+
+code {
+  padding: 0 0.3rem 0.1rem 0.3rem;
+  background-color: var(--monokai-background);
+  font-family: var(--mono-font);
+  font-size: 0.9rem;
+  color: var(--monokai-white);
+}
+
+pre {
+  background-color: var(--monokai-background);
+}
+
+pre > code {
+  padding: 1rem;
+  display: block;
+  overflow: auto;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  padding: 0.5rem;
+  border: 1px solid var(--monokai-background);
+}
+th {
+  background: var(--monokai-background);
+  color: var(--monokai-white);
+}
+
+/* constrained width elements */
+article, .constrained {
+  max-width: 940px;
+  width: 90%;
+  margin: auto;
+}
+
+/* page header */
+
+body > header {
+  font-family: var(--mono-font);
+  font-size: 1.2rem;
+  padding: 0.7rem 1rem;
+  background-color: var(--theme-color);
+}
+
+body > header a, body > footer a {
+  text-decoration: none;
+}
+
+body > header a:hover, body > footer a:hover {
+  color: #333;
+}
+
+body > header nav, body > footer nav {
+  float: right;
+}
+body > header nav a, body > footer nav a {
+  padding: 0 0 0 0.5rem;
+}
+
+/* page footer */
+
+body > footer {
+  background-color: var(--theme-color);
+  font-family: var(--mono-font);
+  margin-top: 5rem;
+  font-size: 0.7rem;
+  padding: 0.2rem 0;
+}
+
+body > footer nav a {
+  display: inline-block;
+  width: 0.7rem;
+  height: 0.7rem;
+  padding: 0;
+  border: 1px solid #eee;
+  border-radius: 50%;
+  position: relative;
+  top: 0.15rem;
+}
+
+body > footer nav a[data-theme=blue] {
+  background-color: var(--monokai-blue);
+}
+body > footer nav a[data-theme=pink] {
+  background-color: var(--monokai-pink);
+}
+body > footer nav a[data-theme=yellow] {
+  background-color: var(--monokai-yellow);
+}
+body > footer nav a[data-theme=green] {
+  background-color: var(--monokai-green);
+}
+body > footer nav a[data-theme=orange] {
+  background-color: var(--monokai-orange);
+}
+body > footer nav a[data-theme=purple] {
+  background-color: var(--monokai-purple);
+}
+body > footer nav a[data-scheme=light] {
+  background-color: #{map.get($light_scheme, "background")};
+}
+body > footer nav a[data-scheme=dark] {
+  background-color: #{map.get($dark_scheme, "background")};
+}
+
+/* posts */
+
+article {
+  margin-top: 3rem;
+}
+
+article header h1 {
+  margin-bottom: 0.5rem;
+}
+
+article h1, article h2, article h3 {
+  padding-bottom: 0.1rem;
+  border-bottom: 1px solid var(--theme-color);
+}
+
+
+article footer {
+  margin: 2rem 0 1rem 0;
+  padding: 0.7rem 0;
+  border-top: 1px dashed var(--theme-color);
+  border-bottom: 1px solid var(--theme-color);
+  font-size: 0.7em;
+  text-align: right;
+  font-family: var(--mono-font);
+}
+
+/* todo: I need an "off" color for each theme color and light/dark */
+
+article footer a,  article footer a:visited, article footer a:active {
+  background: var(--theme-color-dark);
+  color: var(--main-font-color);
+  padding: 0.25rem 0.3rem;
+  border-radius: 5%;
+  text-decoration: none;
+  margin-left: 0.15rem;
+}
+article footer a:hover {
+  color: var(--theme-color-dark);
+  background: var(--main-font-color-light);
+}

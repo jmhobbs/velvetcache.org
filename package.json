@@ -1,0 +1,25 @@
+{
+  "name": "velvetcache.org",
+  "version": "1.0.0",
+  "description": "John Hobbs blog",
+  "main": "",
+  "devDependencies": {
+    "@11ty/eleventy": "^2.0.1",
+    "@sindresorhus/slugify": "^1.1.2",
+    "luxon": "^1.21.2",
+    "normalize.css": "^8.0.1",
+    "sass": "^1.60.0"
+  },
+  "scripts": {
+    "dev": "run-p dev:*",
+    "dev:serve": "npm run build:11ty -- --serve",
+    "dev:style": "npm run build:style -- --watch",
+    "build": "run-s build:style build:11ty",
+    "build:style": "sass --load-path=node_modules/normalize.css/ ./src/_style/theme.scss ./src/static/theme.css",
+    "build:11ty": "npx @11ty/eleventy --input=./src --output=./dist"
+  },
+  "author": "John Hobbs <john@velvetcache.org>",
+  "dependencies": {
+    "npm-run-all": "^4.1.5"
+  }
+}

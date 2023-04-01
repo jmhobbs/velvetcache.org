@@ -1,0 +1,15 @@
+---
+category:
+- Geek
+creator: admin
+date: 2007-10-19T04:49:44
+layout: layout.njk
+tags:
+- Hardware
+- Linux
+- Programming
+- Software
+title: Cool Camera
+type: post
+---
+<p>At work we've been working with a cool little camera from <a href="http://www.prosilica.com/">Prosilica</a>.  Michael wrote a nice wrapper and I spent the last week or two wrangling the data out of the buffers and into the application. The cameras are pretty cool, they spew out 1620x1220 frames at about 300 milliseconds a frame in Bayer 8, and about 500ms in rgb24.  The driver they gave us has a really quick conversion from Bayer 8 built in, so we went with that.</p><p>The big problem moving to these from the Nikon kits we had, is that the Nikons had their own processing box that did the work of converting the raw data into jpegs.  They work pretty fast, around 250ms a frame, but those are 320x240 frames, 640x480 take a tiny bit longer.</p><p>Anyway, without that processing box, we have that load moved directly onto our weak little clients, which take about 3 seconds to crush a frame down to a 320x240 jpeg with Magick++.  So we decided to just do a raw, fullscreen live image, and it is really cool.</p><p>The point of all this introduction is that I like the little guys, and were they under 2 grand I might buy one for myself.  Regardless, I get to play with one at work, so here are some pictures I took when we were still working on the full screen mode. They have, of course, been compressed down from the full size. Click through for a 640x480 version.</p><p><a href="http://static.velvetcache.org/pages/2007/10/18/Five%20Dollar%20Beard.jpg"><img src="http://static.velvetcache.org/pages/2007/10/18/Five%20Dollar%20Beard.sm.jpg" /></a><a href="http://static.velvetcache.org/pages/2007/10/18/VIA%20Motherboard.jpg"><img src="http://static.velvetcache.org/pages/2007/10/18/VIA%20Motherboard.sm.jpg" /></a></p>

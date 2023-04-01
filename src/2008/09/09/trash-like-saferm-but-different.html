@@ -1,0 +1,29 @@
+---
+category:
+- Geek
+creator: admin
+date: 2008-09-09T20:38:25
+layout: layout.njk
+tags:
+- BASH
+- Linux
+title: Trash, like safeRM but different...
+type: post
+---
+<p>I had a bad morning today. I was working on a script that parses out log files and ran it from my desktop.  It's supposed to change to a specified directory and check for, then delete, any logs that are over a month old. Unfortunately I didn't have that directory on my machine, and I didn't exit the script after a failed directory change. Poof, there go my desktop documents.</p>
+<p>As an impulse reaction I looked for something to replace 'rm', and found <a href="http://code.google.com/p/saferm/" target="_blank">safeRM</a>. I was not impressed. Why have a 'dustbin' folder if we already have that built into the desktop environment, i.e. the Trash can?</p>
+<p>Here is my own brief script that (on openSuSE) moves things to the trash.  Note that it is not set up for moving directories and does not emulate 'rm' entirely.</p>
+<p><pre lang="bash" line="1">#!/bin/bash
+
+TRASHDIR=~/.local/share/Trash
+X=1
+NAME=$(basename $1)
+while [ -f $TRASHDIR/$NAME ]; do
+        NAME=${NAME}_$X
+        X=$(($X + 1))
+done
+mv $NAME $TRASHDIR/files/
+echo "[Trash Info]" > $TRASHDIR/info/$NAME.trashinfo
+echo "Path=$PWD/$1" >> $TRASHDIR/info/$NAME.trashinfo
+echo "DeletionDate=$(date +%Y-%m-%dT%H:%M:%S)" >> $TRASHDIR/info/$NAME.trashinfo</pre></p>
+<p>By the time I got this far I decided that this wasn't worth pursuing. I'll just try to be more careful and will absolutely run backups.  I thought I'd publish it anyway just in case someone wants a <a href="http://code.google.com/p/saferm/" target="_blank">safeRM</a> alternative or to be able to put things in the trash from the command line.</p>

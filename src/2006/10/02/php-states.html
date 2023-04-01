@@ -1,0 +1,95 @@
+---
+category:
+- Geek
+creator: admin
+date: 2006-10-02T19:03:24
+layout: layout.njk
+tags:
+- PHP
+- Programming
+- Snippets
+title: PHP States
+type: post
+---
+<p>Just wrote and used this little snippet.  Thought I'd post it for when I need it again.</p>
+<pre lang="php"><?php
+$states = array(
+     "AL","AK","AZ","AR","CA",
+     "CO","CT","DE","DC","FL",
+     "GA","HI","ID","IL","IN",
+     "IA","KS","KY","LA","ME",
+     "MD","MA","MI","MN","MS",
+     "MO","MT","NE","NV","NH",
+     "NJ","NM","NY","NC","ND",
+     "OH","OK","OR","PA","RI",
+     "SC","SD","TN","TX","UT",
+     "VT","VA","WA","WV","WI",
+     "WY");
+?></pre>
+An example usage, as if it isn't obvious.
+<pre lang="php"><?php
+print "<select name='states'>";
+foreach($states as $state)
+{
+  print "
+    <option "
+    .(($row['prospect_state'] == $state) ? "selected=\"selected\" " : "").
+    "value=\"$state\">$state</option>";
+}
+print "</select>";
+?></pre>
+<p>In case it's unfamiliar to you, the <tt>(($row['prospect_state'] == $state) ? "selected=\"selected\" " : "")</tt> is called the <a href="http://us2.php.net/manual/en/language.operators.comparison.php#language.operators.comparison.ternary" target="_blank">ternary operator</a>, also known as "fancy little if/else".</p>
+<p class="update"><b>Update (10/02/06)</b><br/>Update, here's a beefier version.
+<pre lang="php">$states_list = array(
+  'AL'=>"Alabama",  
+  'AK'=>"Alaska",  
+  'AZ'=>"Arizona",  
+  'AR'=>"Arkansas",  
+  'CA'=>"California",  
+  'CO'=>"Colorado",  
+  'CT'=>"Connecticut",  
+  'DE'=>"Delaware",  
+  'DC'=>"District Of Columbia",  
+  'FL'=>"Florida",  
+  'GA'=>"Georgia",  
+  'HI'=>"Hawaii",  
+  'ID'=>"Idaho",  
+  'IL'=>"Illinois",  
+  'IN'=>"Indiana",  
+  'IA'=>"Iowa",  
+  'KS'=>"Kansas",  
+  'KY'=>"Kentucky",  
+  'LA'=>"Louisiana",  
+  'ME'=>"Maine",  
+  'MD'=>"Maryland",  
+  'MA'=>"Massachusetts",  
+  'MI'=>"Michigan",  
+  'MN'=>"Minnesota",  
+  'MS'=>"Mississippi",  
+  'MO'=>"Missouri",  
+  'MT'=>"Montana",
+  'NE'=>"Nebraska",
+  'NV'=>"Nevada",
+  'NH'=>"New Hampshire",
+  'NJ'=>"New Jersey",
+  'NM'=>"New Mexico",
+  'NY'=>"New York",
+  'NC'=>"North Carolina",
+  'ND'=>"North Dakota",
+  'OH'=>"Ohio",  
+  'OK'=>"Oklahoma",  
+  'OR'=>"Oregon",  
+  'PA'=>"Pennsylvania",  
+  'RI'=>"Rhode Island",  
+  'SC'=>"South Carolina",  
+  'SD'=>"South Dakota",
+  'TN'=>"Tennessee",  
+  'TX'=>"Texas",  
+  'UT'=>"Utah",  
+  'VT'=>"Vermont",  
+  'VA'=>"Virginia",  
+  'WA'=>"Washington",  
+  'WV'=>"West Virginia",  
+  'WI'=>"Wisconsin",  
+  'WY'=>"Wyoming"
+);</pre></p>

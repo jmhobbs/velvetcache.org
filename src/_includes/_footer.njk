@@ -1,0 +1,35 @@
+    <footer>
+      <div class="constrained">
+        <a href="#">0xF79C72E6EDC70E38</a>
+        <nav>
+          Color:
+          <a href="#" class="theme-switcher" data-theme="blue"></a>
+          <a href="#" class="theme-switcher" data-theme="pink"></a>
+          <a href="#" class="theme-switcher" data-theme="yellow"></a>
+          <a href="#" class="theme-switcher" data-theme="green"></a>
+          <a href="#" class="theme-switcher" data-theme="orange"></a>
+          <a href="#" class="theme-switcher" data-theme="purple"></a>
+          Mode:
+          <a href="#" class="scheme-switcher" data-scheme="light"></a>
+          <a href="#" class="scheme-switcher" data-scheme="dark"></a>
+        </nav>
+      </div>
+    </footer>
+    <script>
+      document.querySelectorAll('a.theme-switcher').forEach(a => a.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.body.dataset['theme'] = e.target.dataset['theme'];
+        window.localStorage.setItem('theme', e.target.dataset['theme']);
+      }));
+      document.querySelectorAll('a.scheme-switcher').forEach(a => a.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.body.dataset['scheme'] = e.target.dataset['scheme'];
+        window.localStorage.setItem('scheme', e.target.dataset['scheme']);
+      }));
+    </script>
+    <script>
+      document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] +
+        ':35729/livereload.js?snipver=1"></' + 'script>')
+    </script>
+  </body>
+</html>
