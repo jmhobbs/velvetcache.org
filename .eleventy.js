@@ -34,20 +34,20 @@ module.exports = function(eleventy) {
   });
 
   eleventy.addCollection("page", function (collections) {
-    return collections.getAll().filter(function (item) {
+    return collections.getAllSorted().filter(function (item) {
       return "page" == item.data.type
     });
   });
 
   eleventy.addCollection("post", function (collections) {
-    return collections.getAll().filter(function (item) {
+    return collections.getAllSorted().filter(function (item) {
       return "page" != item.data.type
     });
   });
 
   eleventy.addCollection("category", function (collections) {
     const categorized = {};
-    collections.getAll().forEach(item => {
+    collections.getAllSorted().forEach(item => {
       if(item.data.category) {
         if(Array.isArray(item.data.category)) {
           item.data.category.forEach(category => {
@@ -64,7 +64,7 @@ module.exports = function(eleventy) {
   });
 
   eleventy.addCollection("categories", function (collections) {
-    return collections.getAll()
+    return collections.getAllSorted()
       .map(function (item) { return item.data.category })
       .filter(function (category) { return !!(category); })
       .map(function (item) { return item[0] })
