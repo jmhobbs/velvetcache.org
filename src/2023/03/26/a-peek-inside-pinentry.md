@@ -60,16 +60,16 @@ Options:
  -W, --parent-wid           Parent window ID (for positioning)
  -c, --colors STRING        Set custom colors for ncurses
  -a, --ttyalert STRING      Set the alert mode (none, beep or flash)
+
+Please report bugs to &lt;https://bugs.gnupg.org&gt;.
 ```
 
-Please report bugs to &lt;https://bugs.gnupg.org&gt;.</pre>
-
-Clearly, there was more to be found here.  Luckily, there are docs. Of a sort.  Pinentry does not ship with a `man</tt> file, but it does have an <tt>info` file, from which pretty much all you need to learn can be found.
+Clearly, there was more to be found here.  Luckily, there are docs. Of a sort.  Pinentry does not ship with a `man` file, but it does have an `info` file, from which pretty much all you need to learn can be found.
 
 
 ## The Assuan Protocol
 
-Pinentry uses a text based protocol called the <a href="https://www.gnupg.org/documentation/manuals/assuan/index.html">Assuan protocol</a>. This protocol was developed for the GnuPG project, and is very simple.  You have a client and a server, communicating generally through a pipe or a unix socket.  Each message is composed of a command and parameters, which are optional. The command comes first and is space separated from the parameters.  Each message is terminated by a carriage return + line feed, or just a line feed.
+Pinentry uses a text based protocol called the [Assuan protocol](https://www.gnupg.org/documentation/manuals/assuan/index.html). This protocol was developed for the GnuPG project, and is very simple.  You have a client and a server, communicating generally through a pipe or a unix socket.  Each message is composed of a command and parameters, which are optional. The command comes first and is space separated from the parameters.  Each message is terminated by a carriage return + line feed, or just a line feed.
 
 There are a number of messages and commands defined by the protocol (`OK`, `QUIT`, `RESET`, etc.) but each application extends these with it's own commands.
 
@@ -168,7 +168,7 @@ default:
 }
 ```
 
-Client commands are a lot more varied, but we don't have to parse them only generate them.  The one variation here is we need to escape them using `%[hex-value]</tt>.  So a line feed is <tt>%0A</tt>, carriage return is <tt>%0D</tt> and % itself is <tt>%25`.
+Client commands are a lot more varied, but we don't have to parse them only generate them.  The one variation here is we need to escape them using `%[hex-value]`.  So a line feed is `%0A`, carriage return is `%0D` and % itself is `%25`.
 
 ```go
 func Escape(input []byte) []byte {
@@ -216,7 +216,7 @@ var (
 )
 ```
 
-We can use these basics to create an API around the `pinentry</tt> specific commands.  Building up a queue of commands, exec-ing out pinentry and then running commands over <tt>stdin</tt> and reading responses over <tt>stdout`.  We end up with a fairly tidy (if incomplete) API.
+We can use these basics to create an API around the `pinentry` specific commands.  Building up a queue of commands, exec-ing out pinentry and then running commands over `stdin` and reading responses over `stdout`.  We end up with a fairly tidy (if incomplete) API.
 
 
 ```go
@@ -238,11 +238,11 @@ if err != nil {
 
 ### `SETQUALITYBAR` & `INQUIRE`
 
-The final step to understanding is closing the loop of an interactive element between client and server.  `pinentry</tt> can show a strength meter using <tt>SETQUALITYBAR</tt>.  Instead of having it's own logic of what makes a strong password, it delegates this to the connected client, allowing us to implement our own quality rules.  It does this through the use of <tt>INQUIRE`.
+The final step to understanding is closing the loop of an interactive element between client and server.  `pinentry` can show a strength meter using `SETQUALITYBAR`.  Instead of having it's own logic of what makes a strong password, it delegates this to the connected client, allowing us to implement our own quality rules.  It does this through the use of `INQUIRE`.
 
-First, we need to establish what makes a good quality answer for our dialog.  Obviously the unicorn is the undisputed best mythological animal, so we should use that as a measure of quality.  A simple way to compare sequences is the <a href="https://en.wikipedia.org/wiki/Levenshtein_distance">Levenshtein distance</a> between them.  That is, the number of insertions, deletions and substitutions required to transform one sequence into another.  For example, transforming "lawn" into "flaw" is a distance of 2.  We insert an "f" at the beginning and delete the "n" at the end.
+First, we need to establish what makes a good quality answer for our dialog.  Obviously the unicorn is the undisputed best mythological animal, so we should use that as a measure of quality.  A simple way to compare sequences is the [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance) between them.  That is, the number of insertions, deletions and substitutions required to transform one sequence into another.  For example, transforming "lawn" into "flaw" is a distance of 2.  We insert an "f" at the beginning and delete the "n" at the end.
 
-Levenshtein distance can be calculated in a number of ways, I chose one of the simpler methods, the <a href="https://en.wikipedia.org/wiki/Wagner%E2%80%93Fischer_algorithm">Wagner–Fischer algorithm</a>.
+Levenshtein distance can be calculated in a number of ways, I chose one of the simpler methods, the [Wagner–Fischer algorithm](https://en.wikipedia.org/wiki/Wagner%E2%80%93Fischer_algorithm).
 
 
 ```go
@@ -277,8 +277,7 @@ func levenshtein_distance(desired, target string) int {
 }
 ```
 
-The correct answer, "unicorn" is 7 characters long, and we have the range -100 to 100, so let's split that into 7 chunks of about 28 points. So our score will be `100 - ( [LD] * 28 )</tt>.  Unfortunately, in testing <tt>pinentry-mac</tt> treated scores as <tt>abs(&lt;score&gt;)` which meant negative values looked pretty spot on.  To work around that is decidedly against the documented behavior "Negative values will be displayed in red." but we will just work around it.
-
+The correct answer, "unicorn" is 7 characters long, and we have the range -100 to 100, so let's split that into 7 chunks of about 28 points. So our score will be `100 - ( [LD] * 28 )`.  Unfortunately, in testing `pinentry-mac` treated scores as `abs(<score>)` which meant negative values looked pretty spot on.  That is decidedly against the documented behavior "Negative values will be displayed in red." but we will just work around it.
 
 ```go
 func quality(input string) int {
@@ -298,7 +297,7 @@ With that in place, we get this lovely, unicorn affirming quality bar.
 
 That's it, I feel like I now know, more or less, how `pinentry` works.  It's not the most elegant, nor the best documented, but it's effective and relatively simple.
 
-It's simple enough, that it wouldn't be wild to implement your own `pinentry</tt> with whatever GUI or TUI toolkit you might have around, things like <a href="https://github.com/t-8ch/pinentry-bemenu">pinentry-bemenu</a> for a trimmed down version that fits in with sway.  I'll leave that for another day however, as there are plenty of <tt>pinentry` implementations already.
+It's simple enough, that it wouldn't be wild to implement your own `pinentry` with whatever GUI or TUI toolkit you might have around, things like [pinentry-bemenu](https://github.com/t-8ch/pinentry-bemenu) for a trimmed down version that fits in with sway.  I'll leave that for another day however, as there are plenty of `pinentry` implementations already.
 
-All the code used in this post is available on GitHub: <a href="https://github.com/jmhobbs/pinentry-client">github.com/jmhobbs/pinentry-client</a>
+All the code used in this post is available on GitHub: [github.com/jmhobbs/pinentry-client](https://github.com/jmhobbs/pinentry-client)
 

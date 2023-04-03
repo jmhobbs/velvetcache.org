@@ -130,6 +130,7 @@ pre > code {
   padding: 1rem;
   display: block;
   overflow: auto;
+  tab-size: 2;
 }
 
 table {
@@ -267,13 +268,13 @@ article footer a:hover {
 blockquote {
   &::before {
     position: absolute;
-    left: 0.25rem;
+    left: 0rem;
     font-family: sans-serif;
     font-size: 5rem;
     font-weight: 700;
     content: "“";
     color: var(--theme-color);
-    top: 1.75rem;
+    top: 1.5rem;
     font-style: italic;
   }
   &::after {
@@ -292,7 +293,7 @@ blockquote {
   background: var(--main-font-color);
   color: var(--main-bg-color);
   margin: 1.5rem 0;
-  padding: 1.5rem 1.5rem 1.5rem 1.5rem;
+  padding: 1.75rem 1.5rem 2.5rem 1.5rem;
   margin-inline-start: unset;
   margin-inline-end: unset;
   border-left: 1rem solid var(--theme-color);
