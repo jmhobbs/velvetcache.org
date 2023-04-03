@@ -254,13 +254,37 @@ article footer a:hover {
 
 
 blockquote {
+  &::before {
+    position: absolute;
+    left: 0.25rem;
+    font-family: sans-serif;
+    font-size: 5rem;
+    font-weight: 700;
+    content: "“";
+    color: var(--theme-color);
+    top: 1.75rem;
+    font-style: italic;
+  }
+  &::after {
+    position: absolute;
+    right: 0.25rem;
+    font-family: sans-serif;
+    font-size: 5rem;
+    font-weight: 700;
+    content: "„";
+    color: var(--theme-color);
+    bottom: 2.5rem;
+    font-style: italic;
+  }
+
+  position: relative;
   background: var(--main-font-color);
   color: var(--main-bg-color);
   margin: 1.5rem 0;
   padding: 1.5rem 1.5rem 1.5rem 1.5rem;
   margin-inline-start: unset;
   margin-inline-end: unset;
-  border-left: 1.5rem solid var(--theme-color);
+  border-left: 1rem solid var(--theme-color);
   font-size: 1.25rem;
 
   a, a:active, a:visited {
