@@ -12,6 +12,9 @@ title: A peek inside pinentry
 type: post
 permalink: /2023/03/26/a-peek-inside-pinentry/
 wp_id: "2881"
+summary: >
+  I interact with pinenty daily, but I don't really understand it. This post dives
+  into how it is invoked and can be used outside of GPG for your own projects.
 ---
 Recently I got a new work computer, and have been taking the opportunity to rework my [dotfiles](https://github.com/jmhobbs/dotfiles),
 configs and install scripts while setting up the new machine.  In the process I was reading through options for gpg-agent and started

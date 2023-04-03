@@ -13,6 +13,7 @@ tags:
 title: Party Gopher!
 type: post
 wp_id: "2820"
+summary: go func(partyordie bool) {...}()
 ---
 The [Go slack](https://invite.slack.golangbridge.org/) has a cute little dancing Gopher that appears to have come from [Egon Elbre](https://github.com/egonelbre/gophers).  I love it!
 

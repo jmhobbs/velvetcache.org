@@ -12,6 +12,10 @@ tags:
 title: A New GPG Key
 type: post
 wp_id: "2779"
+summary: >
+  After a decade it's time to create a new GPG key. There's no real excuse not to
+  use a Yubikey anymore either. This will cover the process I took from start to
+  finish, with subkeys, paperkey backups, git signing and SSH with gpg-agent.
 ---
 It's been 12 years since I created my first GPG key and 11 since I've created the one I actually use.  That is far too long, so I decided to create a new pair and deprecate the old.  [In 2013 I started this process](https://pgp.mit.edu/pks/lookup?search=john%40velvetcache.org&op=index), but I didn't follow through and I've since lost access to those keys.  I know where they are, but the machine died so I need to hook up it's HDD and pull the keys out.
 

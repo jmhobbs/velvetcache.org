@@ -14,6 +14,9 @@ title: Using environment secrets as build arguments in Google Cloud Build
 type: post
 permalink: /2018/12/27/using-environment-secrets-as-build-arguments-in-google-cloud-build/
 wp_id: "2836"
+summary: >
+  Cloud Build is a nice too for continuous building of your Docker images. Using
+  an environment secret in the build is a gap in the docs, here is how I did it.
 ---
 
 [Google Cloud Build](https://cloud.google.com/cloud-build/) is a pretty nice tool for building your docker images continually, and cloud-build-local is pretty great for working on your images in dev.  All around, a nice piece of kit to have in a Kubernetes shop.

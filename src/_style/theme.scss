@@ -75,6 +75,17 @@ html, body {
   line-height: 1.5rem;
 }
 
+/* push the footer down */
+body {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+main {
+  min-height: 100%;
+}
+
 a, a:visited, a:active {
   color: var(--main-font-color-light);
   text-decoration-color: var(--theme-color);
@@ -136,7 +147,7 @@ th {
 }
 
 /* constrained width elements */
-article, .constrained {
+main, .constrained {
   max-width: 940px;
   width: 90%;
   margin: auto;
@@ -163,7 +174,7 @@ body > header nav, body > footer nav {
   float: right;
 }
 body > header nav a, body > footer nav a {
-  padding: 0 0 0 0.5rem;
+  padding: 0 0 0 2rem;
 }
 
 /* page footer */
@@ -300,4 +311,35 @@ blockquote {
     display: block;
     margin-top: 1rem;
   }
+}
+
+/* Listing Pages */
+div.listing {
+  h2 {
+    margin-bottom: 0.15rem
+  }
+  div {
+    border-bottom: 1px solid var(--theme-color);
+    padding: 1.5rem 0;
+  }
+  time {
+    font-size: 0.95rem;
+  }
+  p {
+    margin-top: 0.5rem;
+  }
+
+  // pagination
+  nav > ol {
+    list-style-type: none;
+    margin: 2rem 0;
+    padding: 0;
+    grid-template-columns: repeat(2, 1fr);
+    display: grid;
+    font-size: 1.5rem;
+    li {
+      text-align: center;
+    }
+  }
+
 }

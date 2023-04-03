@@ -1,16 +1,28 @@
 ---
-title: Blog Posts
-layout: layout.njk
 pagination:
   data: collections.post
-  size: 10
+  size: 15
   reverse: true
+eleventyImport:
+  collections: ["posts"]
 ---
+{% include "_header.njk" %}
 
-{%- for post in pagination.items -%}
-<div>
-  <h2><a href="{{ post.url }}">{{ post.data.title }}</a></h2>
-  {{ post.date | strftime("LLL d, y") }}
-  {{ post.data.summary }}
+<div class="listing">
+  {%- for post in pagination.items -%}
+  <div>
+    <h2><a href="{{ post.url }}">{{ post.data.title }}</a></h2>
+    <time datetime="{{ post.date.toISOString() }}">{{ post.date | strftime("LLL d, y") }}</time>
+    {%- if post.data.summary -%}<p>{{ post.data.summary }}</p>{%- endif -%}
+  </div>
+  {%- endfor -%}
+
+  <nav>
+    <ol>
+      <li>{% if pagination.href.previous %}<a href="{{ pagination.href.previous }}">&laquo; Previous</a>{% else %}&laquo; Previous{% endif %}</li>
+      <li>{% if pagination.href.next %}<a href="{{ pagination.href.next }}">Next &raquo;</a>{% else %}Next &raquo;{% endif %}</li>
+    </ol>
+  </nav>
 </div>
-{%- endfor -%}
+
+{% include "_footer.njk" %}

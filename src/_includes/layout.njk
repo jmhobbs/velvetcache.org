@@ -3,7 +3,7 @@
 <article>
   <header>
     <h1>{{ title }}</h1>
-    <time><time datetime="{{ page.date.toISOString() }}">{{ page.date | strftime("LLL d, y") }}</time></time>
+    <time datetime="{{ page.date.toISOString() }}">{{ page.date | strftime("LLL d, y") }}</time>
   </header>
 
   {{ content | safe }}
