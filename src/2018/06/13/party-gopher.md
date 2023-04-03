@@ -2,7 +2,7 @@
 category:
 - Geek
 creator: admin
-date: 2018-06-13T22:32:46
+date: 2018-06-13
 layout: layout.njk
 permalink: /2018/06/13/party-gopher/
 tags:

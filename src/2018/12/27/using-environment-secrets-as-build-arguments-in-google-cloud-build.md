@@ -2,7 +2,7 @@
 category:
 - Geek
 creator: admin
-date: 2018-12-27T20:11:31
+date: 2018-12-27
 layout: layout.njk
 tags:
 - Docker

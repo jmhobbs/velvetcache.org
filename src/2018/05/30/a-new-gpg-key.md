@@ -2,7 +2,7 @@
 category:
 - Geek
 creator: admin
-date: 2018-05-30T22:41:13
+date: 2018-05-30
 layout: layout.njk
 permalink: /2018/05/30/a-new-gpg-key/
 tags:

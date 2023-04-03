@@ -2,7 +2,7 @@
 category:
 - Life
 creator: admin
-date: 2011-04-14T15:00:13
+date: 2011-04-14
 layout: layout.njk
 permalink: /2011/04/14/thursday-quote-allen-branch/
 tags:

@@ -2,7 +2,7 @@
 category:
 - Geek
 creator: admin
-date: 2020-01-30T04:23:35
+date: 2020-01-30
 layout: layout.njk
 tags:
 - Cult of the Party Parrot

@@ -2,7 +2,7 @@
 category:
 - Geek
 creator: admin
-date: 2019-01-09T23:36:01
+date: 2019-01-09
 layout: layout.njk
 tags:
 - git
