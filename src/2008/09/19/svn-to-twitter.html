@@ -4,6 +4,7 @@ category:
 creator: admin
 date: 2008-09-19T18:15:38
 layout: layout.njk
+permalink: /2008/09/19/svn-to-twitter/
 tags:
 - BASH
 - Internet
@@ -12,6 +13,7 @@ tags:
 - Updated
 title: SVN to Twitter
 type: post
+wp_id: "260"
 ---
 <p>I've been really getting into developing my <a href="http://static.velvetcache.org/projects/kicktweet/">KickTweet</a> project and set up a Twitter account for it at <a href="http://twitter.com/KickTweet">http://twitter.com/KickTweet</a>.  I wanted to feed in my subversion commits so I did some searching.</p><p>What I found was <a href="http://code.google.com/p/twitvn/">twitvn</a> a monstrous (50-ish 'real lines) Python script that sends commits to Twitter.  I find that ridiculous.  So here is my version, it drops right into the post-commit script and <i>could</i> be reduced to 2-3 active lines.</p><p><pre lang="bash" line="1">#!/bin/bash
 REPOS="$1"

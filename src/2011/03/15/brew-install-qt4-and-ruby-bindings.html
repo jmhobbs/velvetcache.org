@@ -5,12 +5,14 @@ category:
 creator: admin
 date: 2011-03-16T04:18:21
 layout: layout.njk
+permalink: /2011/03/15/brew-install-qt4-and-ruby-bindings/
 tags:
 - Qt4
 - Recipie
 - Ruby
 title: Brew Install Qt4 and Ruby Bindings
 type: post
+wp_id: "1750"
 ---
 <p>The Ruby gem for Qt4 bindings, appropriately called <a href="http://rubygems.org/gems/qtbindings" target="_blank">qtbindings</a>, do not build by default with brew installed Qt4 libs.</p>
 <p>There is a quick fix, but it's hidden in the <a href="https://github.com/ryanmelt/qtbindings/issues#issue/14" target="_blank">issues on github</a>.  Essentially you just need to symlink the brew headers to an expected location.</p>

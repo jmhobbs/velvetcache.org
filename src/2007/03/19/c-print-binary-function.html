@@ -4,12 +4,14 @@ category:
 creator: admin
 date: 2007-03-19T23:16:46
 layout: layout.njk
+permalink: /2007/03/19/c-print-binary-function/
 tags:
 - C
 - Programming
 - Snippets
 title: C++ Print Binary Function
 type: post
+wp_id: "145"
 ---
 <p>A while back I used a function I found on the web to print off a binary representation of a number while I was working on a <a href="http://www.velvetcache.org/2007/03/08/bitwise-operators-and-blowfish/">blowfish implementation</a> in C++.  I haven't finished the blowfish, but I made some changes to the binary function, and thought I'd post it since it is a handy thing to have.</p>
 <p>Essentially all I did was set it so it grouped the digits by 4 and padded out the MSB set with 0's so they all line up.</p>

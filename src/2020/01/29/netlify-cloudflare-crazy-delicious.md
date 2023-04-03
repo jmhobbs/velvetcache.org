@@ -11,6 +11,8 @@ tags:
 - How To
 title: Netlify + Cloudflare = Crazy Delicious
 type: post
+permalink: /2020/01/29/netlify-cloudflare-crazy-delicious/
+wp_id: "2856"
 ---
 
 At this years [NEJS Conf](https://2019.nejsconf.com/), Netlify's [Phil Hawksworth](https://twitter.com/philhawksworth) gave a highly entertaining talk about mostly static content as a new normal path.  His demo was a great little app that showed the possibilities of mixing static rendering and a dash of just in time functions as a service.

@@ -4,6 +4,7 @@ category:
 creator: admin
 date: 2007-01-14T09:45:57
 layout: layout.njk
+permalink: /2007/01/14/further-dk421-development/
 tags:
 - DK421
 - DrumKit
@@ -12,6 +13,7 @@ tags:
 - Projects
 title: Further DK421 Development
 type: post
+wp_id: "119"
 ---
 <p>After a lengthy break from DK421 development I started up again this evening.  My primary purpose tonight was to learn how to program my arduino and to learn the basics of serial communication with <a href="http://java.sun.com/products/javacomm/" target="_blank">javax.comm</a>.  I wrote a led blinker that also sent some data over the serial connection. 0 when it turned the light on, 1 when it turned it off.  and yes, I know that seems backwards.</p>
 <p>After a short battle I hacked up the config and a sample program to print my data.  It's not printing the right values, but it is printing the wrong ones consistently.  I think it has to do with my function to convert a byte array to an integer.  It also has a small runtime exception that I didn't work out. Regardless, it's working.  I'll install Eclipse on this machine and maybe get it working even further soon.  Next step is to get some piezo's and learn to read them.</p>

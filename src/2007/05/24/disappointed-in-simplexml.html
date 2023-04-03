@@ -4,12 +4,14 @@ category:
 creator: admin
 date: 2007-05-25T01:59:45
 layout: layout.njk
+permalink: /2007/05/24/disappointed-in-simplexml/
 tags:
 - PHP
 - Programming
 - Projects
 title: Disappointed In SimpleXML
 type: post
+wp_id: "161"
 ---
 <p>So I'm a little disappointed in PHP5's SimpleXML object.  Don't get me wrong, it works great for <u>accessing</u> XML, but it's terrible for deep manipulation.  The biggest problem is that you can't append SimpleXMLElement objects to each other.</p><p>For instance, I was working on a little project tracker that would use all XML for storage.  Here is the var_dump of my XML file.<pre lang="text" line="1">object(SimpleXMLElement)#1 (1) {
   ["project"]=>

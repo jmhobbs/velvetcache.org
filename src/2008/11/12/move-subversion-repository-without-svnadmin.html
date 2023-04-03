@@ -4,6 +4,7 @@ category:
 creator: admin
 date: 2008-11-13T00:32:21
 layout: layout.njk
+permalink: /2008/11/12/move-subversion-repository-without-svnadmin/
 tags:
 - BASH
 - C
@@ -17,6 +18,7 @@ tags:
 - Updated
 title: Move Subversion repository without svnadmin
 type: post
+wp_id: "312"
 ---
 <div class="update"><p><b>Update (2008-11-13)</b><br/>Okay, so I did actually end up finding a way to move from SF.net for real.  It seems they <a href="http://alexandria.wiki.sourceforge.net/Subversion+-+Version+Control+for+Source+Code#backup">provide read-only <tt>rsync</tt> access</a> straight to the repository directory.  So here is what I did instead.<pre lang="bash">$ rsync -av blowpass.svn.sourceforge.net::svn/blowpass/* blowpass
 $ svnadmin dump blowpass/ > blowpass.dump

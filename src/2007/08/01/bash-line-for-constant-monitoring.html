@@ -4,12 +4,14 @@ category:
 creator: admin
 date: 2007-08-01T19:33:25
 layout: layout.njk
+permalink: /2007/08/01/bash-line-for-constant-monitoring/
 tags:
 - BASH
 - Linux
 - Programming
 title: Bash Line For Constant Monitoring
 type: post
+wp_id: "174"
 ---
 <p>I've been doing a lot more bash stuff recently for work and with a book I'm reading.  One thing I found handy is this one-liner script to do something every N seconds.</p><p><pre lang="bash">while :; do ps aux | grep ssh | grep -v grep; echo "----------[$(date)]------------";sleep 1; done</pre></p><p>You can replace the <tt>sleep 1</tt> with <tt>sleep N</tt> for a larger interval, and the <tt>ps aux | grep ssh | grep -v grep</tt> is just what I wanted done every second.  The <tt>echo "----------[$(date)]------------"</tt> is a nice way to separate and mark the timing.</p><p>An example run:
 <pre lang="bash">root      3610  0.0  0.0  59516   568 ?        Ss   Jul30   0:00 /usr/sbin/sshd -o PidFile=/var/run/sshd.init.pid

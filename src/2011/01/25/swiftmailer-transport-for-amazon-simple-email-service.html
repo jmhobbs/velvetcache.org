@@ -4,6 +4,7 @@ category:
 creator: admin
 date: 2011-01-26T02:43:38
 layout: layout.njk
+permalink: /2011/01/25/swiftmailer-transport-for-amazon-simple-email-service/
 tags:
 - AWS
 - PHP
@@ -12,6 +13,7 @@ tags:
 - Swiftmailer
 title: Swiftmailer Transport for Amazon Simple Email Service
 type: post
+wp_id: "1653"
 ---
 <div class="update"><p><b>Updated (2011-02-03)</b></p><p>On the suggestions of <a href="http://www.w3style.co.uk/" target="_blank">Chris Corbyn</a> I re-wrote my class to use direct access and the Swiftmailer byte stream interface, no cURL anymore.  It's <u>way</u> faster, and way cooler, if I do say so myself.  You can get the latest at <a href="https://github.com/jmhobbs/Swiftmailer-Transport--AWS-SES" target="_blank">https://github.com/jmhobbs/Swiftmailer-Transport--AWS-SES</a></p></div><p>So, today Amazon debuted <a href="http://aws.amazon.com/about-aws/whats-new/2011/01/25/introducing-amazon-simple-email-service/" target="_blank">Simple Email Service</a>.  The gist of it is, send mail with them instead of your own servers.  Like a feature reduced <a href="http://sendgrid.com/" target="_blank">SendGrid</a> or <a href="http://postmarkapp.com/" target="_blank">Postmark</a>.</p>
 <p>Not a lot of stuff out there for it so I thought I'd jump the gun a bit and write a transport for PHP's <a href="http://swiftmailer.org/" target="_blank">Swiftmailer</a>.  If you have to send e-mail from your sever and from PHP, Swiftmailer is your best friend.</p>

@@ -4,6 +4,7 @@ category:
 creator: admin
 date: 2007-08-22T19:19:18
 layout: layout.njk
+permalink: /2007/08/22/gtk-tooltips-on-notebook-tab-labels/
 tags:
 - C
 - GTK+
@@ -11,6 +12,7 @@ tags:
 - Work
 title: GTK Tooltips On Notebook Tab Labels
 type: post
+wp_id: "180"
 ---
 <p>Here's a non-obvious (or to me at least) trick to get tooltips onto a <tt>Gtk::Notebook</tt> tab.  It took some searching, but essentially, you just add the <tt>Gtk::Label</tt> to a <tt>Gtk::EventBox</tt> and add that to the tab instead.  Then you attach the tool tip to the <tt>Gtk::EventBox</tt> instead of the <tt>Gtk::Label</tt>.</p>
 <p>Here's an example. I couldn't get my example to compile, the linker was going crazy, but I'm 99% sure that it's fine.  I'm probably just not seeing one glaring error. Let me know if you find it.  The important stuff is all there, even if it won't build.</p>

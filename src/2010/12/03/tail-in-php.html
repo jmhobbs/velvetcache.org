@@ -4,6 +4,7 @@ category:
 creator: admin
 date: 2010-12-03T06:34:34
 layout: layout.njk
+permalink: /2010/12/03/tail-in-php/
 tags:
 - Fun
 - Linux
@@ -13,6 +14,7 @@ tags:
 - Tail
 title: Tail In PHP
 type: post
+wp_id: "1566"
 ---
 <p>So I'm working on a little admin interface and I decided to tail some logs.  It's in PHP and Google came up with some stuff, but they were all a bit finickey and not well documented.  So I wrote my own!</p>
 <p>Here's the basic concept:<ol><li>Open File</li><li>Seek To End</li><li>Loop:<ol><li>Seek Back By Chunk Size</li><li>Read Chunk</li><li>Count Newlines</li><li>Stash In Buffer</li><li>Break If Enough Newlines Total</li></ol></li><li>Trim Extra Line &amp; Cruft</li><li>Done!</li></ol></p>

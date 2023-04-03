@@ -4,12 +4,14 @@ category:
 creator: admin
 date: 2006-11-16T07:46:45
 layout: layout.njk
+permalink: /2006/11/16/wlan-router-monitor-bash-script/
 tags:
 - BASH
 - Programming
 - Security
 title: WLAN Router Monitor BASH Script
 type: post
+wp_id: "96"
 ---
 <p>I was reading some material on WEP and WPA cracking, and decided to write a monitor for our router. I was curious if anyone other than us hooked up.  I've turned off the MAC filtering on it and got my BASH script working.</p>
 <p>I'm kinda proud of it actually.  I wrote it from scratch, just hit up the man pages on my system for hints.  I wanted to use <tt>lynx -dump</tt> on the "Attached Devices" page, but I couldn't get lynx to authenticate from the command line.  I decided to use <tt>wget</tt> instead, since it worked just fine.  I also knew I had <tt>html2txt</tt> installed from something else, so that was good too.</p>

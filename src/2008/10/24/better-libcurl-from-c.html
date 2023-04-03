@@ -4,12 +4,14 @@ category:
 creator: admin
 date: 2008-10-24T15:55:45
 layout: layout.njk
+permalink: /2008/10/24/better-libcurl-from-c/
 tags:
 - C
 - Internet
 - Programming
 title: Better libcurl from C++
 type: post
+wp_id: "295"
 ---
 <p>I've been a <a href="http://static.velvetcache.org/projects/tmwbuddy">longtime</a> <a href="http://static.velvetcache.org/projects/kicktweet">fan</a> of <a href="http://curl.haxx.se/libcurl/">libcurl</a>. But I'm a C++ author and so the c level of that is not where I want to be (and <a href="http://rrette.com/textpattern/index.php?s=cURLpp">cURLpp</a> looks ungainly for my minor usage).</p><p>Firing up google on "libcurl C++" yields "<a href="http://www.luckyspin.org/?p=28">Using libcurl from C++ | Luckyspin.org</a>" as the #1 entry.  This article show a good starting example, but it's not quite there.  Here's a cleaned up snippet:
 <pre lang="cpp">// Write all expected data in here

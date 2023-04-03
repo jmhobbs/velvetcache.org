@@ -4,6 +4,7 @@ category:
 creator: admin
 date: 2010-01-06T01:36:06
 layout: layout.njk
+permalink: /2010/01/05/sending-arbitrary-arguments-to-a-pyqt4-slot/
 tags:
 - Found
 - Pro-Tip
@@ -11,6 +12,7 @@ tags:
 - Python
 title: Sending Arbitrary Arguments to a pyQt4 Slot
 type: post
+wp_id: "800"
 ---
 <p>Okay, so you can't send extra arguments through a slot when you connect it in pyQt4.  What I mean by that is if you are connecting to a button's <tt>clicked()</tt> signal it has zero arguments, so you don't get to send anything to your slot.</p><p>This was a really big annoyance, I wanted to send arbitrary arguments defined at connect time.  So I looked, and I looked and eventually, I found <a href="http://www.mail-archive.com/pyqt@riverbankcomputing.com/msg00462.html" target="_blank">this treasure</a>. Awesome.</p><p><pre lang="python">
 # this creates a class that allows currying of functions

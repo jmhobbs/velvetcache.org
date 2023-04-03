@@ -4,6 +4,7 @@ category:
 creator: admin
 date: 2009-01-01T22:33:31
 layout: layout.njk
+permalink: /2009/01/01/amarok-rest-api/
 tags:
 - Amarok
 - Internet
@@ -14,6 +15,7 @@ tags:
 - Software
 title: Amarok REST API
 type: post
+wp_id: "341"
 ---
 <p>I've been working on the guts of a REST API for Amarok though PHP and DCOP.  Thought I'd share my JSON format because I'm proud of it.  Also because I'm bound to lose the format file sooner or later.</p><p>There are two basic things you can do with Amarok: take an action and ask for information.  So that's how I broke it down, <tt>action</tt> and <tt>info</tt> blocks in every request.</p><p>Rather than codify it in any formal way I'm just going to show examples.</p><p><b>Action - Toggle play/pause condition</b><br/><i>Request</i><pre lang="javascript">{
   'action': {

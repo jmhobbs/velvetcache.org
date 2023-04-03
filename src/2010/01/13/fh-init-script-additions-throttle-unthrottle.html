@@ -4,6 +4,7 @@ category:
 creator: admin
 date: 2010-01-13T17:30:18
 layout: layout.njk
+permalink: /2010/01/13/fh-init-script-additions-throttle-unthrottle/
 tags:
 - BASH
 - F@h
@@ -11,6 +12,7 @@ tags:
 - Programming
 title: 'F@h Init Script Additions: throttle & unthrottle'
 type: post
+wp_id: "849"
 ---
 <p>As I've <a href="http://www.velvetcache.org/2009/12/11/fh-team-statistics-scraper" target="_blank">posted before</a>, I've started running Folding@home on my machines. One issue I've found is that on a dual core machine I will sometimes bog down as F@h consumes a whole core. That plus a lot of busy Firefox tabs and my box starts to crawl.</p><p>To fix that, I added a few pieces to my F@h init script, which was originally scavenged from <a href="http://sickel.net/blogg/?page_id=503" target="_blank">this site</a>, though on Googling there is a much nicer one on <a href="http://fahwiki.net/index.php/Running_the_FAH_client_on_Linux#Running_as_an_Init_Script" target="_blank">the F@h wiki</a>.  You might just want to apply my changes to that one.</p><p>In any case, I just added two commands to <tt>throttle</tt> and <tt>unthrottle</tt> the F@h application using <tt>cpulimit</tt>. This way I can add a cron job to manage it, or just throttle it when it starts to bug me.</p><p>Here it is if you want it!</p><p><pre lang="bash">#!/bin/sh
 

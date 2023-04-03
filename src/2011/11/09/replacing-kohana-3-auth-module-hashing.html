@@ -4,6 +4,7 @@ category:
 creator: admin
 date: 2011-11-10T00:12:20
 layout: layout.njk
+permalink: /2011/11/09/replacing-kohana-3-auth-module-hashing/
 tags:
 - Hashing
 - Kohana
@@ -11,6 +12,7 @@ tags:
 - Snippets
 title: Replacing Kohana 3 Auth module hashing
 type: post
+wp_id: "2006"
 ---
 <p>The password hashing in the Auth module provided with Kohana 3.1 is not very good.  By default it is a simple sha256 hmac with a global salt.</p>
 <p><tt>modules/auth/classes/kohana/auth.php</tt><pre lang="php" line="156">public function hash($str)

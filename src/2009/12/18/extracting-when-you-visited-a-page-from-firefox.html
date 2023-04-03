@@ -4,12 +4,14 @@ category:
 creator: admin
 date: 2009-12-18T22:31:25
 layout: layout.njk
+permalink: /2009/12/18/extracting-when-you-visited-a-page-from-firefox/
 tags:
 - Firefox
 - Internet
 - Tutorial
 title: Extracting When You Visited A Page From Firefox
 type: post
+wp_id: "750"
 ---
 <p>Need to get the exact time that you visited a page in Firefox?  I couldn't find an easy way to look this up in the History interface, or anywhere else for that matter.  I did however know that Firefox stores this kind of thing in sqlite3 databases.  Here's how I got what I needed.</p>
 <p>First you have to find the sqlite databases, I'm on Linux so that would be in my home directory.  The database you want is <tt>places.sqlite</tt>. Crack that open in <tt>sqlite3</tt>.  Your command will differ as this is based on your profile name, mine is "gmail" so I ended up with <tt>g69ap5lc.gmail</tt>.</p>

@@ -4,6 +4,7 @@ category:
 creator: admin
 date: 2018-06-13T22:32:46
 layout: layout.njk
+permalink: /2018/06/13/party-gopher/
 tags:
 - GIF
 - go
@@ -11,6 +12,7 @@ tags:
 - Party Parrot
 title: Party Gopher!
 type: post
+wp_id: "2820"
 ---
 The [Go slack](https://invite.slack.golangbridge.org/) has a cute little dancing Gopher that appears to have come from [Egon Elbre](https://github.com/egonelbre/gophers).  I love it!
 

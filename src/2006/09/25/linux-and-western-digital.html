@@ -4,12 +4,14 @@ category:
 creator: admin
 date: 2006-09-26T02:05:55
 layout: layout.njk
+permalink: /2006/09/25/linux-and-western-digital/
 tags:
 - Computers
 - Hardware
 - Linux
 title: Linux And Western Digital
 type: post
+wp_id: "45"
 ---
 <p>About a month ago I bought a <a href="http://www.westerndigital.com/en/products/products.asp?driveid=153&language=en" target="_blank">Western Digital 320 GB "Extreme Lighted" USB/IEEE 1394 Hard Drive</a> as a backup (and general storage) drive.  And yes, I use the term IEEE 1394 because I despise Apple.  Anyway, moving on. It's bigger than both my drive in my main machine put together, two 120 GB Maxtor's that've lasted long enough that I'm assuming they'll die at any moment, nothing against Maxtor, but I had a 120 GB drive from them that died under even less time and stress.  Agian, off topic here.  I bought it because it was cheap for the storage amount, plus it included bling-bling lights.</p>
 <p>After a bit of a struggle I managed to format the drive as ext3, but I couldn't do it with <tt>parted</tt>, and ended up using Paragon Partition Manager to coax it into it.  Originally there was two partitions on there, and no disk label.  They were both VFAT's and one was really small.  The lack of a disk label threw me, as I thought you needed that to have a partition table.  Anyway, I got it formatted and hooked up just fine.</p>

@@ -4,6 +4,7 @@ category:
 creator: admin
 date: 2010-12-02T05:34:45
 layout: layout.njk
+permalink: /2010/12/02/headless-virtualbox/
 tags:
 - BlankSMTP
 - Environment
@@ -11,6 +12,7 @@ tags:
 - VirtualBox
 title: Headless VirtualBox
 type: post
+wp_id: "1559"
 ---
 <div class="update"><p><b>Updated (2010-12-02)</b><p><p>So, duh, multiple interfaces.  One NAT one Host-Only.  All done.</p></div>I recently set up a VirtualBox VM to test BlankSMTP locally, but it's annoying to have the GUI up all the time when I'm just SSH'ing in.  To get around this I set it up to work headless.</p>
 <p>The biggest hangup is networking.  I had to switch it to Host-Only so that the interface would remain consistent.  Other wise with bridged I would get new IP's all the time, and even then only when the networking init script got triggered somehow.</p>

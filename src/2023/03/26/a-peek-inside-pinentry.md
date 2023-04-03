@@ -10,6 +10,8 @@ tags:
 - Security
 title: A peek inside pinentry
 type: post
+permalink: /2023/03/26/a-peek-inside-pinentry/
+wp_id: "2881"
 ---
 Recently I got a new work computer, and have been taking the opportunity to rework my [dotfiles](https://github.com/jmhobbs/dotfiles),
 configs and install scripts while setting up the new machine.  In the process I was reading through options for gpg-agent and started

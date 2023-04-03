@@ -4,6 +4,7 @@ category:
 creator: admin
 date: 2011-04-07T16:40:17
 layout: layout.njk
+permalink: /2011/04/07/compiling-cpython-modules-with-xcode-4/
 tags:
 - How To
 - Mac
@@ -11,6 +12,7 @@ tags:
 - Tips
 title: Compiling CPython Modules with XCode 4
 type: post
+wp_id: "1784"
 ---
 <p>I've had trouble compiling native extensions on the Mac before, but I finally found a fix.</p>
 <p>You just need the correct <tt>ARCHFLAGS</tt> environment variable.  You can set this in your .bashrc or use it right before <tt>python setup.py build</tt></p>

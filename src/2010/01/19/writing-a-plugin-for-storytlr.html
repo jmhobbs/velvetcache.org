@@ -4,12 +4,14 @@ category:
 creator: admin
 date: 2010-01-19T16:50:05
 layout: layout.njk
+permalink: /2010/01/19/writing-a-plugin-for-storytlr/
 tags:
 - Programming
 - Storytlr
 - Tutorial
 title: Writing a Plugin for Storytlr
 type: post
+wp_id: "860"
 ---
 <div class="update"><p><b>Update: 2010-02-18</b><br/>I put this onto the Storytlr wiki a while back. I highly recommend viewing that version instead of this one. This version will <b>not</b> be updated further.</p><p><a href="http://code.google.com/p/storytlr/wiki/HowToCreateNewPlugin" target="_blank">http://code.google.com/p/storytlr/wiki/HowToCreateNewPlugin</a></p></div>
 <div class="update"><p><b>Update: 2010-01-19</b><br/>Edited in a minor fix, I learned a bit more when I wrote my <a href="http://github.com/jmhobbs/storytlr-plugin-foursquare" target="_blank">foursquare plugin</a>.<br/>The correct revision to follow along with is now <a href="http://github.com/jmhobbs/storytlr-plugin-github/commit/75c520dffbd2e7308202094a8b89554ae1073002" target="_blank">75c520df</a>.</p></div><p>I <a href="http://www.velvetcache.org/2010/01/13/new-lifestream-site-with-storytlr" target="_blank">recently got interested</a> in the lifestream application <a href="http://storytlr.googlecode.com/" target="_blank">Storytlr</a>.</p><p>One of the first things I wanted to do was add a plugin for github, as that is a fairly large part of my online life.  Unfortunately there is very little documentation, which is understandable for a private project that just went open.</p><p>As such I had to work through some code, but all in all it wasn't too tough.  The source is very readable, just not set up with any auto-documentation.</p><p>So, as a way of giving back, I'm going to walk through the Storytlr plugin system, as I understand it.  If you want to play along at home, you can grab the source from my <a href="http://github.com/jmhobbs" target="_blank">github</a>, and the commit we will be working from is <a href="http://github.com/jmhobbs/storytlr-plugin-github/commit/231361965e7eed9c28de45e399e349d564e810ab" target="_blank">23136196</a></p><p>First things first, we need to copy off another plugin, that's the easy way to get started.  I cloned the RSS one, but they are all pretty similar to start with.  Here's what my final file tree looks like, it's pretty similar to the starting tree, just with "Github" instead of "RSS".  This would reside at <tt>path_to_app/protected/application/plugins/github</tt></p><p><pre lang="text">.

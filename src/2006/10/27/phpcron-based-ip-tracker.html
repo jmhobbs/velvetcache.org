@@ -4,12 +4,14 @@ category:
 creator: admin
 date: 2006-10-27T17:50:28
 layout: layout.njk
+permalink: /2006/10/27/phpcron-based-ip-tracker/
 tags:
 - Linux
 - PHP
 - Programming
 title: PHP/Cron Based IP Tracker
 type: post
+wp_id: "79"
 ---
 <p>I connect to my home machine from work and school fairly regulary, I'd say at least three times a week, often more.  The problem is, COX runs DHCP and every once in a while my lease expires and I get a new IP.  It's not too often, but when I can no longer get to my machine it's frustrating.</p>
 <p>No more comrades.  I wrote this little PHP script to handle the problem, and the really neat part (I think) is that it uses itself for the data storage.  Slick, I know.  It's an idea much like the no-ip and dyndns services.  Anyway, here it is, you can just hook up a cron job to keep it up to date.</p>

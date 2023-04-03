@@ -4,6 +4,7 @@ category:
 creator: admin
 date: 2007-04-17T03:00:58
 layout: layout.njk
+permalink: /2007/04/16/replacing-mysql-fulltext-with-javascript/
 tags:
 - JavaScript
 - OurUNO
@@ -11,6 +12,7 @@ tags:
 - Projects
 title: Replacing MySQL FULLTEXT With JavaScript
 type: post
+wp_id: "151"
 ---
 <p>Over at <a href="http://www.ouruno.com/" target="_blank">OurUNO.com</a> I have a few of those ajaxy auto-complete text boxes.  Where you start typing and it presents you with a bunch of likely items from the database.  It's great, really cool looking and all that, but sometimes when the server is slow these things start stacking XHR's and it drags to the point of not being usable. I've got some super-cheap shared hosting, so this isn't the most rare of things.</p>
 <p>I decided to replace this often slow mechanism with some pure JavaScript and no more XHR.  I figure I can do this because I only have about 150 rows x 2 cols of matchable data per autocompleter.<p>

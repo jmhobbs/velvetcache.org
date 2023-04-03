@@ -4,6 +4,7 @@ category:
 creator: admin
 date: 2009-07-16T16:23:50
 layout: layout.njk
+permalink: /2009/07/16/data-throughput-with-externalinterface/
 tags:
 - actionscript
 - flash
@@ -11,6 +12,7 @@ tags:
 - Programming
 title: Data throughput with ExternalInterface
 type: post
+wp_id: "364"
 ---
 <p>I've started tinkering with Flash and AS3, and I've used the ExternalInterface a lot.  For one project the amount of data to be pushed into JavaScript from AS3 was highly variable, could be huge.</p><p>I couldn't find a good reference for how much it can handle, so I threw this together.  In the end I made it to ~10Mb through at a time in both Firefox and Chrome. No IE testing :-)</p><p>The basic idea was to keep requesting large chunks until it broke, then go back and slowly work my way up to the max.</p><p>The JavaScript:<br/><pre lang="JavaScript">function $(e) { return document.getElementById(e); }
 

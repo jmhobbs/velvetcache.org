@@ -4,6 +4,7 @@ category:
 creator: admin
 date: 2011-02-15T19:26:33
 layout: layout.njk
+permalink: /2011/02/15/installing-scribe-on-osx-with-thrift-0-5-0/
 tags:
 - Compiling
 - OS X
@@ -12,6 +13,7 @@ tags:
 - Work
 title: Installing Scribe on OSX with Thrift 0.5.0
 type: post
+wp_id: "1672"
 ---
 <div class="update"><p><b>Update (2011-02-24)</b></p><p>This also works on Ubuntu, with two little tweaks.</p><p>First, no need to install <tt>libevent</tt> from source, just do an <tt>apt-get install libevent-dev</tt>.</p><p>Second, after you install Scribe, you need to add Thrift to the shared library path so it will load.</p><p>Just add a new file called <tt>/etc/ld.so.conf.d/scribe.conf</tt> with this content:<pre lang="bash">/opt/thrift/lib
 /opt/scribe/lib

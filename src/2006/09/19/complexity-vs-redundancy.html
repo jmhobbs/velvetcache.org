@@ -4,6 +4,7 @@ category:
 creator: admin
 date: 2006-09-20T04:41:08
 layout: layout.njk
+permalink: /2006/09/19/complexity-vs-redundancy/
 tags:
 - Computers
 - Java
@@ -12,6 +13,7 @@ tags:
 - School
 title: Complexity Vs. Redundancy
 type: post
+wp_id: "38"
 ---
 <p>I just wrote the following line of code as part of an implementation of a bucket sort.
 <pre lang="cpp">bucket[(array[j]/static_cast<int>(pow(10.0,y)))%BUCKETS].Enqueue(array[j]);</pre>  Somehow I feel wrong inside about it.  Look at it, it's fairly complicated.  In the context of the program you <u>could</u> work out what it was doing, but the effort would be made easier if it was rewritten as this.

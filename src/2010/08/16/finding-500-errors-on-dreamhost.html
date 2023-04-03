@@ -5,6 +5,7 @@ category:
 creator: admin
 date: 2010-08-17T00:33:45
 layout: layout.njk
+permalink: /2010/08/16/finding-500-errors-on-dreamhost/
 tags:
 - Apache
 - BASH
@@ -14,6 +15,7 @@ tags:
 - Snippet
 title: Finding 500 Errors On DreamHost
 type: post
+wp_id: "1353"
 ---
 <p>Recently I've been getting 500 errors once in a while on my DH account.  This is usually because a process is long running and the DH monitor kills it for consuming too many resources.  Meh.  The real cause is putting waaay to much stuff on a shared account.</p>
 <p>So, to see what my culripts are I wrote a quick script that I'm hooking to a cron job.  First I'll see what domains are generating 500 errors, and then later I'll try to locate the exact scripts and clean them up.</p>

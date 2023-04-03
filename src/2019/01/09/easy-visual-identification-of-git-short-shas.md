@@ -9,6 +9,8 @@ tags:
 - JavaScript
 title: Easy visual identification of git short sha's.
 type: post
+permalink: /2019/01/09/easy-visual-identification-of-git-short-shas/
+wp_id: "2845"
 ---
 
 For a recent pet project at work I had to display a bunch of git short shas.  Most of the time, these shas should match each other, and it is important to be able to quickly glance at them and evaluate if any of them are not the same.

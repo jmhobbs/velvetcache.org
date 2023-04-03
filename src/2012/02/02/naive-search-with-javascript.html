@@ -4,6 +4,7 @@ category:
 creator: admin
 date: 2012-02-02T06:05:43
 layout: layout.njk
+permalink: /2012/02/02/naive-search-with-javascript/
 tags:
 - JavaScript
 - Programming
@@ -11,6 +12,7 @@ tags:
 - Search
 title: Naive Search with JavaScript
 type: post
+wp_id: "2140"
 ---
 <p>On a recent project I had the need to implement a basic search functionality into a web interface.  This isn't unusual, but what was different is that the data in this project was fairly static, and was kept in JSON on disk (and cached into memory).  Additionally, there would be a point where it was moved off of our servers, onto an entirely different stack (hence the JSON).</p>
 <p>There was minimal server side processing so far, and I did not want to add more overhead that would need to be ported.  So, I decided to implement my search in JavaScript (with some help from Python). My idea was to do very basic string matching on a pre-built index.  In this article I am going to lay out my implementation, but on a dummy data set.</p>

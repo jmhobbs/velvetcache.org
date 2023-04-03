@@ -4,11 +4,13 @@ category:
 creator: admin
 date: 2013-04-15T15:03:30
 layout: layout.njk
+permalink: /2013/04/15/delayed-queues-for-rq/
 tags:
 - Programming
 - Python
 title: Delayed Queues for RQ
 type: post
+wp_id: "2467"
 ---
 <p>I really like <a href="http://python-rq.org/" target="_blank">RQ</a>. It's got a sensible API and it's built for Python, something I can't say about Resque, <a href="https://github.com/binarydud/pyres" target="_blank">pyres</a> is fine, but it's not the same.</p>
 <p>My one beef with RQ is that I can't delay a job for an arbitrary amount of time. You queue it up and it runs.  To get around that, I built a simple delayed queue system for RQ, using the same redis backend.</p>
