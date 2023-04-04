@@ -1,0 +1,86 @@
+==================================================================
+https://keybase.io/jmhobbs
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://velvetcache.org
+  * I am jmhobbs (https://keybase.io/jmhobbs) on keybase.
+  * I have a public key with fingerprint 5616 12FF A10D 9D7A 7FFB  75F4 F79C 72E6 EDC7 0E38
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "0111f19720b95837452204835ff77fec3c3e4450c1dac4a9b7331ec406e7b273b77a0a",
+      "fingerprint": "561612ffa10d9d7a7ffb75f4f79c72e6edc70e38",
+      "host": "keybase.io",
+      "key_id": "f79c72e6edc70e38",
+      "kid": "010195b129f2d323dad8e64c8f34c3f973d8eb8de80376b20380ecf19f7f490721680a",
+      "uid": "508e0a899ea5a98f8aaa2acfa8c14500",
+      "username": "jmhobbs"
+    },
+    "merkle_root": {
+      "ctime": 1680622740,
+      "hash_meta": "3679472c80af75f83ce31cbb7414f27ee94ab72689adc114b302006db1461465",
+      "seqno": 24291505
+    },
+    "revoke": {
+      "sig_ids": [
+        "2f500f1bf322f36cc70d4859cd3a3529a99126570b6e586ead0193a9f55f71d80f"
+      ]
+    },
+    "service": {
+      "hostname": "velvetcache.org",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 1
+  },
+  "ctime": 1680622744,
+  "expire_in": 157680000,
+  "prev": "3fbd59cbe6554e5c52dd22bce3ff5b107cf2f736845848cc2671491569983e21",
+  "seqno": 85,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+-----BEGIN PGP MESSAGE-----
+
+owFtkw1sFEUUx49KFQoEiFKhpWlZKgEpsDuzs7NbUWlaSAmntdCSCuhldnamXdve
+Hrvbg1oKCKgtCKEoJPJhUT6LMRqQSFAERGiIBYQQUL6pWCCAoRZqLRCcayAmxs0k
+m5n5v/f+7zczy/s8EUjolt0rr6Fl5KYPu/103QxYGTnrqiTTsSqlzCqplHX9WJnF
+PD9UaltSpiQrisIVAwPZNJAOsYoAkFUdIs4x5oxCCpmqIpkqFqEqMUwMocKoKmsM
+mwBDE2MiEylD4na4mLkR1w77Ii3SFE0BnBNFtgwLE8y5iRFXOTYoBkxjFsUyg7oI
+LHG8WIQwZxKPjbYdsSYmoS57/6N/7FtWDGQqwODAggBaxNKZplKdQ5VCbmAo5qZu
+MV2GWDOBDHWZUdEpx1w1ZAwUTe/yXdGVDsk6k4luGIwgYuhcJ4QAQjnRqSK6l2NC
+j7lhUs6E+q3yEsc0Pak6QypnbmkZC7mO48fYUt+OKWLJNQCwKov+iFcSKmc+EYFQ
+w4aKARWlucChQ8qgQk0Tq4rKAWbMUImJgaYbxKKKoppQBrKsWaaiamIgYcNjM8OO
+lAlUYChIRsKCy6JOKYtV9+xigc2TMqdLgCN539syV0wOAeBQowKgperIoBYkEAGD
+GIYCNIRlU2NI1xixBFFIDI4Qx4qly1x6ozpWz43atCt97KQeEYiysijzKaElbLTj
+FgtfEdfxHeqUic0S3494mTE6fmUkpp7FzNCjPCHTDlviqoiIKHM92wkLWkL5X3Bq
+hsRmR2yXheyYAmGxIb5YHRaNkeSmJXoxmYaQyhBFwLIAMAVPzsW1kDHlgGOo6SrS
+VZ1SoGFFFcQ0w9AhA8q/JHUkfJJikVPgCxO/wmVSdUJtHOwe6JYQSEkc0r0sITi0
+8tKEe1fGTN/9+HnFx8XeViChZ7/HK1tH9AvUD5ua1HT8o9oTy7dnP5x099TVgy9+
+sSV39rztQy+joNqw7FjdwsL2zpHxH9T9UuCH19Hz08Y7tw4VfX3x/PWKqgMrW9wL
+S+qnGWfnhjoWL6rt7d/5eHau27Bn695r/fvvyI7uaQ/sm78lqxqt2/PCZ+l/XHxQ
+2L65as64gh7b//o5KXVCYVLOtqVNRwY99+uBxlGBsZUr13fE9bHPJKaeem1ZzZDk
+ZSn+qeEet0nw/U8Gv648AHFFVvwNP7F55wx+dO3N756O0hkboBasH9T7Qa6z5szq
+EW2TVs7IXZA2rldTavNm7Vzrip6Llq65PJOM3VAdzgul9dC2pM/96u6F4mfvwMTG
+q1ny6dbW84GqiuITVUXt5viJX+bdL3KdBfzS8dBeNWfQrM4nO1IHDxvqpczfmv/y
+sb2N+w8vH398+ML0KaOSk1esqktr7Ru+UrDm4N892Lm+nx+S7+HCSy0Jv8+b3Ng8
+7LTUc8rmpnDlMwO+f8/Lv3Y/Y3915OSfN+waZeCETVNXJQdTSSY7MiapLC+nAQ0Z
+0Hh7aUPToY2vJkRupQSPLl4dX17w28SFu3a0PrXeX1v36e6Lt5tr8w+ndQ7MXZxd
+uZE8v69z1rYlg3e+s+SHaVfPtQTbGppeOjuaPWS7+r3SthP9GIcGvPvmplBOZ1tN
+f5Led3LVqmbcq8Mv07O+8eacbMr/dset+l3ZWbDj5j8=
+=xZ5w
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/jmhobbs
+
+==================================================================

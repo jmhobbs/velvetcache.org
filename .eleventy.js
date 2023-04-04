@@ -10,6 +10,7 @@ const post_tags = require('./src/_data/post_tags.json');
 module.exports = function(eleventy) {
   eleventy.addPassthroughCopy("./src/wp-content");
   eleventy.addPassthroughCopy("./src/static");
+  eleventy.addPassthroughCopy("./src/.well-known");
 
   eleventy.addPlugin(syntaxHighlight);
 
