@@ -19,8 +19,8 @@ eleventyImport:
 
   <nav>
     <ol>
-      <li>{% if pagination.href.previous %}<a href="{{ pagination.href.previous }}">&laquo; Previous</a>{% else %}&laquo; Previous{% endif %}</li>
-      <li>{% if pagination.href.next %}<a href="{{ pagination.href.next }}">Next &raquo;</a>{% else %}Next &raquo;{% endif %}</li>
+      <li>{% if pagination.href.previous %}<a href="{{ pagination.href.previous }}" rel="prev">&laquo; Previous</a>{% else %}&laquo; Previous{% endif %}</li>
+      <li>{% if pagination.href.next %}<a href="{{ pagination.href.next }}" rel="next">Next &raquo;</a>{% else %}Next &raquo;{% endif %}</li>
     </ol>
   </nav>
 </div>
