@@ -34,12 +34,20 @@ $themes: (
 
 $light_scheme: (
   background: #dddddd,
-  color: #333333
+  color: #333333,
+  strongTheme: -25%,
+  weakTheme: 25%,
+  strong: -50%,
+  weak: 50%
 );
 
 $dark_scheme: (
   background: #111111,
-  color: #d6d6d6
+  color: #d6d6d6,
+  strongTheme: 25%,
+  weakTheme: -25%,
+  strong: 50%,
+  weak: -50%
 );
 
 @mixin scheme($scheme) {
@@ -47,6 +55,14 @@ $dark_scheme: (
   --main-font-color: #{map.get($scheme, "color")};
   --main-font-color-light: #{color.scale(map.get($scheme, "color"), $lightness: 50%)};
   --main-font-color-dark: #{color.scale(map.get($scheme, "color"), $lightness: -50%)};
+  --main-font-color-weak: #{color.scale(map.get($scheme, "color"), $lightness: map.get($scheme, "weak"))};
+  --main-font-color-strong: #{color.scale(map.get($scheme, "color"), $lightness: map.get($scheme, "strong"))};
+  @each $name, $color in $themes {
+    &[data-theme=#{"" + $name}] {
+      --theme-color-weak: #{color.scale($color, $lightness: map.get($scheme, "weakTheme"))};
+      --theme-color-strong: #{color.scale($color, $lightness: map.get($scheme, "strongTheme"))};
+    }
+  }
 }
 
 body {
@@ -87,13 +103,13 @@ main {
 }
 
 a, a:visited, a:active {
-  color: var(--main-font-color-light);
+  color: var(--main-font-color-strong);
   text-decoration-color: var(--theme-color);
 }
 
 a:hover {
-  color: var(--theme-color-light);
-  text-decoration-color: var(--main-font-color-dark);
+  color: var(--theme-color-strong);
+  text-decoration-color: var(--main-font-color-weak);
 }
 
 q {
@@ -313,16 +329,16 @@ article footer {
 }
 
 article footer a,  article footer a:visited, article footer a:active {
-  background: var(--theme-color-dark);
-  color: var(--main-font-color);
+  background: var(--theme-color);
+  color: var(--main-font-color-strong);
   padding: 0.25rem 0.3rem;
   border-radius: 5%;
   text-decoration: none;
   margin-left: 0.15rem;
 }
 article footer a:hover {
-  color: var(--theme-color-dark);
-  background: var(--main-font-color-light);
+  color: var(--theme-color-weak);
+  background: var(--main-font-color-strong);
 }
 
 
@@ -399,9 +415,43 @@ div.listing {
     grid-template-columns: repeat(2, 1fr);
     display: grid;
     font-size: 1.5rem;
+    color: var(--main-font-color-weak);
     li {
       text-align: center;
     }
   }
 
+}
+
+table.theme-demo {
+  td:first-child {
+    min-width: 100px;
+  }
+  .weak {
+    background: var(--main-font-color-weak);
+  }
+  .strong {
+    background: var(--main-font-color-strong);
+  }
+  .light {
+    background: var(--main-font-color-light);
+  }
+  .dark {
+    background: var(--main-font-color-dark);
+  }
+  .theme {
+    background: var(--theme-color);
+  }
+  .theme-weak {
+    background: var(--theme-color-weak);
+  }
+  .theme-strong {
+    background: var(--theme-color-strong);
+  }
+  .theme-light {
+    background: var(--theme-color-light);
+  }
+  .theme-dark {
+    background: var(--theme-color-dark);
+  }
 }

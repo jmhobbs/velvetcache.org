@@ -24,7 +24,10 @@
     <link href="/static/hljs-monokai.css" rel="stylesheet">
   </head>
   <body>
-    <script>document.body.dataset['themeColor'] = window.localStorage.getItem('theme-color');</script>
+    <script>
+      document.body.dataset['scheme'] = window.localStorage.getItem('scheme');
+      document.body.dataset['theme'] = window.localStorage.getItem('theme');
+    </script>
     <header>
       <div class="constrained">
         <a href="/">jmhobbs</a>
