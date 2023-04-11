@@ -1,12 +1,34 @@
 ---
 pagination:
   data: collections.post
-  size: 15
+  size: 10
   reverse: true
 eleventyImport:
   collections: ["posts"]
 ---
 {% include "_header.njk" %}
+
+{% if pagination.pageNumber == 0 %}
+<section class="introduction">
+  <picture>
+    <source srcset="https://static.velvetcache.org/jmhobbs.avif" type="image/avif" />
+    <source srcset="https://static.velvetcache.org/jmhobbs.webp" type="image/webp" />
+    <source srcset="https://static.velvetcache.org/jmhobbs.jpg" type="image/jpeg" />
+    <img src="https://static.velvetcache.org/jmhobbs.jpg" alt="John Hobbs" />
+  </picture>
+  <div>
+    <h1>Hello!</h1>
+    <p>My name is John Hobbs, and I do computer stuff.</p>
+    <p>I also garden, keep bees, brew mead, roast coffee, keep chickens, etc.</p>
+    <p>
+      <a rel="me" href="https://github.com/jmhobbs">GitHub</a> ~
+      <a rel="me" href="https://noc.social/@jmhobbs">Mastodon</a> ~
+      <a rel="me" href="https://instagram.com/jmhobbs">Instagram</a>
+    </p>
+    <p><a href="/about">Read more...</a></p>
+  </div>
+</section>
+{% endif %}
 
 <div class="listing">
   {%- for post in pagination.items -%}

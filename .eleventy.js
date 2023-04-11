@@ -11,6 +11,7 @@ module.exports = function(eleventy) {
   eleventy.addPassthroughCopy("./src/wp-content");
   eleventy.addPassthroughCopy("./src/static");
   eleventy.addPassthroughCopy("./src/.well-known");
+  eleventy.addPassthroughCopy("./src/_redirects");
 
   eleventy.addPlugin(syntaxHighlight);
 
