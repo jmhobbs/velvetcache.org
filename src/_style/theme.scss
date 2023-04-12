@@ -129,6 +129,10 @@ img {
   margin: auto;
 }
 
+hr {
+  border: 2px solid var(--theme-color);
+  margin: 5rem 0;
+}
 
 code {
   padding: 0 0.3rem 0.1rem 0.3rem;
@@ -140,6 +144,7 @@ code {
 
 pre {
   background-color: var(--monokai-background);
+  color: var(--monokai-white);
 }
 
 pre > code {
@@ -453,5 +458,15 @@ table.theme-demo {
   }
   .theme-dark {
     background: var(--theme-color-dark);
+  }
+}
+
+ul.tag-cloud {
+  padding-inline-start: 0;
+
+  li {
+    display: inline-block;
+    margin: 0.5rem 1rem 0.5rem 0;
+    font-size: 1.25rem;
   }
 }
