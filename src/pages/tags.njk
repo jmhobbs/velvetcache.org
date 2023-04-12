@@ -1,0 +1,16 @@
+---
+eleventyExcludeFromCollections: true
+noindex: true
+layout: page.njk
+permalink: /tags/
+---
+
+<h1>All Tags</h1>
+
+<p>This is every tag used on at least one post.</p>
+
+<ul class="tag-cloud">
+{% for tag in collections.tags %}
+  <li><a href="/tags/{{ tag | wp_tag_slug }}">{{ tag }}</a></li>
+{% endfor %}
+</ul>

@@ -47,6 +47,11 @@ module.exports = function(eleventy) {
     });
   });
 
+  // a brutish way of getting all of the tags used on any post
+  eleventy.addCollection("tags", function (collections) {
+    return [...new Set(collections.getAll().map(post => post.data.tags || []).flat())].sort()
+  })
+
   eleventy.addCollection("category", function (collections) {
     const categorized = {};
     collections.getAllSorted().forEach(item => {
