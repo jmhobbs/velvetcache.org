@@ -1,0 +1,43 @@
+---
+category:
+- Geek
+creator: admin
+date: 2014-05-19
+permalink: /2014/05/18/building-pandemonium/
+tags:
+- Audio
+- Big Omaha
+- nodejs
+- Python
+title: Building Pandemonium
+type: post
+wp_id: "2529"
+---
+<p style="text-align: center;"><img src="http://static.velvetcache.org/pages/2014/05/18/building-pandemonium/pandemonium-logo.png" alt="Pandemonium" style="width: 100%;" /></p>
+<p>Every year, <a href="http://whatcheer.com/" target="_blank">What Cheer</a> creates something fun for <a href="http://bigomaha.com/" target="_blank">Big Omaha</a>.</p>
+<p>Previous years have been very interactive, requiring direct participation. A seek and find game, a conference only chat tool, etc.  These have been fun, but interaction with the project is sporadic and not ubiquitous.  This year we decided to build something that everyone would participate in, simply by being in the audience.  <a href="https://twitter.com/alexpgates" target="_blank">Alex</a> had the excellent idea of tracking the loudness of the auditorium over time, and we decided to monitor Twitter as well.</p>
+<h2>Hardware</h2>
+<p>To measure sound levels in the auditorium (hangar? main stage?) we would obviously need some hardware on site.  We chose a Raspberry Pi for simplicity, and because we already understood it.  I initially experimented with using an electret microphone and GPIO, but as time ran out I went simpler and ordered a USB audio interface to plug in.</p>
+<p>Before the event <a href="https://twitter.com/paulgraff" target="_blank">Paul</a> and I went to KANEKO to set things up.  The helpful guy from binary.net who was setting up the network gave us a hard line so we wouldn't have to deal with wifi traffic, we ran the mic up the wall, plugged it in and watched the data flow.  Pretty smooth install.</p>
+<p style="text-align: center;"><a href="http://static.velvetcache.org/pages/2014/05/18/building-pandemonium/raspberry-pi.jpg" target="_blank"><img src="http://static.velvetcache.org/pages/2014/05/18/building-pandemonium/raspberry-pi.sm.jpg" alt="Raspberry Pi taped to the floor boards." /></a><br/><em>Raspberry Pi taped to the floorboards.</em></p>
+<p style="text-align: center;"><a href="http://static.velvetcache.org/pages/2014/05/18/building-pandemonium/mic.jpg" target="_blank"><img src="http://static.velvetcache.org/pages/2014/05/18/building-pandemonium/mic.sm.jpg" alt="Our little mic on the wall." /></a><br/><em>Our little mic on the wall.</em></p>
+<h2>Software</h2>
+<p>The architecture of Pandemonium is perhaps a bit over complex, but I was having fun gluing things together and who's gonna stop me?</p>
+<p style="text-align: center;"><a href="http://static.velvetcache.org/pages/2014/05/18/building-pandemonium/pandemonium-diagram.png" target="_blank"><img src="http://static.velvetcache.org/pages/2014/05/18/building-pandemonium/pandemonium-diagram.png" alt="Pandemonium Architecture" /></a></p>
+<h3>Audio</h3>
+<p>Audio starts at the input, which we read with <a href="http://people.csail.mit.edu/hubert/pyaudio/" target="_blank">PyAudio</a>.  We read 10ms of audio, then calculate the <a href="http://en.wikipedia.org/wiki/Amplitude#Root_mean_square_amplitude" target="_blank">RMS Amplitude</a> of that data to produce our "loudness" value.</p>
+<p>This packet gets pushed into a queue with a timestamp that is shared with the UDP client process.  This process picks it up, and collects 50 other samples finding the peak value.  Once it has collected 50 packets (0.5 seconds) it takes the peak value, wraps it with a signature and sends it off.  The signature is an abbreviated HMAC to verify the origin and quality of the data.  Originally we were sending 100% of the samples collected, so 100 per second.  We decided that was a bit extreme and added the summarization code to reduce it to twice per second.</p>
+<p>The UDP server receives the packet, unpacks it, and checks the signature.  If it's valid, it stores it in MySQL (async) and also pushes it to a Redis pubsub channel.</p>
+<p>From there a node.js server picks it off the Redis pubsub channel and sends it down through socket.io to waiting clients.  Even with all these hops, the roundtrip is pretty snappy, and there is less than a second of obvious lag.</p>
+<p>On the client side we had a digital VU-style meter which scaled the volume over it's seven bars and lit up accordingly.  We also pushed the data to a live graph powered by HighCharts.</p>
+<p style="text-align: center;"><a href="http://static.velvetcache.org/pages/2014/05/18/building-pandemonium/pandemonium.png" target="_blank"><img src="http://static.velvetcache.org/pages/2014/05/18/building-pandemonium/pandemonium.sm.png" alt="Pandemonium VU-Style Meter" /></a></p>
+<h3>Twitter</h3>
+<p>Tweets were collected for the hashtag <em>#bigomaha</em> and stored directly into MySQL by a daemon using the <a href="https://github.com/ryanmcgrath/twython" target="_blank">Twython</a> library.</p>
+<p>A second process would aggregate and average the tweets per second, then push that data to a Redis pubsub channel to be distributed by the node.js bridge.</p><p>Since there isn't a natural comparative value for Tweets, the aggregator keeps the peak value in memory and compares the current value against that for a percentage.  Not perfect, but it's works.</p>
+<h2>Mistakes Were Made</h2>
+<p>Everything performed better than I expected, honestly. We didn't have the opportunity to test the audio sampling at a large, loud venue, so I was worried about that.  Paul and I installed it in the back of the auditorium, just past a speaker, and put the mic as high up the wall as we could, which seemed to isolate it pretty well.</p>
+<p>However, there were some problems.  Due to a fat finger, none of the audio data from day one was saved until about 3pm.  So that was a bummer.  A quick fix gave us good data for day two through.</p>
+<p>My second goof was that the MySQL library I used for storing tweets assumed that data was latin-1, even though I created my tables as utf-8.  So, when people tweeted anything with odd characters, the database barfed and it dropped the tweets.  That also got fixed in the afternoon on day one.</p>
+<h2>Success?</h2>
+<p>I think it was a neat project, I certainly had fun building it.  And it worked, which is always what we are aiming for, and it didn't require any direct interaction from attendee's to succeed, it survived on it's own. I wish I hadn't made mistakes, but they weren't too damaging to the real-time experience at Big Omaha.</p>
+<p style="text-align: center;"><a href="http://static.velvetcache.org/pages/2014/05/18/building-pandemonium/pandemonium-day-one.png" target="_blank"><img src="http://static.velvetcache.org/pages/2014/05/18/building-pandemonium/pandemonium-day-one.sm.png" alt="Day one data." /></a><br/><em>Day one data.</em></p>

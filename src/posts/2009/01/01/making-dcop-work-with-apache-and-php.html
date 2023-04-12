@@ -1,0 +1,33 @@
+---
+category:
+- Geek
+creator: admin
+date: 2009-01-01
+permalink: /2009/01/01/making-dcop-work-with-apache-and-php/
+tags:
+- Amarok
+- Linux
+- PHP
+- Programming
+- Projects
+- Software
+title: Making DCOP work with Apache and PHP
+type: post
+wp_id: "332"
+---
+<p>I've been working on a design for a web technology based media frame (think digital photo frame that you can program).  I have my hardware ducks in a row (ripped apart a laptop, rewired some buttons and flipped the screen around) and now I'm working on software.  I put together a reasonable frame work and then decided to add some integration with Amarok.  That got hairy fast.</p><p>I found a <a href="http://gwutama.de/projects/php-dcop" target="_blank">PHP5 DCOP library</a> but no explanation on how to get it to work.  Google got me to the point where I knew it was an environment variable thing (the command line dcop has to have access to an X display since <a href="http://en.wikipedia.org/wiki/DCOP" target="_blank">DCOP</a> uses X's <a href="http://en.wikipedia.org/wiki/X_Window_System_protocols_and_architecture#Inter-client_communication" target="_blank">ICE protocol</a> to do it's thing).  Unfortunately trying to set the <tt>DISPLAY</tt> in the exec call doesn't work, never found out why. Neither did the next 100 things I tried.</p><p>Skipping past all that anger and frustration that brought me to a solution, and here it is.</p><p><b>BEWARE</b> this isn't really a safe way to run a server.  If you want to do this, be sure that it is on a machine that can't harm the rest of your network or files.  If you know a better way or some tips on locking things down, please share!</p><p>This is all done assuming a Debian machine base.</p><p><b>1)</b><br/>Make a full-fledged but restricted user.  They must have an KDE login, and X must be running with them logged in.  Let's call our user <i>notagoodidea</i> for this example.<br/><b>2)</b><br/>Make apache2 run as your user by editing <tt>/etc/apache2/envvars</tt> <pre lang="bash"># envvars - default environment variables for apache2ctl
+
+# Since there is no sane way to get the parsed apache2 config in scripts, some
+# settings are defined via environment variables and then used in apache2ctl,
+# /etc/init.d/apache2, /etc/logrotate.d/apache2, etc.
+
+#export APACHE_RUN_USER=www-data
+#export APACHE_RUN_GROUP=www-data
+export APACHE_RUN_USER=notagoodidea
+export APACHE_RUN_GROUP=notagoodidea
+export APACHE_PID_FILE=/var/run/apache2.pid</pre><br/><br/><b>3)</b><br/>Edit your run script to launch Apache with the <tt>DISPLAY</tt> variable set, so edit <tt>/etc/init.d/apache2</tt> which will probably break on updates and makes me cringe.<pre lang="bash">...
+# apache2               This init.d script is used to start apache2.
+#                       It basically just calls apache2ctl.
+
+ENV="env -i LANG=C PATH=/usr/local/bin:/usr/bin:/bin DISPLAY=:0.0"
+...</pre><br/><b>4)</b><br/>Restart everything and test it out.</p><p>It isn't pretty but it gets the job done.</p>

@@ -1,0 +1,29 @@
+---
+category:
+- Geek
+creator: admin
+date: 2015-08-26
+permalink: /2015/08/26/look-of-disapproval-keyboard-button/
+tags:
+- Alfred
+- à² _à² 
+- Hardware
+- Mac
+title: à² _à²  Keyboard Button
+type: post
+wp_id: "2616"
+---
+<p>The other day I was looking at keyboard stuff and decided to order some <a href="http://www.wasdkeyboards.com/index.php/products/keycap-mod-packs/hjkl-cherry-mx-keycap-set.html" target="_blank">arrow keycaps</a> for my keyboard.  They also had <a href="http://www.wasdkeyboards.com/index.php/products/printed-keycap-singles/lod-cherry-mx-keycap.html" target="_blank">one with the look of disapproval face on it</a>, so I bought that too.</p>
+<p>I popped it onto my <tt>Print Screen</tt> key, which maps to F13 in OS X, then I wrote an Automator service to copy/paste à² _à²  when F13 was pressed.</p>
+<pre lang="applescript">on run {input, parameters}
+	set the clipboard to "à² _à² "
+	tell application "System Events"
+		key code 9 using {command down}
+	end tell
+end run</pre>
+<p>I have never written AppleScript before, so the result was kind of wonky.  It worked in some inputs, but not in others.</p>
+<p>Then, <a href="http://alexpgates.com/" target="_blank">Alex</a> pointed out that Alfred workflows can be triggered by global hotkeys.  What can't Alfred do?</p>
+<p>A quick workflow later and my à² _à²  key was working like a dream.</p>
+<p><img src="http://static.velvetcache.org/pages/2015/08/26/look-of-disapproval-keyboard-button/workflow.png" alt="à² _à²  Workflow" /></p>
+<p>You can grab the <a href="http://static.velvetcache.org/pages/2015/08/26/look-of-disapproval-keyboard-button/LOD_Button.alfredworkflow" target="_blank">workflow here</a>, if you want.  I bet you could figure it out for yourself too though.</p>
+<p><img src="http://static.velvetcache.org/pages/2015/08/26/look-of-disapproval-keyboard-button/lod.opt.gif" alt="à² _à² " style="width: 50%; max-width: 300px;" /></p>

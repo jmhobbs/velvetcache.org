@@ -1,0 +1,92 @@
+---
+category:
+- Geek
+creator: admin
+date: 2011-02-15
+permalink: /2011/02/15/installing-scribe-on-osx-with-thrift-0-5-0/
+tags:
+- Compiling
+- OS X
+- Scribe
+- Thrift
+- Work
+title: Installing Scribe on OSX with Thrift 0.5.0
+type: post
+wp_id: "1672"
+---
+<div class="update"><p><b>Update (2011-02-24)</b></p><p>This also works on Ubuntu, with two little tweaks.</p><p>First, no need to install <tt>libevent</tt> from source, just do an <tt>apt-get install libevent-dev</tt>.</p><p>Second, after you install Scribe, you need to add Thrift to the shared library path so it will load.</p><p>Just add a new file called <tt>/etc/ld.so.conf.d/scribe.conf</tt> with this content:<pre lang="bash">/opt/thrift/lib
+/opt/scribe/lib
+/opt/fb303/lib</pre>  Then run <tt>ldconfig</tt> and you should be good to go.</p></div><p>I looked for a way to install Facebook's Scribe on OS X to test out some code I'm writing at work, but I could not find a process that worked for me.</p>
+<p>The best I got was by <a href="http://twitter.com/kpumuk" target="_blank">@kpumuk</a> called <a href="http://kpumuk.info/development/installing-and-using-scribe-with-ruby-on-mac-os/" target="_blank">Installing and Using Scribe with Ruby on Mac OS</a>.</p>
+<p>It got me close, but what I outline below got me the rest of the way.  Hopefully it will help you (until it breaks too)</p>
+
+<h3>Install libevent (2.0.10)</h3>
+<p>You'll need the development files for <tt>libevent</tt>, which you <u>probably</u> don't have.  Grab the latest stable package at <a href="http://monkey.org/~provos/libevent/" target="_blank">http://monkey.org/~provos/libevent/</a>.  I used 2.0.10.</p>
+<p>This one is easy, just configure and make install.</p>
+<pre lang="bash">$ sudo ./configure
+$ sudo make install</pre>
+<p>You might consider using <tt>--prefix=/opt/libevent</tt> on the <tt>configure</tt> to keep this libevent separate from any others that might get installed (via <tt>brew</tt> or <tt>ports</tt>).  If so, be sure to change <tt>--with-libevent</tt> when compiling Thrift.</p>
+
+<h3>Install Thrift (0.5.0)</h3>
+<p>Now let's install Thrift.  0.5.0 is the latest stable, and what I used.  <a href="http://incubator.apache.org/thrift/" target="_blank">http://incubator.apache.org/thrift/</a>.</p>
+<p>Again, not a tough build, but you need to be sure that you set <tt>--with-libevent</tt> on configure, otherwise <tt>thriftnb</tt> won't be built and you'll have to do this compile again later when you get stuck in the Scribe build.</p>
+<pre lang="bash">$ sudo ./configure --prefix=/opt/thrift --with-libevent=/usr/local/lib
+$ sudo make install</pre>
+
+<h3>Install FB303 (In Thrift source)</h3>
+<p>You also need FaceBook Baseline (FB303) which is included in the Thrift source code.  From your Thrift source directory, do the following:</p>
+<pre lang="bash">$ cd contrib/fb303
+$ sudo ./bootstrap.sh
+$ sudo ./configure --prefix=/opt/fb303 --with-thriftpath=/opt/thrift
+$ sudo make install</pre>
+	
+<h3>Install Scribe (> 2ee14d3)</h3>
+<p>There is a bug fix in Scribe at version 2ee14d3, which <a href="https://github.com/facebook/scribe/issues/closed#issue/33" target="_blank">fixes a build problem created by Thrift 0.5.0</a>.</p>
+<p>So, as of right now you need to get your source for Scribe from <a href="https://github.com/facebook/scribe" target="_blank">github</a>, and after that commit.</p>
+<p>Once you have it:</p>
+<pre lang="bash">$ sudo ./bootstrap.sh
+$ sudo ./configure --prefix=/opt/scribe --with-thriftpath=/opt/thrift --with-fb303path=/opt/fb303
+$ sudo make install</pre>
+
+<h3>Build Ruby Thrift structures</h3>
+<p>Okay, everything is installed now!  Well, almost.  You still need to generate the Thrift bindings if you are going to be using Ruby.</p>
+<p>From the scribe source directory:</p>
+<pre lang="bash">$ /opt/thrift/bin/thrift -o . -I /opt/fb303/share/ --gen rb if/scribe.thrift 
+$ /opt/thrift/bin/thrift -o . -I /opt/fb303/share/ --gen rb /opt/fb303/share/fb303/if/fb303.thrift
+$ sudo mkdir /opt/scribe/ruby
+$ sudo mv gen-rb/ /opt/scribe/ruby/scribe</pre>
+	
+<h3>Copy a config from Scribe</h3>
+<p>You'll also need a config file for Scribe, which you can get from the examples directory in the Scribe source.</p>
+<p>Again, from the Scribe source root:</p>
+<pre lang="bash">$ sudo mkdir /opt/scribe/conf/
+$ sudo cp examples/example1.conf /opt/scribe/conf/test.conf</pre>
+
+<h3>Start Scribe!</h3>
+<p>You are now ready to run scribe, so fire it up!</p>
+<pre lang="bash">$ sudo /opt/scribe/bin/scribed -c /opt/scribe/conf/test.conf</pre>
+
+<h3>Test it from Ruby</h3>
+<p>Now open up an editor and drop this into a Ruby script.</p>
+<pre lang="ruby">$LOAD_PATH.unshift('/opt/scribe/ruby/scribe')
+require 'scribe'
+
+begin
+  socket = Thrift::Socket.new('localhost', 1463)
+  transport = Thrift::FramedTransport.new(socket)
+  protocol = Thrift::BinaryProtocol.new(transport, false)
+  client = Scribe::Client.new(protocol)
+  transport.open()
+  log_entry = LogEntry.new(
+    :category => 'test', 
+    :message => 'This is a test message'
+  )
+  client.Log([log_entry])
+  transport.close()
+rescue Thrift::Exception => tx
+  print 'Thrift::Exception: ', tx.message, "\n"
+end</pre>
+
+<p>When you run it, you should get a new directory and file in <tt>/tmp/scribetest</tt> containing your message.</p>
+
+<p>Enjoy!</p>

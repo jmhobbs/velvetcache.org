@@ -1,0 +1,100 @@
+---
+category:
+- Geek
+creator: admin
+date: 2007-08-22
+permalink: /2007/08/22/gtk-tooltips-on-notebook-tab-labels/
+tags:
+- C
+- GTK+
+- Programming
+- Work
+title: GTK Tooltips On Notebook Tab Labels
+type: post
+wp_id: "180"
+---
+<p>Here's a non-obvious (or to me at least) trick to get tooltips onto a <tt>Gtk::Notebook</tt> tab.  It took some searching, but essentially, you just add the <tt>Gtk::Label</tt> to a <tt>Gtk::EventBox</tt> and add that to the tab instead.  Then you attach the tool tip to the <tt>Gtk::EventBox</tt> instead of the <tt>Gtk::Label</tt>.</p>
+<p>Here's an example. I couldn't get my example to compile, the linker was going crazy, but I'm 99% sure that it's fine.  I'm probably just not seeing one glaring error. Let me know if you find it.  The important stuff is all there, even if it won't build.</p>
+<p><b>main.cpp</b><br/><pre lang="cpp" line="1">#include <gtkmm/main.h>
+#include "nbtt.h"
+
+using namespace std;
+
+int main (int argc, char *argv[]) {
+
+  Gtk::Main kit (argc, argv);
+  Nbtt notebookWindow;
+  Gtk::Main::run(notebookWindow);
+	
+  return 0;
+}</pre></p>
+<p><b>nbtt.cpp</b><br/><pre lang="cpp" line="1">#include <gtkmm/window.h>
+#include "nbtt.h"
+
+using namespace std;
+
+Nbtt::Nbtt() {
+
+  set_title("Notebook Tabs With Labels!");
+  set_border_width(10);
+  set_default_size(400, 200);
+
+  lblTabOne.set_text("Tab 1");
+  lblTabTwo.set_text("Tab 2");
+  lblTabThree.set_text("Tab 3");
+
+  ebTabOne.add(lblTabOne);
+  ebTabTwo.add(lblTabTwo);
+  ebTabThree.add(lblTabThree);
+	
+  toolTips.set_tip(ebTabOne,"Tab to page one.");
+  toolTips.set_tip(ebTabTwo,"Tab to page two.");
+  toolTips.set_tip(ebTabThree,"Tab to page three.");
+
+  exNotebook.append_page(pageOne, ebTabOne);
+  exNotebook.append_page(pageTwo, "Second");
+
+  show_all();
+}
+</pre></p>
+<p><b>nbtt.h</b><br/><pre lang="cpp" line="1">
+#ifndef NBTT_H
+#define NBTT_H
+
+#include <gtkmm/window.h>
+#include <gtkmm/notebook.h>
+#include <gtkmm/eventbox.h>
+#include <gtkmm/label.h>
+#include <gtkmm/tooltips.h>
+
+using namespace std;
+
+class Nbtt;
+
+class Nbtt : public Gtk::Window {
+
+  public:
+    Nbtt();
+	
+  private:
+    Gtk::Notebook exNotebook;
+		
+    Gtk::EventBox ebTabOne;
+    Gtk::EventBox ebTabTwo;
+    Gtk::EventBox ebTabThree;
+
+    Gtk::Label lblTabOne;
+    Gtk::Label lblTabTwo;
+    Gtk::Label lblTabThree;
+
+    Gtk::Tooltips toolTips;
+
+    Gtk::Label pageOne;
+    Gtk::Label pageTwo;
+    Gtk::Label pageThree;
+	
+};
+
+#endif // NBTT_H
+</pre></p>
+<p>I found this trick in the gnome-list@gnome.org history.  The thread starts <a href="http://www.mail-archive.com/gtkmm-list@gnome.org/msg08217.html">here</a> if you want to read the exchange.</p>

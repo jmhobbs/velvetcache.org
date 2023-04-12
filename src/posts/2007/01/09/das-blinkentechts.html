@@ -1,0 +1,36 @@
+---
+category:
+- Geek
+creator: admin
+date: 2007-01-09
+permalink: /2007/01/09/das-blinkentechts/
+tags:
+- Internet
+- JavaScript
+- Programming
+title: Das BlinkenTechts!
+type: post
+wp_id: "116"
+---
+<p>I was kicking around the <a href="http://www.webdeveloper.com/" target="_blank">WebDeveloper</a> forums this morning and found a little project to keep me busy. A user was looking for a simple way to blink the colors of some text.  I wrote up a flexible little class in JavaScript to handle it.</p>
+<p>Really simple to implement, and kind of a minimalist class.  Just include the file, add name attributes to the ones you want to blink and set up the window.onload.  Here's an example of the onload:</p>
+<pre lang="javascript">window.onload = function () {
+  var bT = new blinkenTechts(new Array("#000","#F00","#00F"), 'targetName', 500);
+}</pre>
+<p>With that configuration every element with the name <tt>targetName</tt> would rotate through the colors black, red, and blue on a half-second interval once <tt>bT.blink(1)</tt> was called.</p>
+<p>For more example peek at the source of these little example blinkenTechts.  You can download the source <a href="http://static.velvetcache.org/pages/2007/1/9/das-blinkentechts/blinkenTechts.js" target="_blank">here</a>.</p>
+<p><span name="blinkenTechts">Ze blinkin techts!</span><br/>
+<span name="blinkenTechts">Das ist mas blinkin techts!</span><br/>
+<span name="otherBlinken">Ze blinkin techts!</span><br/>
+<span name="otherBlinken">Das ist mas blinkin techts!</span></p>
+<script type="text/javascript" src="http://static.velvetcache.org/pages/2007/1/9/das-blinkentechts/blinkenTechts.js"></script>
+<script type="text/javascript">
+addLoadEvent ( function () {
+  // Create Them
+  var bT = new blinkenTechts(new Array("#000","#F00"),'blinkenTechts',1000);
+  var oB = new blinkenTechts(new Array("#000","#0F0","#F00","#00F"),'otherBlinken',250);
+  // Fire them up
+  bT.blink(1);
+  oB.blink(1);
+} );
+</script>

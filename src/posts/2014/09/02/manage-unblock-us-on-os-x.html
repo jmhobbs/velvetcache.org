@@ -1,0 +1,28 @@
+---
+category:
+- Consume
+- Geek
+creator: admin
+date: 2014-09-02
+permalink: /2014/09/02/manage-unblock-us-on-os-x/
+tags:
+- Alfred
+- Content
+- Mac
+- Programming
+- Tips
+title: Manage Unblock-Us on OS X
+type: post
+wp_id: "2577"
+---
+<p>Sometimes you need to pretend to be in another country.</p>
+<p>VPN's are great for this, but one novel approach is <a href="http://www.unblock-us.com" target="_blank" rel="nofollow">Unblock-Us</a> which changes the location of your DNS server, instead.  You use your IP, but you make DNS requests against in-country DNS servers, thus directing you to the application servers supporting that country.  There is no anonymity, but you don't have to worry about bandwidth caps, and it's worked for every service I've tried it on.</p>
+<p>I use this when I need to access video that is region limited.  However, changing your DNS servers through the Mac settings app is a pain when you have to do it over and over again. On Windows they have an app to download which can manage the change for you.</p>
+<p>So what I did on my Mac was create a script to use the built in <tt>networksetup</tt> command to change my DNS as needed.</p>
+<pre lang="bash" line="0">networksetup -setdnsservers "Wi-Fi" 208.122.23.23 208.122.23.22</pre>
+<p>And one to un-set it.</p>
+<pre lang="bash" line="0">networksetup -setdnsservers "Wi-Fi" "Empty"</pre>
+<p>To top it off, I built a simple Alfred workflow, making it even quicker and cleaner.</p>
+<p style="text-align: center;"><img src="http://static.velvetcache.org/pages/2014/09/02/manage-unblock-us-on-os-x/unblock-us-alfred-workflow.png" alt="Unblock-Us Alfred Workflow" /></p>
+<p>You can download that here: <a href="http://static.velvetcache.org/pages/2014/09/02/manage-unblock-us-on-os-x/Unblock-Us.alfredworkflow">Unblock-Us Alfred Workflow</a>.</p>
+<p>Note that if you are using a wired network interface, you'll need to change the service name from "Wi-Fi" to, well, whatever it is you are using.</p>

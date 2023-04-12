@@ -1,0 +1,35 @@
+---
+category:
+- Geek
+creator: admin
+date: 2007-02-05
+permalink: /2007/02/05/wordpress-jh_random_cats/
+tags:
+- PHP
+- Programming
+- Snippets
+- Wordpress
+title: WordPress jh_random_cats()
+type: post
+wp_id: "131"
+---
+<p>Got bored and <a href="http://www.velvetcache.org/2007/01/24/wordpress-more_posts-old_posts-new_posts/" target="_blank">scratched another itch</a> I've had in wordpress for a while.  I always wanted a way to list my categories on the sidebar on my terms.  The best I had found was the well written and executed <a href="http://ryowebsite.com/wp-plugins/category-visibility/" taeget="_blank">Category Visibility-RH</a> but I wanted to choose from all my categories and still limit the number listed.</p>
+<p>I added a function to my wp-hacks.php and then dropped it into my sidebar.  Does the job, and could easily be edited.  I swear someday I'll learn how to make plug-ins, really.</p>
+<p><pre lang="php" line="1">function jh_random_cats($howMany) {
+    global $wpdb ;
+
+		$query = "
+			SELECT cat_ID, cat_name, category_count
+			FROM $wpdb->categories
+      WHERE category_count != '0'
+    ";
+		$categories = $wpdb->get_results($query);
+		
+		shuffle($categories); // Mix 'em up
+		
+		for($howMany; $howMany > 0; $howMany--) {
+      $poppedCat = array_pop($categories);
+      print '<li><a href="'.get_category_link($poppedCat->cat_ID).'">'.$poppedCat->cat_name.'</a> ('.$poppedCat->category_count.')</li>';
+    }
+}</pre></p>
+<p> As a super-cool extra I got to use a PHP function I had never gotten to use before, let alone knew existed: <a href="http://www.php.net/manual/en/function.shuffle.php" target="_blank">bool shuffle ( array &array )</a>.  It, you guessed it, shuffles up an array.</p>

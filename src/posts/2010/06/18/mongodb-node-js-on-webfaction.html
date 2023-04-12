@@ -1,0 +1,159 @@
+---
+category:
+- Geek
+creator: admin
+date: 2010-06-19
+permalink: /2010/06/18/mongodb-node-js-on-webfaction/
+tags:
+- Hosting
+- Linux
+- MongoDB
+- node.js
+- Programming
+- System Administration
+- Tutorial
+- WebFaction
+title: MongoDB + node.js On WebFaction
+type: post
+wp_id: "1171"
+---
+<p>Following a suggestion from Kloanor on a <a href="http://news.ycombinator.com/item?id=1039518" target="_blank">Hacker News article</a> I got a <a href="http://www.webfaction.com/" target="_blank">WebFaction</a> account to play around with <a href="http://nodejs.org/" target="_blank">node.js</a> on.</p><p><b>tl;dr</b> It's not too hard to set up.</p>
+<h2>Getting Ready</h2>
+<p>All of this software will be installed in my home directory, so there are a few things we need to do.  First, I created a <tt>sources</tt> directory so that I would have my hands on exact copies of the installed software in the future, as well as a clean place to unpack and build them.</p><pre lang="text">[littlef@web140 ~]$ mkdir sources
+[littlef@web140 ~]$</pre></p>
+<p>Second, we need to create two custom applications for MongoDB and node.js using the WebFaction control panel.</p><p>This is pretty easy, just go to "<a href="https://panel.webfaction.com/app_/create" target="_blank">Domains/Websites &gt; Applications &gt; Add New</a>".  Now give it a name (I used mongodb_master) and select "Custom app (listening on port)" as the App Type.</p><p style="text-align: center;"><a href="http://static.velvetcache.org/pages/2010/06/18/mongodb-node-js-on-webfaction/001_CustomApp.png" target="_blank"><img src="http://static.velvetcache.org/pages/2010/06/18/mongodb-node-js-on-webfaction/001_CustomApp.sm.png" alt="Creating The Custom Application" /></a></p><p>Hit create and write down the port number it provides.  Do this again for node.js.  You can also take a moment to map these applications to a website and domain.</p>
+<p style="text-align: center;"><a href="http://static.velvetcache.org/pages/2010/06/18/mongodb-node-js-on-webfaction/002_CustomApps.png" target="_blank"><img src="http://static.velvetcache.org/pages/2010/06/18/mongodb-node-js-on-webfaction/002_CustomApps.sm.png" alt="The Custom Applications" /></a></p>
+<h2>MongoDB</h2>
+<p>MongoDB is actually supported to some extent, with install instructions provided in the <a href="http://docs.webfaction.com/software/mongodb.html" target="_blank">WebFaction Doc's</a>.  I did this slightly different, so I'll detail my version here.</p>
+<h3>Acquiring MongoDB</h3>
+<p>You can get MongoDB at <a href="http://www.mongodb.org/display/DOCS/Downloads" target="_blank">http://www.mongodb.org/display/DOCS/Downloads</a>.  You'll need the 32-Bit Linux version.  At the time of this writing the most current stable release was <a href="http://downloads.mongodb.org/linux/mongodb-linux-i686-1.4.3.tgz" target="_blank">1.4.3</a>.</p>
+<p><pre lang="text">[littlef@web140 ~]$ cd sources
+[littlef@web140 sources]$ wget  http://downloads.mongodb.org/linux/mongodb-linux-i686-1.4.3.tgz
+--2010-06-18 18:43:29--  http://downloads.mongodb.org/linux/mongodb-linux-i686-1.4.3.tgz
+Resolving downloads.mongodb.org... 72.21.202.134
+Connecting to downloads.mongodb.org|72.21.202.134|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 23709740 (23M) [application/x-tar]
+Saving to: â€œmongodb-linux-i686-1.4.3.tgzâ€
+
+100%[==============>] 23,709,740   202K/s   in 1m 55s
+
+2010-06-18 18:45:29 (201 KB/s) - â€œmongodb-linux-i686-1.4.3.tgzâ€ saved [23709740/23709740]
+
+[littlef@web140 sources]$</pre></p>
+<h3>Installing MongoDB</h3>
+<p>MongoDB comes pre-compiled, so installing it is as easy as unpacking and moving some directories.</p>
+<p><pre lang="text">[littlef@web140 sources]$ tar -zxf mongodb-linux-i686-1.4.3.tgz
+[littlef@web140 sources]$ cd mongodb-linux-i686-1.4.3/
+[littlef@web140 mongodb-linux-i686-1.4.3]$ ls
+bin  GNU-AGPL-3.0  include  lib  README  THIRD-PARTY-NOTICES
+[littlef@web140 mongodb-linux-i686-1.4.3]$ mv bin ~/
+[littlef@web140 mongodb-linux-i686-1.4.3]$ mv lib ~/
+[littlef@web140 mongodb-linux-i686-1.4.3]$ mv include ~/
+</pre></p>
+<h3>Configuring MongoDB</h3>
+<p>In this case, MongoDB is configured at run time.  But it will need a data directory.  I chose to put this at <tt>~/var/mongo/master/</tt>.  You don't have to do anything special, just make sure the directory exists, and is empty.</p>
+<p>That's it! MongoDB is installed. We'll come back and fire it up after we get node.js installed.</p>
+<h2>Installing node.js</h2>
+<p>node.js is almost as easy as MongoDB.  And while not documented anywhere, it does run just fine.  The major point of contact here is a forum topic that details <a href="http://forum.webfaction.com/viewtopic.php?pid=16220" target="_blank">how to get it running</a>.  Again, I'm going to deviate a bit, but I'll end up in roughly the same place.</p>
+<h3>Acquiring node.js</h3>
+<p>You can get node.js at <a href="http://nodejs.org/#download" target="_blank">http://nodejs.org/#download</a>.  It's distributed as source, so there is nothing to pick and choose from.  At the time of this writing the most current version was <a href="http://nodejs.org/dist/node-v0.1.98.tar.gz" target="_blank">0.1.98</a>.</p>
+<p><pre lang="text">[littlef@web140 ~]$ cd sources
+[littlef@web140 sources]$ wget http://nodejs.org/dist/node-v0.1.98.tar.gz
+--2010-06-18 18:57:14--  http://nodejs.org/dist/node-v0.1.98.tar.gz
+Resolving nodejs.org... 97.107.132.72
+Connecting to nodejs.org|97.107.132.72|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 3770749 (3.6M) [application/octet-stream]
+Saving to: â€œnode-v0.1.98.tar.gzâ€
+
+100%[===========>] 3,770,749    151K/s   in 25s
+
+2010-06-18 18:57:39 (147 KB/s) - â€œnode-v0.1.98.tar.gzâ€ saved [3770749/3770749]
+
+[littlef@web140 sources]$</pre></p><p>Easier done than said.</p>
+<h3>Installing node.js</h3>
+<p>You have to compile node.js, but this went perfectly clean for me.  Just make sure you set the prefix when you configure, or you'll have to do it all again.</p>
+<p><pre lang="text">[littlef@web140 sources]$ tar -zxf node-v0.1.98.tar.gz
+[littlef@web140 sources]$ cd node-v0.1.98/
+[littlef@web140 node-v0.1.98]$ ./configure --prefix=$HOME
+Checking for program g++ or c++          : /usr/bin/g++                                                            
+...snip...
+Checking for fdatasync(2) with c++       : yes
+'configure' finished successfully (5.495s)
+[littlef@web140 node-v0.1.98]$ make
+Waf: Entering directory `/home/littlef/sources/node-v0.1.98/build'                                                         
+DEST_OS: linux                                                                                                     
+...snip...
+Waf: Leaving directory `/home/littlef/sources/node-v0.1.98/build'
+'build' finished successfully (5m33.731s)
+[littlef@web140 node-v0.1.98]$ make install
+</pre>
+</p>
+<h3>Configuring node.js</h3>
+<p>Nothing to configure! It should be ready, like, right now.</p>
+<h2>Running Your New Software</h2>
+<p>Okay, everything is installed.  Let's get stuff running.</p>
+<h3>Running MongoDB</h3>
+<p>Running MongoDB should only take two options.  <tt>--dbpath</tt> and <tt>--port</tt>.</p>
+<p>Go ahead and fire it up, then shut it down with <tt>ctrl-c</tt>.</p>
+<p><pre lang="text">[littlef@web140 ~]$ mongod --dbpath ~/var/mongo/master/ --port 39381
+Fri Jun 18 19:11:24 Mongo DB : starting : pid = 3293 port = 39361 dbpath = ~/var/mongo/master master = 0 slave = 0  32-bit
+
+** NOTE: when using MongoDB 32 bit, you are limited to about 2 gigabytes of data
+**       see http://blog.mongodb.org/post/137788967/32-bit-limitations for more
+
+Fri Jun 18 11:11:24 db version v1.2.2, pdfile version 4.5
+Fri Jun 18 11:11:24 git version: nogitversion
+Fri Jun 18 11:11:24 sys info: Linux biber 2.6.26-2-amd64 #1 SMP Thu Feb 11 00:59:32 UTC 2010 i686 BOOST_LIB_VERSION=1_40
+Fri Jun 18 11:11:24 waiting for connections on port 39361
+^CFri Jun 18 11:11:27 got kill or ctrl c signal 2 (Interrupt), will terminate after current cmd ends
+Fri Jun 18 11:11:27 now exiting
+Fri Jun 18 11:11:27  dbexit:
+Fri Jun 18 11:11:27      shutdown: going to flush oplog...
+Fri Jun 18 11:11:27      shutdown: going to close sockets...
+Fri Jun 18 11:11:27      shutdown: waiting for fs...
+Fri Jun 18 11:11:27      shutdown: closing all files...
+Fri Jun 18 11:11:27      closeAllFiles() finished
+Fri Jun 18 11:11:27      shutdown: removing fs lock...
+Fri Jun 18 11:11:27  dbexit: really exiting now
+[littlef@web140 ~]</pre></p>
+<p>That's great, but we can't just stay logged in to SSH all the time.  Let's nohup it, background it and forget about it.</p>
+<p><pre lang="text">[littlef@web140 ~]$ nohup mongod --dbpath ~/var/mongo/master/ --port 39381 &
+[1] 3299
+nohup: ignoring input and appending output to `nohup.out
+[littlef@web140 ~]$</pre></p>
+<p>Now we can query it by setting the port on <tt>mongo</tt></p>
+<p><pre lang="text">[littlef@web140 ~]$ mongo --port 39381 noderegator
+MongoDB shell version: 1.2.2
+url: noderegator
+connecting to: 127.0.0.1:39381/noderegator
+type "exit" to exit
+type "help" for help
+> show collections
+> exit
+bye
+[littlef@web140 ~]$ </pre></p>
+<h3>Running node.js</h3>
+<p>Before we can actually run node.js, we need to write a little application.  In my case this will go in <tt>~/webapps/noderegator_nodejs/app.js</tt>.  Place yours wherever you set up your custom application for node.</p><p>Be sure to change the port number to the one issued to your application by WebFaction.</p>
+<p><pre lang="javascript" line="1">var http = require( 'http' ),
+     sys = require( 'sys' );
+
+http.createServer(
+  function( request, response ) {
+    sys.puts( 'Request!' );
+    response.writeHead( 200, { 'Content-Type': 'text/plain' } );
+    response.end( 'Hello World\n');
+  }
+).listen( 35408 );
+sys.puts( 'Server running on port 35408' );</pre></p>
+<p>Now let's fire that up and see it in the browser. <tt>ctrl-c</tt> to quit.</p>
+<p><pre lang="text">[littlef@web140 ~]$ cd webapps/noderegator_nodejs/
+[littlef@web140 noderegator_nodejs]$ node app.js
+Server running on port 35408
+Request!
+Request!
+^C
+[littlef@web140 noderegator_nodejs]$ </pre></p><p>If you got an nginx 503 error when you tried to visit the site, check that your port numbers are set up correctly.</p>
+<h2>All Done</h2>
+<p>That's it, that's all you need to know.  Enjoy MongoDB and node.js on WebFaction. I hope it all goes well for you.</p>

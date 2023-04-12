@@ -1,0 +1,21 @@
+---
+category:
+- Geek
+creator: admin
+date: 2010-08-27
+permalink: /2010/08/27/fixing-kates-instance-behavior/
+tags:
+- Kate
+- KDE
+- Linux
+- Pro-Tip
+title: Fixing Kate's Instance Behavior
+type: post
+wp_id: "1388"
+---
+<p>I've been a KDE user for a long time now, and I love all the new changes (except the Aero snap thing, you can <a href="http://ubuntuforums.org/showthread.php?t=1403997" target="_blank">turn that off though</a>).  One thing I love is <a href="http://www.velvetcache.org/2008/06/12/why-i-love-kate" target="_blank">Kate</a>.  I usually have two or three Kate sessions open at once, borrowing code across projects or changing things in different modules.</p>
+<p>My problem is that Kate now <a href="http://websvn.kde.org/?view=revision&revision=1025768" target="_blank">defaults to only one instance</a>, so if I call Kate from the command line with a file name, it gets added to a running instance, not a new one.  If I use the KRunner to start a session, it loads in place of the current session in a running instance.  I understand the reasoning here, but I want to use it the way I always have.</p>
+<p>Easy fix!  Just always make sure it is called with <tt>kate -n</tt></p>
+<p>You can do this with a BASH alias, <pre lang="bash" line="0">alias kate='/usr/bin/kate -n'</pre> or more thoroughly with a wrapper script like this one from a <a href="http://forum.kde.org/viewtopic.php?f=20&t=86312" target="_blank">forum post</a>: <pre lang="bash" line="1">#!/bin/bash
+/usr/bin/kate -n $@ &> /dev/null &</pre></p>
+<p>Easy fix!</p>

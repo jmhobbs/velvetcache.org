@@ -1,0 +1,29 @@
+---
+category:
+- Geek
+creator: admin
+date: 2007-08-06
+permalink: /2007/08/06/c-string-strip-whitespace/
+tags:
+- C
+- Programming
+- Snippets
+- Work
+title: C++ String Strip Whitespace
+type: post
+wp_id: "176"
+---
+<p>I was at work today and had the hardest time trying to find a function that could strip out whitespace from a string.  There isn't one built into C++, and I can't just add on libraries (e.g. boost) just for this sort of one-time use item.  I couldn't find an easy drop in on the web either, so I wrote my own based on a templating system I had made.</p>
+<p><pre lang="cpp" line="1">string trimstring (string toTrim) {
+	
+	size_t found;
+	found = toTrim.find(" ");
+
+	while(toTrim.length() != 0 && found != string::npos) {
+		toTrim.erase(found,1);		
+		found = toTrim.find(" ");
+	}
+	
+	return toTrim;
+	
+}</pre></p><p>Very brute-force, but easy to understand right?</p>

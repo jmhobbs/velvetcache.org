@@ -1,0 +1,33 @@
+---
+category:
+- Geek
+creator: admin
+date: 2009-12-18
+permalink: /2009/12/18/extracting-when-you-visited-a-page-from-firefox/
+tags:
+- Firefox
+- Internet
+- Tutorial
+title: Extracting When You Visited A Page From Firefox
+type: post
+wp_id: "750"
+---
+<p>Need to get the exact time that you visited a page in Firefox?  I couldn't find an easy way to look this up in the History interface, or anywhere else for that matter.  I did however know that Firefox stores this kind of thing in sqlite3 databases.  Here's how I got what I needed.</p>
+<p>First you have to find the sqlite databases, I'm on Linux so that would be in my home directory.  The database you want is <tt>places.sqlite</tt>. Crack that open in <tt>sqlite3</tt>.  Your command will differ as this is based on your profile name, mine is "gmail" so I ended up with <tt>g69ap5lc.gmail</tt>.</p>
+<p><pre lang="text">$ sqlite3 ~/.mozilla/firefox/g69ap5lc.gmail/places.sqlite</pre></p>
+<p>Be aware you have to shut down the Firefox instance first, because it locks the file.  Make sure your privacy settings won't erase it all when you shut it down! I had to change mine to "Remember history" first.</p>
+<p>Next you need to find and grab the timestamp.  This can be a chore if you don't have the full URL. I was looking for the one from spiffie.org below.</p>
+<p><pre lang="text">sqlite>.headers on
+sqlite>select * from moz_places;
+id|url|title|rev_host|visit_count|hidden|typed|favicon_id|frecency|last_visit_date
+1|http://www.mozilla.com/en-US/firefox/central/|/en-US/firefox/central/|moc.allizom.www.|0|0|0||140|
+...
+1366|http://spiffie.org/kits/usb7/driver_linux.shtml|Linux USB7 Driver|gro.eiffips.|1|0|0||100|1261169238197827</pre></p>
+<p>The column we are interested in is <tt>last_visit_date</tt> which is <tt>1261169238197827</tt> in our case. You can also list all the recent visits from the <tt>moz_historyvisits</tt> table with the <tt>id</tt> column.</p>
+<p><pre lang="text">sqlite> select * from moz_historyvisits where place_id = '1366';
+id|from_visit|place_id|visit_date|visit_type|session
+200|199|1366|1261169238197827|6|42</pre></p>
+<p>Now we need to convert that timestamp into something we can read (unless you are a super UNIX geek and can read timestamps).  This instance is too precise for the <tt>date</tt> command, so lop off the first 10 digits and use that, so in the example we use <tt>1261169238</tt>.</p>
+<p><pre lang="text">$ date -d @1261169238
+Fri Dec 18 14:47:18 CST 2009</pre></p>
+<p>Not short and sweet, but it works.</p>

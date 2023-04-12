@@ -1,0 +1,149 @@
+---
+category:
+- Geek
+creator: admin
+date: 2012-02-02
+permalink: /2012/02/02/naive-search-with-javascript/
+tags:
+- JavaScript
+- Programming
+- Python
+- Search
+title: Naive Search with JavaScript
+type: post
+wp_id: "2140"
+---
+<p>On a recent project I had the need to implement a basic search functionality into a web interface.  This isn't unusual, but what was different is that the data in this project was fairly static, and was kept in JSON on disk (and cached into memory).  Additionally, there would be a point where it was moved off of our servers, onto an entirely different stack (hence the JSON).</p>
+<p>There was minimal server side processing so far, and I did not want to add more overhead that would need to be ported.  So, I decided to implement my search in JavaScript (with some help from Python). My idea was to do very basic string matching on a pre-built index.  In this article I am going to lay out my implementation, but on a dummy data set.</p>
+<h2>The Process</h2>
+<p>This search breaks down into three steps:<ol><li>Build Search Index</li><li>Perform Search</li><li>Connect To Interface</li></ol></p>
+<p>Before we start writing that, let's cover the data.</p>
+<h2>The Data</h2>
+<p>Here is the data I will be sifting through.  To keep it simple, I'm just searching through some sentences with associated ID's.  It's short and simple, but with some tweaks you can apply this to bigger data sets, as I did.</p>
+<p>My data set will be represented in JSON for portability and easy interpretation from JavaScript.</p>
+<p><pre lang="javascript">{
+  "entries": [
+    {
+      "id": 1,
+      "title": "The lazy white cat slept.",
+      "body": "What a lazy cat."
+    },
+    {
+      "id": 2,
+      "title": "George, though angry, didn't make a sound.",
+      "body": "George is a quiet man."
+    },
+    {
+      "id": 3,
+      "title": "Anyone could see that white didn't suit her.",
+      "body": "Plus, it's after Labor Day."
+    },
+    {
+      "id": 4,
+      "title": "By Thor's Hammer, I will have my revenge.",
+      "body": "Also, by Odin's Eye"
+    },
+    {
+      "id": 5,
+      "title": "Get off the couch you lazy bum.",
+      "body": "Yeah, it's way better to sit at a computer desk."
+    }
+  ]
+}</pre><div style="text-align: right; margin-top: -10px; font-style: italic;"><a href="https://gist.github.com/1673557/92278faae05a52eb8d87eb59085982d51b7ab2fe#file_data.json" target="_blank">data.json (92278f)</a></div></p>
+<h2>The Index</h2>
+<p>To facilitate easy matching, I'm going to build a search index that will be a dictionary, with individual words (tokens) as the keys, and arrays of ID's as the values.</p>
+<p>I've decided on Python for my index builder.  Handling JSON from Python is easy, though if you have a version older than 2.6 you will need to use a different import, such as simplejson.</p>
+<p>The core of this functionality is the tokenizer.  To build this, we need to determine our rules.  Since this is a simple search, I'm going to tokenize on word boundaries, it will be case insensitive, and I will only accept the characters A-Z, single quote and dash inside of a word.</p>
+<p>Here is my implementation of the tokenizer, that follows these rules:</p>
+<p><pre lang="python" line="6">def tokenize ( string ):
+  # Strip extra punctuation
+  string = re.sub( r'[^a-z0-9A-Z \'\-]', '', string.lower() )
+  return string.split( ' ' )</pre><div style="text-align: right; margin-top: -10px; font-style: italic;"><a href="https://gist.github.com/1673557/92278faae05a52eb8d87eb59085982d51b7ab2fe#file_build_index.py" target="_blank">build_index.py (92278f)</a></div></p>
+<p>The remainder of the Python is simply opening and parsing the JSON.</p>
+<p><pre lang="python" line="13">  index = {}
+
+  with open( 'data.json', 'r' ) as handle:
+    obj = json.loads( handle.read() )
+
+    for entry in obj['entries']:
+      # Break up both title and body
+      tokens = tokenize( entry['title'] )
+      tokens.extend( tokenize( entry['body'] ) )
+
+      # Make them unique by casting to set
+      tokens = set( tokens )
+
+      # Now add them to the index
+      for token in tokens:
+        # Make a new entry for the token if it doesn't exist
+        if token not in index.keys():
+          index[token] = []
+        # Add this id to the list of matches for this token
+        index[token].append( entry['id'] )</pre><div style="text-align: right; margin-top: -10px; font-style: italic;"><a href="https://gist.github.com/1673557/92278faae05a52eb8d87eb59085982d51b7ab2fe#file_build_index.py" target="_blank">build_index.py (92278f)</a></div></p>
+<p>Run that, and we get the dictionary we wanted:<pre lang="text">$ python build_index.py 
+{u'a': [1, 2, 5],
+ u'after': [3],
+ u'also': [4],
+ u'angry': [2],
+ u'anyone': [3],
+ ...</pre><div style="text-align: right; margin-top: -10px; font-style: italic;"><a href="https://gist.github.com/1673557/92278faae05a52eb8d87eb59085982d51b7ab2fe#file_output.txt" target="_blank">output.txt (92278f)</a></div></p>
+<h2>JavaScript</h2>
+<p>Now that we have an index to work with, let's convert it to JSON.  This just takes a little tweak to the Python.</p>
+<p><pre lang="python" line="33">  with open( 'index.json', 'w' ) as handle:
+    handle.write( json.dumps( index ) )</pre><div style="text-align: right; margin-top: -10px; font-style: italic;"><a href="https://gist.github.com/1673557/89ba7723a973511c469ac484af6b8bb2f9dd541c#file_build_index.py" target="_blank">build_index.py (89ba77 )</a></div></p>
+<p>That gives us a JSON file to work with.</p>
+<p><pre lang="javascript">{"thor's": [4], "is": [2], "bum": [5], "didn't": [2, 3], "yeah": [5], ...</pre><div style="text-align: right; margin-top: -10px; font-style: italic;"><a href="https://gist.github.com/1673557/89ba7723a973511c469ac484af6b8bb2f9dd541c#file_index.json" target="_blank">index.json (89ba77)</a></div></p>
+<p>Now we're going to load that JSON with an AJAX call, so we have the index to work with.</p>
+<p><pre lang="javascript" line="8">  init: function () {
+    Search.$results = $( '#search-results' );
+
+    $.getJSON( 'index.json' )
+      .error( Search.index_load_error )
+      .success( Search.index_load_success );
+  },
+
+  index_load_error: function () {
+    Search.$results.append( $('<li/>').text( 'Error Loading Index' ) );
+  },
+
+  index_load_success: function ( data ) {
+    Search.index = data;
+  },</pre><div style="text-align: right; margin-top: -10px; font-style: italic;"><a href="https://gist.github.com/1673557/89ba7723a973511c469ac484af6b8bb2f9dd541c#file_search.js" target="_blank">search.js (89ba77)</a></div></p>
+<p>Once we have that data, finding matches is just a matter of looking them up in <tt>Search.index</tt>.  Below I've used a loop that will search through an array of terms, and then accumulate the matches.</p>
+<p><pre lang="javascript" line="25">    var matches = [];
+
+    // For each term passed in, check it in the index
+    $.each( terms, function ( i, term ) {
+      if( Search.index[term] ) {
+        matches = matches.concat( Search.index[term] );
+      }
+    } );</pre><div style="text-align: right; margin-top: -10px; font-style: italic;"><a href="https://gist.github.com/1673557/89ba7723a973511c469ac484af6b8bb2f9dd541c#file_search.js" target="_blank">search.js (89ba77)</a></div></p>
+<p style="text-align: center;"><img src="http://static.velvetcache.org/pages/2012/02/02/naive-search-with-javascript/1.png" alt="It works!" style="border: 1px solid #000;" /><br/><em>It works!</em></p>
+<h2>Hook It Up</h2>
+<p>Just a little bit remains to connect this thing.  First we need to port over the tokenizer from Python to get a consistent result.  Pretty easy port.</p>
+<p><pre lang="javascript" line="47">  tokenize: function ( string ) {
+    string = string.toLowerCase();
+    string = string.replace( /[^a-z0-9A-Z \'\-]/, '' );
+    return string.split( ' ' );
+  }</pre><div style="text-align: right; margin-top: -10px; font-style: italic;"><a href="https://gist.github.com/1673557/216a1523eb3ba2d2cd03c68e225bd70c323ed634#file_search.js" target="_blank">search.js (216a15)</a></div></p>
+<p style="text-align: center;"><img src="http://static.velvetcache.org/pages/2012/02/02/naive-search-with-javascript/2.png" alt="Tokenize!" style="border: 1px solid #000;" /><br/><em>JavaScript tokenize in action.</em></p>
+<p>Last we just need to apply our functions to some inputs, which we hook up with some jQuery.</p>
+<p><pre lang="javascript" line="17">      $( function () {
+        $( '#search-terms' ).keyup( function () {
+          var results = Search.search( Search.tokenize( $(this).val() ) ),
+              $results = $( '#search-results' );
+
+          // Clear current results
+          $results.children().remove();
+
+          // Add new ones
+          $.each( results, function ( index, element ) {
+            $results.append( $( '<li/>' ).text( element ) );
+          } );
+        } );
+      } );</pre><div style="text-align: right; margin-top: -10px; font-style: italic;"><a href="https://gist.github.com/1673557/216a1523eb3ba2d2cd03c68e225bd70c323ed634#file_index.html" target="_blank">index.html (216a15)</a></div></p>
+<p style="text-align: center;"><img src="http://static.velvetcache.org/pages/2012/02/02/naive-search-with-javascript/3.png" alt="Hooked Up" style="border: 1px solid #000;" /><br/></p>
+<h2>Make It Better</h2>
+<p>This is not, by any means, a complete system.  You would want to grab the results and match up the ID's to a more useful output.  Additionally, you could drop the AJAX call and use a script tag to bring in the index.</p>
+<p>There are plenty of improvements you can make, and I'd love to know if you make them!</p>
+<p>For reference, here is the complete source: <a href="https://gist.github.com/1673557" target="_blank">https://gist.github.com/1673557</a>.</p>

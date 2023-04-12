@@ -1,0 +1,38 @@
+---
+category:
+- Geek
+creator: admin
+date: 2009-05-21
+permalink: /2009/05/21/mysql-ruby-on-debian-sidux/
+tags:
+- Linux
+- Programming
+- Ruby
+title: MySQL & Ruby on Debian (sidux)
+type: post
+wp_id: "357"
+---
+<p>
+I've started learning Ruby on Rails, and I needed the mysql driver.  Should be simple,
+right? Just <tt>gem install mysql</tt> or something?
+</p>
+
+<p>It wasn't.
+<pre lang="bash">
+root@asuka:~# gem install mysql
+Building native extensions.  This could take a while...                                                                              
+ERROR:  Error installing mysql:                                                                                                      
+        ERROR: Failed to build gem native extension.                                                                                 
+
+/usr/bin/ruby1.8 extconf.rb
+extconf.rb:1:in `require': no such file to load -- mkmf (LoadError)
+        from extconf.rb:1                                          
+
+
+Gem files will remain installed in /usr/lib/ruby/gems/1.8/gems/mysql-2.7 for inspection.
+Results logged to /usr/lib/ruby/gems/1.8/gems/mysql-2.7/gem_make.out
+root@asuka:~#</pre></p>
+
+<p>Once tangled mess of Google, Debian, and Ruby later, I found a bug report and a solution (for me at least).</p>
+
+<p><a href="http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=373843">Debian Bug 373843</a> - Long story short, you need <tt>ruby1.8-dev</tt> or, it appears, <tt>libmysql-ruby</tt>.</p>

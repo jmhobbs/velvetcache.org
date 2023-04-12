@@ -1,0 +1,26 @@
+---
+category:
+- Geek
+creator: admin
+date: 2008-03-19
+permalink: /2008/03/18/any2mp3/
+tags:
+- BASH
+- Linux
+- Music
+- Programming
+title: any2mp3
+type: post
+wp_id: "213"
+---
+<p>Here's a modification of a bash script I made a <a href="http://www.velvetcache.org/2007/06/04/m4a2mp3">while back</a> to convert anything that mplayer can play into an mp3 file. Change bitrates and the like to taste.</p><p><pre lang="bash" line="1">#!/bin/bash
+#
+# any2mp3
+#
+for i in *.$1; do
+mplayer -vc null -vo null -ao pcm:fast "$i" -ao pcm:file="${i%.$1}.wav"
+done
+for i in *.wav; do
+lame -h -V2 --vbr-new "$i" "${i%.wav}.mp3"
+done
+rm *.wav</pre></p><p>Say you are in a directory of m4a files, just run <tt>any2mp3.sh m4a</tt> and wait.</p>

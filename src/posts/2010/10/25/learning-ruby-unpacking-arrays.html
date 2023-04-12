@@ -1,0 +1,29 @@
+---
+category:
+- Geek
+creator: admin
+date: 2010-10-25
+permalink: /2010/10/25/learning-ruby-unpacking-arrays/
+tags:
+- Autodidact
+- Confurrent
+- Programming
+- Ruby
+- Twitter
+title: 'Learning Ruby: Unpacking Arrays'
+type: post
+wp_id: "1475"
+---
+<p>So, about a week or go I dove back into Ruby out of necessity.  The Twitter daemon I had written in Python for <a href="http://www.confurrent.com/" target="_blank">Confurrent</a> was chronically ill.  My socket would block and eat 100% CPU and it seemed like nobody knew how to work around it, least of all me.</p>
+<p>So I pulled out Ruby.  I've only ever done any real Ruby work with Rails, when I wrote <a href="http://www.thirtydaylist.com/" target="_blank">ThirtyDayList</a> to learn the tech.</p>
+<p>One thing I will note is that learning Rails basics does not teach you Ruby, or at least not enough Ruby to be useful.  However, writing my Twitter daemon has made me confident in Ruby, and I like it a lot more now than after the Rails experiment.</p>
+<p>The daemon was quick to write, using <a href="http://github.com/intridea/tweetstream" target="_blank">Tweetstream</a>, and I only ran into one roadblock, which was all my fault.</p>
+<p>See, I wanted to use the track method, which takes an unlimited and variable set of arguments (like <tt>*args</tt> in Python) but I had my arguments in an array.   I could not figure out how to pass those on correctly, and even bust into the gem and started adding code to get it to work.</p>
+<p>I finally realized that there is no way that there isn't a built-in for this and I went back to Googling.  A short while later I found a short post from <a href="http://caiustheory.com/sending-array-elements-as-individual-arguments-in-ruby">detailing exactly what I should be doing.</a></p>
+<p>Evidently you can use the asterisk to unpack an array for this.  Super easy, but I feel silly for not finding that sooner.  The pitfalls of unfocused autodidactism.</p>
+<p><b>The Wrong Way</b><pre lang="ruby" line="1">predicates = [ 'a', 'b', 'c' ]
+@client.track( predicates )
+# Tracks 'abc'</pre></p>
+<p><b>The Right Way</b><pre lang="ruby" line="1">predicates = [ 'a', 'b', 'c' ]
+@client.track( *predicates )
+# Tracks 'a,b,c'</pre></p>

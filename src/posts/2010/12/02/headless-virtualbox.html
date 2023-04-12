@@ -1,0 +1,43 @@
+---
+category:
+- Geek
+creator: admin
+date: 2010-12-02
+permalink: /2010/12/02/headless-virtualbox/
+tags:
+- BlankSMTP
+- Environment
+- Projects
+- VirtualBox
+title: Headless VirtualBox
+type: post
+wp_id: "1559"
+---
+<div class="update"><p><b>Updated (2010-12-02)</b><p><p>So, duh, multiple interfaces.  One NAT one Host-Only.  All done.</p></div>I recently set up a VirtualBox VM to test BlankSMTP locally, but it's annoying to have the GUI up all the time when I'm just SSH'ing in.  To get around this I set it up to work headless.</p>
+<p>The biggest hangup is networking.  I had to switch it to Host-Only so that the interface would remain consistent.  Other wise with bridged I would get new IP's all the time, and even then only when the networking init script got triggered somehow.</p>
+<p>After that was set I just wrote two quick bash scripts to start and stop.  An init script would also be an option if I wanted to make sure it shut down when I power off the laptop, but I decided it wasn't worth the trouble.</p>
+<p>The key commands are <tt>VBoxHeadless -startvm [vm name]</tt> and <tt>VBoxManage controlvm [vm name] savestate</tt></p>
+<p><b>blanksmtp-start</b><br/><pre lang="bash">#!/bin/bash
+
+COUNT=$( ps aux | grep 'VBoxHeadless -startvm BlankSMTP' | grep -v grep | wc -l)
+
+if [ "$COUNT" == "0" ]; then
+        echo "Starting BlankSMTP..."
+        nohup VBoxHeadless -startvm BlankSMTP > /dev/null 2>&- &
+else
+        echo "Found a running instance!"
+fi
+</pre></p>
+<p><b>blanksmtp-stop</b><br/><pre lang="bash">#!/bin/bash
+
+COUNT=$( ps aux | grep 'VBoxHeadless -startvm BlankSMTP' | grep -v grep | wc -l)
+
+if [ "$COUNT" == "0" ]; then
+        echo "No running instance!"
+else
+        echo "Shutting down..."
+        VBoxManage controlvm BlankSMTP savestate
+fi
+
+</pre></p>
+<p>Works like a charm!</p>

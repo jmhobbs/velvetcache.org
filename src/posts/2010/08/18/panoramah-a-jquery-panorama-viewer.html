@@ -1,0 +1,65 @@
+---
+category:
+- Geek
+creator: admin
+date: 2010-08-18
+permalink: /2010/08/18/panoramah-a-jquery-panorama-viewer/
+tags:
+- JavaScript
+- Panorama
+- Photography
+- Programming
+- Projects
+title: 'PanoramAh: A jQuery Panorama Viewer'
+type: post
+wp_id: "1364"
+---
+<div class="update">
+<p><b>Update (2010-08-25)</b></p>
+<p>New version that supports multiple panorama's on a page, check it out <a href="http://www.velvetcache.org/2010/08/25/panoramah-version-two">here</a>.</p>
+</div>
+<p>As I have <a href="http://www.velvetcache.org/2010/08/17/making-panoramas-with-hugin" target="_blank">recently made some panoramas with Hugin</a> I needed a solution for displaying them on the web.  I searched around a bit and found <a href="http://www.gayadesign.com/diy/panoramic-photoviewer-in-javascript/" target="_blank">this one from Gaya Designs</a>.</p>
+<p>I liked the clever technique for scrolling linked to the mouse via the <tt>background-position</tt>, but I didn't care for the Prototype dependency or the rather large and feature-full script.</p>
+<p>Taking that into consideration I whipped up my own viewer based on the same principles that used jQuery.</p>
+<p><b>The Markup</b></p>
+<p>The markup is dead simple.  A class to identify the container, a little loading message and an <tt>img</tt> tag to preload into.  I used the <tt>rel</tt> attribute on the container to carry the image URL and the width of the image.  Height of the container should be set to the height of the panorama, width can be anything you like.</p>
+<p><pre lang="HTML" line="0"><div class="panorama" rel="4201:Panorama-Cropped.sm.jpg" style="height: 500px; width: 100%; border: 1px solid #444;"> 
+  Loading...
+  <img class="preload" alt="" style="display: none;" /> 
+</div></pre></p>
+<p><b>The JavaScript</b></p>
+<p>Again, pretty super easy.  I'll let the code speak for itself.</p>
+<p><pre lang="javascript" line="1">var PanoramAh = {
+  init: function () {
+    // Get the element
+    el = $( ".panorama" );
+    // Extract the relevant data from the rel attribute
+    panorama_width = el.attr( 'rel' ).split( ':' )[0];
+    panorama_url = el.attr( 'rel' ).split( ':' )[1];
+    // Get the preloader
+    img = el.find( '.preload' )
+    // Setup the onload callback
+    img.load(
+      function () {
+        // Set the background to the image
+        el.css( 'background', "transparent url( '" + panorama_url + "' ) no-repeat" );
+        // Clear out the loading crap
+        el.html( "" );
+        // Set up the mouse monitoring
+        el.mousemove(
+          function ( event ) {
+            // Get the offset
+            offset = Math.floor( ( panorama_width - el.width() ) * ( ( event.pageX - el.offset().left ) / el.width() ) )
+            // Mind the overflows
+            if( offset <= panorama_width - el.width() ) { el.css( 'background-position',  '-' + offset + 'px 50%' ); }
+          }
+        );
+      }
+    );
+    // Start the loading process
+    img.attr( 'src', panorama_url );
+  }
+}</pre></p>
+<p><b>The Demo</b></p>
+<p>It works for me in Firefox and Chrome. YMMV.</p>
+<p><a href="http://static.velvetcache.org/pages/2010/08/18/panoramah-a-jquery-panorama-viewer/" target="_blank">Check it out!</a></p>

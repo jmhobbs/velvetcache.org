@@ -1,0 +1,52 @@
+---
+category:
+- Geek
+creator: admin
+date: 2010-09-17
+permalink: /2010/09/16/developing-for-twilio-in-php-introducing-twillip/
+tags:
+- Programming
+- Projects
+- Tools
+- Twilio
+title: Developing For Twilio In PHP - Introducing Twillip
+type: post
+wp_id: "1449"
+---
+<p>Last weekend I had the fun opportunity of building my first Twillio app with a group at the <a href="http://omaha.startupweekend.org/">Omaha Startup Weekend</a>.  We wrote a phone based version of chattroulette called <a href="http://callspinner.com/">Call Spinner</a> which includes a cool advertising system we hope to expand on.</p>
+<p>Developing for Twilio isn't that hard, it's mostly just about generating the <a href="http://www.twilio.com/docs/api/2010-04-01/twiml/" target="_blank">right XML</a>.  We used the <a href="http://github.com/twilio/twilio-php" target="_blank">PHP library Twilio provides</a> and it's pretty nice, but debugging off of the Twilio website was a waste of money and not much fun.</p>
+<p>So, over the last few days I worked out a nice debugging tool I decided to call Twillip.  What it does is conditionally wrap your code and prints it in a clean fashion, with links and variables and other goodies like that.</p>
+<p>Super simple to use too!  Here, this is a contrived example.  Normally you probably want some sort of cool dispatcher (I have one of those if you want it) and to check that requests are signed, etc.</p>
+<p><b>example.php</b><pre lang="php" line="1"><?php
+  define( 'IS_DEV', true );
+
+  require_once( 'twilio.php' );
+
+  if( IS_DEV ) {
+    require_once( 'twillip.php' );
+    Twillip::Start();
+  }
+
+  $r = new Response();
+  if( isset( $_REQUEST['Caller'] ) ) {
+    $r->addSay( 'This app uses Twillip for obviously awesome reasons!' );
+    $r->addPlay( 'funky-beats.mp3', array( 'loop' => 3 ) );
+    $r->addRedirect( '/doesntexist.php' );
+  }
+  else {
+    $r->addSay( 'Oh no! I didn\'t get sent a phone number! Who in blue blazes are you?' );
+    $r->addSay( 'This line will generate a PHP warning now: ' . $_REQUEST['Caller'] );
+  }
+  $r->respond();
+
+  if( IS_DEV ) { Twillip::End(); }</pre></p>
+<p>Sweet, so what does that buy us? Only this awesome interface is all!</p>
+<p><a href="http://static.velvetcache.org/pages/2010/09/16/developing-for-twilio-in-php-introducing-twillip/twillip-1.png" target="_blank"><img src="http://static.velvetcache.org/pages/2010/09/16/developing-for-twilio-in-php-introducing-twillip/twillip-1.sm.png" alt="Twillip - Oops!" /></a></p>
+<p>But there is an error! <tt>$_REQUEST['Caller']</tt> isn't set.  We can fix that by clicking on the <tt>Add New Input</tt> and filling it in.</p>
+<p><a href="http://static.velvetcache.org/pages/2010/09/16/developing-for-twilio-in-php-introducing-twillip/twillip-2.png" target="_blank"><img src="http://static.velvetcache.org/pages/2010/09/16/developing-for-twilio-in-php-introducing-twillip/twillip-2.sm.png" alt="Twillip - New Input Prompt" /></a></p>
+<p><a href="http://static.velvetcache.org/pages/2010/09/16/developing-for-twilio-in-php-introducing-twillip/twillip-3.png" target="_blank"><img src="http://static.velvetcache.org/pages/2010/09/16/developing-for-twilio-in-php-introducing-twillip/twillip-3.sm.png" alt="Twillip - New Input" /></a></p>
+<p>There it is!  Now we can click <tt>Reload Page</tt> and it will refresh with all of the inputs.</p>
+<p><a href="http://static.velvetcache.org/pages/2010/09/16/developing-for-twilio-in-php-introducing-twillip/twillip-4.png" target="_blank"><img src="http://static.velvetcache.org/pages/2010/09/16/developing-for-twilio-in-php-introducing-twillip/twillip-4.sm.png" alt="Twillip - No More Errors!" /></a></p>
+<p>You can't tell in the image, but the <tt>Redirect</tt> and <tt>Play</tt> verbs are both clickable links, and will bring all of the variables in the input section with them.</p>
+<p>Seeing is believing, so try it out at <a href="http://static.velvetcache.org/pages/2010/09/16/developing-for-twilio-in-php-introducing-twillip/demo/">http://static.velvetcache.org/pages/2010/09/16/developing-for-twilio-in-php-introducing-twillip/demo/</a></p>
+<p>You can grab the source at <a href="http://github.com/jmhobbs/Twillip">http://github.com/jmhobbs/Twillip</a>.</p>

@@ -1,0 +1,83 @@
+---
+category:
+- Geek
+creator: admin
+date: 2011-11-11
+permalink: /2011/11/11/pushing-a-row-to-the-end-of-a-sort-with-mysql/
+tags:
+- MySQL
+- Programming
+title: Pushing a row to the end of a sort with MySQL
+type: post
+wp_id: "2015"
+---
+<p>Sometimes you have weird requirements to meet. It's a fact of life.</p>
+<p>One of these requirements I came across recently was outputting a result set in alpha order, but with a specific tuple at the end, instead of where it belongs in the sort.</p>
+<p>I decided I'd figure out how to do this in SQL instead of gross rendering or a re-sort.</p>
+<p>Please note there are other ways to solve this that are less brittle, but this was in a fairly static data set for a one off solution.</p>
+<p>Consider this table:</p>
+<p><pre lang="sql" line="1">CREATE TABLE `animals` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` varchar(64)  NOT NULL,
+  `slug` varchar(64)  NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_name`(`name`(64)),
+  UNIQUE KEY `uniq_slug`(`slug`(64))
+)
+ENGINE = InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `animals` ( `id`, `name`, `slug` ) VALUES
+  ( NULL, 'Dog', 'dog' ),
+  ( NULL, 'Cat', 'cat' ),
+  ( NULL, 'Other', 'other' ),
+  ( NULL, 'Zebra', 'zebra' );</pre></p>
+<p>Now, pull them out in alpha order:</p>
+<p><pre lang="text" line="0">mysql> SELECT * 
+    -> FROM `animals` 
+    -> ORDER BY slug ASC;
++----+-------+-------+
+| id | name  | slug  |
++----+-------+-------+
+|  2 | Cat   | cat   |
+|  1 | Dog   | dog   |
+|  3 | Other | other |
+|  4 | Zebra | zebra |
++----+-------+-------+
+4 rows in set (0.00 sec)</pre></p>
+<p>But what if we <u>always</u> want "Other" at the end?</p>
+<p>Well, our unique indices allow us to guarantee a conditional sort on the slug (or name).</p>
+<p>To do this, we will use the <a href="http://dev.mysql.com/doc/refman/5.6/en/case-statement.html" target="_blank"><tt>CASE</tt> statement</a>.</p> 
+<p><pre lang="text" line="0">mysql> SELECT * 
+    -> FROM `animals` 
+    -> ORDER BY CASE 
+    -> WHEN `slug` = 'other' 
+    -> THEN 0 
+    -> ELSE 1 
+    -> END DESC, `slug` ASC;
++----+-------+-------+
+| id | name  | slug  |
++----+-------+-------+
+|  2 | Cat   | cat   |
+|  1 | Dog   | dog   |
+|  4 | Zebra | zebra |
+|  3 | Other | other |
++----+-------+-------+
+4 rows in set (0.00 sec)</pre></p>
+<p>Here we have two <tt>ORDER BY</tt> clauses.  We first use <tt>CASE</tt> to return 1 whenever the slug is "other", and sort on that.  Then we sort the sub-groups ("other" and "non-other") by slug.</p>
+<p><tt>CASE</tt> is handy for other stuff too, and can handle complex expressions.</p>
+<p><pre lang="text" line="0">mysql> SELECT *, CASE 
+    -> WHEN `slug` IN ( 'cat', 'dog' ) 
+    -> THEN 'yes' 
+    -> ELSE 'no' 
+    -> END AS 'is_good_pet' 
+    -> FROM `animals`;
++----+-------+-------+-------------+
+| id | name  | slug  | is_good_pet |
++----+-------+-------+-------------+
+|  1 | Dog   | dog   | yes         |
+|  2 | Cat   | cat   | yes         |
+|  3 | Other | other | no          |
+|  4 | Zebra | zebra | no          |
++----+-------+-------+-------------+
+4 rows in set (0.00 sec)</pre></p>
+<p>Do you ever use <tt>CASE</tt>?</p>

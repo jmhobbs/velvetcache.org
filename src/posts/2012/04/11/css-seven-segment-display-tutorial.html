@@ -1,0 +1,498 @@
+---
+category:
+- Geek
+creator: admin
+date: 2012-04-12
+permalink: /2012/04/11/css-seven-segment-display-tutorial/
+tags:
+- CSS
+- Tutorial
+title: CSS Seven-Segment Display Tutorial
+type: post
+wp_id: "2277"
+---
+<p>I had an idea for a little project today that needed a <a href="http://en.wikipedia.org/wiki/Seven-segment_display" target="_blank">seven-segment display</a>.  As a first pass I'm going to implement it in all software before seeking out hardware for it.</p>
+<p>Knowing I wanted to run my prototype in the browser I looked for a way to show a seven-segment display.  I considered images, but then I decided to challenge myself to implement it in CSS only.</p>
+<p>I recently read the <a href="http://jtauber.github.com/articles/css-hexagon.html" target="_blank">CSS Hexagon Tutorial</a> by <a href="http://twitter.com/jtauber" target="_blank">James Tauber</a> and I felt I could apply some of those techniques to get this working.</p>
+<h2>Step One: A Segment</h2>
+<p>The obvious first step is to get a single segment displayed.</p>
+<p>The basic shape of a segment is actually well defined in all four edges of the box from the hexagon tutorial.</p>
+<div id="css-demo-one" class="demo"><div class="box"></div></div>
+<pre lang="css" line="0">height: 100px;
+width: 100px;
+border-top: 30px solid #FF3636;
+border-bottom: 30px solid #36FF36;
+border-left: 30px solid #3636FF;
+border-right: 30px solid #FFFF36;</pre>
+<p>So now I just needed to extract a single edge for my first segment, which proved quite simple.</p>
+<div id="css-demo-two" class="demo"><div class="segment"></div></div>
+<pre lang="css" line="0">height: 0;
+width: 100px;
+border-top: 30px solid #FF3636;
+border-left: 30px solid transparent;
+border-right: 30px solid transparent;</pre>
+<h2>Step Two: Fill It Out</h2>
+<p>Iterating from that first segment is easy, just change which borders you need for which segment you require.  However, I needed a positioning system.  I decided to go with absolute positioning, with a relative wrapper. Traditionally these displays are addressed with each segment being a letter, so I followed that pattern.</p>
+<pre lang="html" line="0"><div class="seven-segment">
+  <div class="a"></div>
+  <div class="b"></div>
+  <div class="c"></div>
+  <div class="d"></div>
+  <div class="e"></div>
+  <div class="f"></div>
+  <div class="g"></div>
+</div></pre>
+<div id="css-demo-three" class="demo">
+<div class="seven-segment">
+  <div class="a"></div>
+  <div class="b"></div>
+  <div class="c"></div>
+  <div class="d"></div>
+  <div class="e"></div>
+  <div class="f"></div>
+  <div class="g"></div>
+</div>
+</div>
+<p>The CSS for this is quite similar from segment to segment, it's mostly positioning and picking which border to colorize.</p>
+<pre lang="css" line="0">.seven-segment {
+  position: relative;
+}
+.seven-segment .a {
+  position: absolute;
+  left: 10px;
+  height: 0;
+  width: 100px;
+  border-top: 30px solid #FF3636;
+  border-left: 30px solid transparent;
+  border-right: 30px solid transparent;
+}
+.seven-segment .b {
+  position: absolute;
+  left: 150px;
+  top: 10px;
+  height: 100px;
+  width: 0;
+  border-right: 30px solid #FF3636;
+  border-top: 30px solid transparent;
+  border-bottom: 30px solid transparent;
+}
+.seven-segment .c {
+  position: absolute;
+  left: 150px;
+  top: 180px;
+  height: 100px;
+  width: 0;
+  border-right: 30px solid #FF3636;
+  border-top: 30px solid transparent;
+  border-bottom: 30px solid transparent;
+}
+.seven-segment .d {
+  position: absolute;
+  top: 320px;
+  left: 10px;
+  height: 0;
+  width: 100px;
+  border-bottom: 30px solid #FF3636;
+  border-left: 30px solid transparent;
+  border-right: 30px solid transparent;
+}
+.seven-segment .e {
+  position: absolute;
+  left: 0;
+  top: 180px;
+  height: 100px;
+  width: 0;
+  border-left: 30px solid #FF3636;
+  border-top: 30px solid transparent;
+  border-bottom: 30px solid transparent;
+}
+.seven-segment .f {
+  position: absolute;
+  left: 0;
+  top: 10px;
+  height: 100px;
+  width: 0;
+  border-left: 30px solid #FF3636;
+  border-top: 30px solid transparent;
+  border-bottom: 30px solid transparent;
+}</pre>
+
+<h2>Step Three: G Segment</h2>
+
+<p>Here's where it gets interesting.  Our standard segment shape will not work for the center segment, the G segment, which is beveled on both sides, something we can't do with a single <tt>div</tt>.  First let's split it up and treat it differently for top and bottom.</p>
+<pre lang="html" line="0"><div class="g">
+  <div class="top"></div>
+  <div class="bottom"></div>
+</div></pre>
+<p>Now we'll style these using our regular segment markup.</p>
+<div id="css-demo-four" class="demo"><div class="g">
+  <div class="top"></div>
+  <div class="bottom"></div>
+</div></div>
+<pre lang="css" line="0">.g .bottom {
+height: 0;
+width: 100px;
+border-top: 30px solid #FF3636;
+border-left: 30px solid transparent;
+border-right: 30px solid transparent;
+}
+.g .top {
+height: 0;
+width: 100px;
+border-bottom: 30px solid #FF3636;
+border-left: 30px solid transparent;
+border-right: 30px solid transparent;
+}</pre>
+<p>It works, sort of.  We now have the shape we want, but it's way too thick. It won't fit in the slot we have without looking strange.</p>
+<p>Halving the borders and extending the width makes it look better.</p>
+<p>This would be a good stopping point, but the angled edges don't seem as long in G, so I tried to fix that.</p>
+<div id="css-demo-five" class="demo">
+<div class="seven-segment">
+  <div class="a"></div>
+  <div class="b"></div>
+  <div class="c"></div>
+  <div class="d"></div>
+  <div class="e"></div>
+  <div class="f"></div>
+  <div class="g">
+    <div class="top"></div>
+    <div class="bottom"></div>
+  </div>
+</div>
+</div>
+<pre lang="css" line="0">.seven-segment .g {
+  position: absolute;
+  top: 160px;
+  left: 10px;
+}
+.seven-segment .g .bottom {
+  height: 0;
+  width: 130px;
+  border-top: 15px solid #FF3636;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+}
+.seven-segment .g .top {
+  height: 0;
+  width: 130px;
+  border-bottom: 15px solid #FF3636;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+}</pre>
+<p>The best solution I came up with was dealing with it at a smaller size, then using a transform to scale it up to where I wanted it.  It's not exact, and it's not the same width as the other segments, but the slopes are right, it fits and it feels as close to balanced as I've been able to get.</p>
+<div id="css-demo-six" class="demo">
+<div class="seven-segment">
+  <div class="a"></div>
+  <div class="b"></div>
+  <div class="c"></div>
+  <div class="d"></div>
+  <div class="e"></div>
+  <div class="f"></div>
+  <div class="g">
+    <div class="top"></div>
+    <div class="bottom"></div>
+  </div>
+</div>
+</div>
+<pre lang="css" line="0">.seven-segment .g {
+  position: absolute;
+  top: 162px;
+  left: 35px;
+  -webkit-transform: scale(1.4);
+  -moz-transform: scale(1.4);
+  -ms-transform: scale(1.4);
+  -o-transform: scale(1.4);
+  transform: scale(1.4);
+}
+.seven-segment .g .bottom {
+  height: 0;
+  width: 80px;
+  border-top: 15px solid #FF3636;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+}
+.seven-segment .g .top {
+  height: 0;
+  width: 80px;
+  border-bottom: 15px solid #FF3636;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+}</pre>
+
+<h2>Conclusion</h2>
+<p>That was pretty painless! I wish I had a better solution for G, but this one is passable.</p>
+<p>You can check out a nifty demo with some JavaScript and on/off states <a href="http://static.velvetcache.org/pages/2012/04/11/css-seven-segment-display-tutorial/demo.html" target="_blank">here</a>.</p>
+<p>Got some ideas for how to make G better? Please share in the comments!</p>
+
+<style>
+div.demo { 
+margin: 10px 0;
+background: #666;
+padding: 20px;
+border-top: 2px solid #444;
+border-left: 2px solid #444;
+border-right: 2px solid #AAA;
+border-bottom: 2px solid #AAA;
+}
+#css-demo-one .box {
+height: 100px;
+width: 100px;
+border-top: 30px solid #FF3636;
+border-bottom: 30px solid #36FF36;
+border-left: 30px solid #3636FF;
+border-right: 30px solid #FFFF36;
+}
+#css-demo-two .segment {
+height: 0;
+width: 100px;
+border-top: 30px solid #FF3636;
+border-left: 30px solid transparent;
+border-right: 30px solid transparent;
+}
+#css-demo-three { height: 350px; }
+#css-demo-three .seven-segment {
+position: relative;
+}
+#css-demo-three .seven-segment .a {
+position: absolute;
+left: 10px;
+height: 0;
+width: 100px;
+border-top: 30px solid #FF3636;
+border-left: 30px solid transparent;
+border-right: 30px solid transparent;
+}
+#css-demo-three .seven-segment .b {
+position: absolute;
+left: 150px;
+top: 10px;
+height: 100px;
+width: 0;
+border-right: 30px solid #FF3636;
+border-top: 30px solid transparent;
+border-bottom: 30px solid transparent;
+}
+#css-demo-three .seven-segment .c {
+position: absolute;
+left: 150px;
+top: 180px;
+height: 100px;
+width: 0;
+border-right: 30px solid #FF3636;
+border-top: 30px solid transparent;
+border-bottom: 30px solid transparent;
+}
+#css-demo-three .seven-segment .d {
+position: absolute;
+top: 320px;
+left: 10px;
+height: 0;
+width: 100px;
+border-bottom: 30px solid #FF3636;
+border-left: 30px solid transparent;
+border-right: 30px solid transparent;
+}
+#css-demo-three .seven-segment .e {
+position: absolute;
+left: 0;
+top: 180px;
+height: 100px;
+width: 0;
+border-left: 30px solid #FF3636;
+border-top: 30px solid transparent;
+border-bottom: 30px solid transparent;
+}
+#css-demo-three .seven-segment .f {
+position: absolute;
+left: 0;
+top: 10px;
+height: 100px;
+width: 0;
+border-left: 30px solid #FF3636;
+border-top: 30px solid transparent;
+border-bottom: 30px solid transparent;
+}
+#css-demo-four .g .bottom {
+height: 0;
+width: 100px;
+border-top: 30px solid #FF3636;
+border-left: 30px solid transparent;
+border-right: 30px solid transparent;
+}
+#css-demo-four .g .top {
+height: 0;
+width: 100px;
+border-bottom: 30px solid #FF3636;
+border-left: 30px solid transparent;
+border-right: 30px solid transparent;
+}
+#css-demo-five { height: 350px; }
+#css-demo-five .seven-segment {
+position: relative;
+}
+#css-demo-five .seven-segment .a {
+position: absolute;
+left: 10px;
+height: 0;
+width: 100px;
+border-top: 30px solid #FF3636;
+border-left: 30px solid transparent;
+border-right: 30px solid transparent;
+}
+#css-demo-five .seven-segment .b {
+position: absolute;
+left: 150px;
+top: 10px;
+height: 100px;
+width: 0;
+border-right: 30px solid #FF3636;
+border-top: 30px solid transparent;
+border-bottom: 30px solid transparent;
+}
+#css-demo-five .seven-segment .c {
+position: absolute;
+left: 150px;
+top: 180px;
+height: 100px;
+width: 0;
+border-right: 30px solid #FF3636;
+border-top: 30px solid transparent;
+border-bottom: 30px solid transparent;
+}
+#css-demo-five .seven-segment .d {
+position: absolute;
+top: 320px;
+left: 10px;
+height: 0;
+width: 100px;
+border-bottom: 30px solid #FF3636;
+border-left: 30px solid transparent;
+border-right: 30px solid transparent;
+}
+#css-demo-five .seven-segment .e {
+position: absolute;
+left: 0;
+top: 180px;
+height: 100px;
+width: 0;
+border-left: 30px solid #FF3636;
+border-top: 30px solid transparent;
+border-bottom: 30px solid transparent;
+}
+#css-demo-five .seven-segment .f {
+position: absolute;
+left: 0;
+top: 10px;
+height: 100px;
+width: 0;
+border-left: 30px solid #FF3636;
+border-top: 30px solid transparent;
+border-bottom: 30px solid transparent;
+}
+#css-demo-five .seven-segment .g {
+position: absolute;
+top: 160px;
+left: 10px;
+}
+#css-demo-five .seven-segment .g .bottom {
+height: 0;
+width: 130px;
+border-top: 15px solid #FF3636;
+border-left: 15px solid transparent;
+border-right: 15px solid transparent;
+}
+#css-demo-five .seven-segment .g .top {
+height: 0;
+width: 130px;
+border-bottom: 15px solid #FF3636;
+border-left: 15px solid transparent;
+border-right: 15px solid transparent;
+}
+#css-demo-six { height: 350px; }
+#css-demo-six .seven-segment {
+position: relative;
+}
+#css-demo-six .seven-segment .a {
+position: absolute;
+left: 10px;
+height: 0;
+width: 100px;
+border-top: 30px solid #FF3636;
+border-left: 30px solid transparent;
+border-right: 30px solid transparent;
+}
+#css-demo-six .seven-segment .b {
+position: absolute;
+left: 150px;
+top: 10px;
+height: 100px;
+width: 0;
+border-right: 30px solid #FF3636;
+border-top: 30px solid transparent;
+border-bottom: 30px solid transparent;
+}
+#css-demo-six .seven-segment .c {
+position: absolute;
+left: 150px;
+top: 180px;
+height: 100px;
+width: 0;
+border-right: 30px solid #FF3636;
+border-top: 30px solid transparent;
+border-bottom: 30px solid transparent;
+}
+#css-demo-six .seven-segment .d {
+position: absolute;
+top: 320px;
+left: 10px;
+height: 0;
+width: 100px;
+border-bottom: 30px solid #FF3636;
+border-left: 30px solid transparent;
+border-right: 30px solid transparent;
+}
+#css-demo-six .seven-segment .e {
+position: absolute;
+left: 0;
+top: 180px;
+height: 100px;
+width: 0;
+border-left: 30px solid #FF3636;
+border-top: 30px solid transparent;
+border-bottom: 30px solid transparent;
+}
+#css-demo-six .seven-segment .f {
+position: absolute;
+left: 0;
+top: 10px;
+height: 100px;
+width: 0;
+border-left: 30px solid #FF3636;
+border-top: 30px solid transparent;
+border-bottom: 30px solid transparent;
+}
+#css-demo-six .seven-segment .g {
+position: absolute;
+top: 162px;
+left: 35px;
+-webkit-transform: scale(1.4);
+-moz-transform: scale(1.4);
+-ms-transform: scale(1.4);
+-o-transform: scale(1.4);
+transform: scale(1.4);
+}
+#css-demo-six .seven-segment .g .bottom {
+height: 0;
+width: 80px;
+border-top: 15px solid #FF3636;
+border-left: 15px solid transparent;
+border-right: 15px solid transparent;
+}
+#css-demo-six .seven-segment .g .top {
+height: 0;
+width: 80px;
+border-bottom: 15px solid #FF3636;
+border-left: 15px solid transparent;
+border-right: 15px solid transparent;
+}
+</style>

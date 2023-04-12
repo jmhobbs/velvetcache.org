@@ -1,0 +1,54 @@
+---
+category:
+- Geek
+creator: admin
+date: 2008-03-03
+permalink: /2008/03/02/screwy-opencv-manipulations/
+tags:
+- C
+- CameraBooth
+- Graphics
+- OpenCV
+- Programming
+- Projects
+title: Screwy OpenCV Manipulations
+type: post
+wp_id: "208"
+---
+<p>I've been playing more with OpenCV and I think I'm missing something.  I can't do any manipulations on the image data without really screwing it up.  The only thing that doesn't seem to wash out the data out is moving pixels around without changing them.  Not sure what I'm missing.  Here's the few different manipulations and what they look like when they wash out.</p>
+<p><b>Monochrome</b><br/><pre lang="cpp" line="1">for(int i = 0; i < frame->height; i++) {
+  int offset = i*frame->width*3;
+  for(int j = 0; j < frame->width; j++) {
+    uchar temp = frame->imageData[offset+(j*3)]*0.114
+                    + frame->imageData[offset+(j*3)+1]*0.587
+                    + frame->imageData[offset+(j*3)+2]*0.299;
+    frame->imageData[offset+(j*3)] = temp;
+    frame->imageData[offset+(j*3)+1] = temp;
+    frame->imageData[offset+(j*3)+2] = temp;
+  }
+}</pre><br/><div style="text-align: center;"><img src="http://static.velvetcache.org/pages/2008/3/2/screwy-opencv-manipulations/monochrome_fxTest_capture_1204179493.jpg" /><br/><img src="http://static.velvetcache.org/pages/2008/3/2/screwy-opencv-manipulations/monochrome_fxTest_capture_1204179517.jpg" /></div></p>
+<p><b>Memory</b><br/>This one just keeps five frames and then adds them in to create a faded composite, should be simple.<pre lang="cpp" line="1">if(0 == memory_frameCounter)
+  memory_frames[0] = cvCloneImage(frame);
+else if(2 == memory_frameCounter)
+  memory_frames[1] = cvCloneImage(frame);
+else if(4 == memory_frameCounter)
+  memory_frames[2] = cvCloneImage(frame);
+else if(6 == memory_frameCounter)
+  memory_frames[3] = cvCloneImage(frame);
+else if(8 == memory_frameCounter)
+  memory_frames[4] = cvCloneImage(frame);
+else if(10 <= memory_frameCounter)
+  memory_frameCounter = -1;
+
+memory_frameCounter++;
+
+for(int i = 0; i < frame->height; i++) {
+  for(int j =0; j < frame->width*3; j++) {
+    memory_agg = frame->imageData[(i*frame->width*3)+j];
+    for(int k = 0; k < 5; k++) {
+      memory_agg = (memory_agg + memory_frames[k]->imageData[(i*frame->width*3)+j])/2;
+    }
+    frame->imageData[(i*frame->width*3)+j] = memory_agg;
+  }
+}</pre><div style="text-align: center;"><img src="http://static.velvetcache.org/pages/2008/3/2/screwy-opencv-manipulations/memory_fxTest_capture_1204179857.jpg" /></div></p>
+<p>I just can't figure out what I'm doing wrong here.</p>

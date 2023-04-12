@@ -2,7 +2,6 @@
 eleventyExcludeFromCollections: true
 creator: admin
 date: 2006-08-27
-layout: page.njk
 permalink: /about/
 tags: []
 title: About

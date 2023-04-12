@@ -1,0 +1,17 @@
+---
+category:
+- Geek
+creator: admin
+date: 2007-03-31
+permalink: /2007/03/31/pywikipedia-bot-multiple-image-upload/
+tags:
+- Programming
+- Projects
+- Python
+title: pywikipedia Bot Multiple Image Upload
+type: post
+wp_id: "148"
+---
+<p>So I got another email from Dr. Workman about <a href="http://www.omahawiki.org/" target="_blank">omahawiki.org</a> and needing a bulk image uploader script for the pywikipedia bot framework.  I decided to not go all out and write my own, <a href="http://www.velvetcache.org/2007/03/02/mediawiki-and-omahawikiorg/">like last time</a> and just utilize the upload.py script that comes with the default package.</p>
+<p>The information was in Excel, and could be exported to a delimited text file, so I chose to open the file, read a line, split it on a tab (tab-delimited file you see) and then have python do a system call to the upload.py script with all the necessary arguments.</p>
+<p>Pretty rockin, didn't do much validation or anything, but it seems to work. :) Check it out: <a href="http://static.velvetcache.org/external/highlighter/full.php?file_id=12">jh_multiUploadFromFile.pys</a></p>

@@ -1,0 +1,30 @@
+---
+category:
+- Geek
+creator: admin
+date: 2007-05-24
+permalink: /2007/05/24/javascript-class-definitions/
+tags:
+- JavaScript
+- Programming
+- Snippets
+title: JavaScript Class Definitions
+type: post
+wp_id: "160"
+---
+<p>I had a hard time understanding basic classes in JavaScript and the tutorials I found all got way to bogged down in useless fluff, so I thought I'd put up this no-nonsense example of a JavaScript class.  Expect a version using <a href="http://dean.edwards.name/weblog/2006/03/base/" target="_blank">Base.js</a> once I learn that way.</p>
+<p><pre lang="javascript" line="1">function myClass () {
+  var privateVariable = 'Private';
+  this.publicVariable = 'Public';
+
+  this.getPrivate =
+    function () {
+      return privateVariable;
+    }
+}
+
+myCopy = new myClass();
+alert(myCopy.publicVariable);
+alert(myCopy.getPrivate());
+alert(myCopy.privateVariable);</pre></p>
+<p><b>Output (In Alerts)</b><br/>Public<br/>Private<br/>undefined</p>

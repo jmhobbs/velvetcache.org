@@ -1,0 +1,27 @@
+---
+category:
+- Geek
+creator: admin
+date: 2011-04-07
+permalink: /2011/04/07/compiling-cpython-modules-with-xcode-4/
+tags:
+- How To
+- Mac
+- Python
+- Tips
+title: Compiling CPython Modules with XCode 4
+type: post
+wp_id: "1784"
+---
+
+I've had trouble compiling native extensions on the Mac before, but I finally found a fix.
+
+You just need the correct `ARCHFLAGS` environment variable.  You can set this in your .bashrc or use it right before `python setup.py build`
+
+```bash
+ARCHFLAGS="-arch i386 -arch x86_64"
+```
+
+This works because XCode dropped the PPC compiler in v4, and with that variable we tell the setup script not to bother trying to compile for that arch, just i386 and x86_64.
+
+Much thanks to [Y.H. Wong](http://superuser.com/users/70308/y-h-wong) in this [Super User thread](http://superuser.com/questions/259278/python-2-6-1-pycrypto-2-3-pypi-package-broken-pipe-during-build).

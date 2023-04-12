@@ -1,0 +1,25 @@
+---
+category:
+- Geek
+creator: admin
+date: 2010-03-15
+permalink: /2010/03/15/bin2img-data-visualization-with-php/
+tags:
+- PHP
+- Projects
+- Random
+- Visualization
+title: 'Bin2Img: Data Visualization with PHP'
+type: post
+wp_id: "996"
+---
+<div class="update"><p><b>Update (2010-03-15)</b><br/>I added some more examples at the bottom of the post.</p></div><p>I've been toying with random numbers recently (more on that another day), and one of the things I wanted to do was find a way to visualize the bits I was generating.  The simplest way I could think of is a big bitmap, with each pixel representing a bit and a 0 being white while a 1 is black.</p>
+<p>This is an example output of what I came up with, it's a sample run of the first MB of a zip I had laying around.  I recommend a click through for the full sized version, it got blurry when I downscaled it.</p><p style="text-align: center;"><a href="http://static.velvetcache.org/pages/2010/03/15/bin2img-data-vizualization-with-php/bin2img.sample.png" target="_blank"><img src="http://static.velvetcache.org/pages/2010/03/15/bin2img-data-vizualization-with-php/bin2img.sample.sm.png" alt="black and white dots..." /></a></p>
+<p>I chose PHP for the task as I didn't have the time or energy to learn an API in any other language, and I already knew the PHP commands.  Here is the source for your perusal. The only tricky bit is accurately reading a byte of raw binary data from file (pro-tip: <tt>unpack</tt> is essential).</p>
+<p><script src="http://gist.github.com/332950.js"></script></p>
+<p>Here are some more data sets:</p>
+<p style="text-align: center;"><a href="http://static.velvetcache.org/pages/2010/03/15/bin2img-data-vizualization-with-php/dev-urandom.png" target="_blank"><img src="http://static.velvetcache.org/pages/2010/03/15/bin2img-data-vizualization-with-php/dev-urandom.sm.png" alt="black and white dots..." /></a><br/><b>1Mb from /dev/urandom</b><br/><tt>dd if=/dev/urandom of=data.bin bs=1kB count=1024
+</tt></p>
+<p style="text-align: center;"><a href="http://static.velvetcache.org/pages/2010/03/15/bin2img-data-vizualization-with-php/pi.png" target="_blank"><img src="http://static.velvetcache.org/pages/2010/03/15/bin2img-data-vizualization-with-php/pi.sm.png" alt="black and white dots..." /></a><br/><b>Digits of Pi (as characters)</b><br/>Data file from <a href="http://newton.ex.ac.uk/research/qsystems/collabs/pi/" target="_blank">here</a> run trough the following to remove newlines and spaces.<br/><tt>cat pi.bin | tr -d ' ' | tr -d '\n' &gt; data.bin</tt></p>
+<p style="text-align: center;"><a href="http://static.velvetcache.org/pages/2010/03/15/bin2img-data-vizualization-with-php/peep.png" target="_blank"><img src="http://static.velvetcache.org/pages/2010/03/15/bin2img-data-vizualization-with-php/peep.sm.png" alt="black and white dots..." /></a><br/><b><a href="http://gallery.velvetcache.org/main.php?g2_itemId=16396" target="_blank">This photo of a peep spider</a></b></p>
+<p style="text-align: center;"><a href="http://static.velvetcache.org/pages/2010/03/15/bin2img-data-vizualization-with-php/dataset.png" target="_blank"><img src="http://static.velvetcache.org/pages/2010/03/15/bin2img-data-vizualization-with-php/dataset.sm.png" alt="black and white dots..." /></a><br/><b>2008 Early Release Toxics Release Inventory data for the state of California</a></b><br/>Windows exe from <a href="http://www.data.gov/raw/691" target="_blank">Data.gov</a></p>

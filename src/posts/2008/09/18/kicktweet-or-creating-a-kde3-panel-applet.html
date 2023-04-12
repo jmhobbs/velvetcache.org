@@ -1,0 +1,30 @@
+---
+category:
+- Geek
+creator: admin
+date: 2008-09-18
+permalink: /2008/09/18/kicktweet-or-creating-a-kde3-panel-applet/
+tags:
+- C
+- Internet
+- KickTweet
+- Programming
+- Projects
+- Qt
+title: KickTweet or Creating a KDE3 Panel Applet
+type: post
+wp_id: "244"
+---
+<p><img src="http://static.velvetcache.org/pages/2008/09/18/kicktweet-or-creating-a-kde3-panel-applet/KickTweet_sm.png" style="float: left;">I started using Twitter again last week and wanted a Linux GUI client.  I looked at the standard bunch, but none of them did it for me.  I wanted something small and easy.  Some had system tray modes, but I decided to make my own that would reside as a panel applet.</p>
+<p>Doing the API interaction is easy, it's just web services and I've used libcurl enough before to have that down.  It's the Qt/KDE piece that I wasn't so sure about.  I got started with my good friend Google, and found a few resources.  If you are interested in creating a panel applet for KDE 3.5 or so, <u>ignore the Google results</u> they will only serve to lead you in the wrong direction!</p>
+<p><b>Getting Started</b><br/>I got started by firing up KDevelop and selecting "Project -> New Project" then choosing the "C++ -> KDE -> Kicker Applet" project.  This will generate a nice framework for you to start developing your application on.  It's just like creating any other Qt application, but in a smaller space.</p>
+<p><b>Caveats</b><br/>There are a few small things that you won't get unless you poke around a bit.  The biggest problems I had were getting the applet to expand properly and getting my input text box to accept focus.  Both of these problems were solved by reading the code from "<a href="http://www.krugle.org/kse/codespaces/BUHXSD" target="_blank">mathapplet.cpp</a>" by Andrew Coles in the KDE source tree.</p><p>I'll start with the expanding issue.  The first fix is to change the constructor to pass <tt>KPanelApplet::Stretch</tt> instead of the default <tt>KPanelApplet::Normal</tt>, as shown below.
+<pre lang="cpp" line="1">extern "C" {
+  KPanelApplet* init( QWidget *parent, const QString& configFile) {
+    KGlobal::locale()->insertCatalogue("KickTweet");
+    return new KickTweet(configFile, KPanelApplet::Stretch, KPanelApplet::About, parent, "KickTweet");
+  }
+}</pre>
+</p><p>This only fixes part of the problem though.  If you load it into the panel as it is now, it will keep resizing until it has pressed all the other applets aside.  This is because we need to fix the default implementation of <tt>widthForHeight(int height)</tt> and <tt>heightForWidth(int width)</tt>.  My fix here was to just feed back a standard value regardless of the current size requests.  I copied mathapplet in sending back 110 for width and 22 for height. It doesn't seem to be causing any problems yet.</p><p>The next issue is the input box focus.  Again, this is taken from the mathapplet code and it is a simple if non-obvious fix.  Just add <tt>watchForFocus(tweetText);</tt> to your constructor, where <tt>tweetText</tt> is your QLineEdit or derived.  This is of course only relevant if you are using a text entry widget.</p>
+<p><b>Testing</b><br/>You can test your applet the easy way or the hard way.  I tried it the hard way for quite a while, then when I got fed up I found the easy way.</p><p>the hard way is to do "<tt>make install</tt>" then add the applet to your panel.  You will not notice changes if you do this version, because even if you add and remove the applet from the panel, it is not unload from memory.  To get it unloaded you must restart the panel, easily done with a call to "<tt>dcop kicker default restart</tt>"  This is slow an unwieldy however, and I recommend you only use it for testing the actual integration into the panel.</p><p>The easier way to test your applet is to still do "<tt>make install</tt>" but then to run your associated desktop file with <tt>appletproxy</tt>, like so "<tt>appletproxy /opt/kde3/share/apps/kicker/applets/kicktweet.desktop</tt>".  This lets you do quick and easy debugging and will send your cout and cerr to the terminal if you run it from one.</p>
+<p><b>Conclusion</b><br/>Creating a kicker applet is not nearly as hard as I thought it might be.  After several missteps I now have "<a href="http://static.velvetcache.org/projects/kicktweet/">KickTweet</a>" which readily scratches my Twitter itch.</p><p><img src="http://static.velvetcache.org/pages/2008/09/18/kicktweet-or-creating-a-kde3-panel-applet/KickTweet.2.png" alt="KickTweet in action"/>

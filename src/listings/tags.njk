@@ -1,5 +1,4 @@
 ---
-layout: listing.njk
 pagination:
   data: collections
   size: 1
@@ -10,6 +9,7 @@ pagination:
     - post
     - category
     - categories
+    - tags
 permalink: /tags/{{ tag | wp_tag_slug }}/
 listing:
   key: tag

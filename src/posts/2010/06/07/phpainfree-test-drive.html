@@ -1,0 +1,286 @@
+---
+category:
+- Consume
+- Geek
+creator: admin
+date: 2010-06-07
+permalink: /2010/06/07/phpainfree-test-drive/
+tags:
+- Framework
+- PHP
+- PHPainfree
+- Projects
+- Tutorials
+title: PHPainfree Test Drive
+type: post
+wp_id: "1061"
+---
+<h2>What is PHPainfree</h2>
+<p><a href="http://github.com/februaryfalling/PHPainfree" target="_blank">PHPainfree</a> is a relatively young PHP framework written by <a href="http://ericharrison.info/" target="_blank">Eric Ryan Harrison</a>.</p>
+<p>The README for the project is in first person, so I'll let PHPainfree explain what it is:</p>
+<p><blockquote>I am an ultra-lightweight PHP framework. I am inspired by the MVC concept, but I'm too artsy to let myself be defined by labels like that. I basically do what I want.</blockquote></p>
+
+<h2>Installation</h2>
+<p>To try the framework out I cloned the git repository. This should be roughly equivalent to version 0.6.3, in case you want to follow along at home.</p>
+<p>My setup is a bit unique, as a trial usage in a sub-directory of my local machine, but you should be able to adjust your install to suit.</p>
+<p>It essentially boiled down to these steps:
+<ol>
+	<li>Clone Repository</li>
+	<li>Edit <tt>includes/PainfreeConfig.php</tt></li>
+	<li>Symlink <tt>includes/</tt> and <tt>templates/</tt> into <tt>htdocs/</tt></li>
+	<li>Tweak <tt>RewriteBase</tt> in <tt>htdocs/.htaccess</tt></li>
+</ol></p>
+<p><b>Shell Transcript</b><pre lang="bash">jmhobbs@katya:/var/www/localhost/PHPainfree$ ls
+CHANGELOG.md  htdocs  includes  LICENSE  README.md  templates
+jmhobbs@katya:/var/www/localhost/PHPainfree$ cd includes/
+jmhobbs@katya:/var/www/localhost/PHPainfree/includes$ cp PainfreeConfig-GENERIC.php PainfreeConfig.php
+jmhobbs@katya:/var/www/localhost/PHPainfree/includes$ vim PainfreeConfig.php
+jmhobbs@katya:/var/www/localhost/PHPainfree/includes$ cd ..
+jmhobbs@katya:/var/www/localhost/PHPainfree$ cd htdocs/
+jmhobbs@katya:/var/www/localhost/PHPainfree/htdocs$ ln -s ../includes/ .
+jmhobbs@katya:/var/www/localhost/PHPainfree/htdocs$ ln -s ../templates/ .
+jmhobbs@katya:/var/www/localhost/PHPainfree/htdocs$ ls -a
+.  ..  css  .htaccess  images  includes  index.php  js  templates
+jmhobbs@katya:/var/www/localhost/PHPainfree/htdocs$ vim .htaccess</pre></p>
+<p><b>Listing: <tt>htdocs/.htaccess</tt></b><pre lang="text">RewriteEngine On
+RewriteBase /PHPainfree/htdocs/
+
+RewriteRule ^js/(.+)$ js/$1 [L]
+RewriteRule ^css/(.+)$ css/$1 [L]
+RewriteRule ^images/(.+)$ images/$1 [L]
+
+RewriteCond %{SCRIPT_FILENAME} !-f
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteRule ^(.+)$ index.php?route=$1&%{QUERY_STIRNG} [L]</pre></p>
+<p>After that is all done, it should happily serve up it's welcome page.</p>
+<p style="text-align: center; font-size: 10px; font-weight: bold;"><a href="http://static.velvetcache.org/pages/2010/06/07/phpainfree-test-drive/001_installed.png" rel="lightbox" target="_blank"><img src="http://static.velvetcache.org/pages/2010/06/07/phpainfree-test-drive/001_installed.sm.png" alt="It Works!" /></a><br/>It Works!</p>
+
+<h2>Framework Basics</h2>
+<p>When PHPainfree claim's to be ultra-lightweight, they mean it.  Many of the bits and pieces you would expect on a framework just don't exist. <u>Many.</u></p>
+<p>But more on that later. For now, let's take apart the default files and build something out of them. What we'll attempt to assemble is that paragon of beginner programs, the todo list.</p>
+<p>Looking at the provided example files it really seems to me that this is a very view driven framework. The "logic" part runs first, but really just sets up things for the "view" part.  Model and controller seem smashed together into the "logic" files, but this is just my interpretation of the design.</p><p>This is how the provided example files flow:<pre>Logic Setup =&gt; Template(s) Run =&gt; Calls Logic Methods</pre></p>
+
+<h2>Getting Started</h2>
+<h3>BaseView</h3>
+<p>According to <tt>includes/PainfreeConfig.php</tt> the BaseView "is the name of your base template inside of the templates folder. This base view generally provides the overall framework of output for your application".</p>
+<p>To feel out how the framework handles I created a very small stub BaseView in <tt>templates/layout.tpl</tt></p>
+<p><b>Listing: <tt>templates/layout.tpl</tt></b><pre lang="php" line="1"><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+  <head>
+    <title><?php echo $Controller->title(); ?></title>
+  </head>
+  <body>
+    <h1><?php echo $Controller->title(); ?></h1>
+  </body>
+</html></pre></p>
+<h3>ApplicationController</h3>
+<p>According to <tt>includes/PainfreeConfig.php</tt> the ApplicationController is "...the primary controller for your application".</p><p>I created a new controller for my test, taken almost entirely from the provided <tt>includes/Generic.php</tt>.</p>
+<p><b>Listing: <tt>includes/ToDoList.php</tt></b><pre lang="php" line="1"><?php
+  $Controller = new ToDoList();
+
+  class ToDoList {
+
+    public function title () {
+      return "ToDo List";
+    }
+
+  }</pre></p>
+<h3>PainfreeConfig</h3>
+<p>The last step for this first exploratory version is to change some variables in our configuration file.</p>
+<p><b>Listing: <tt>includes/PainfreeConfig.php</tt></b><pre lang="php" line="26">$PainfreeConfig = array(
+
+// ApplicationController is the primary controller for your
+// application. Generic.php is provided, but doesn't do anything
+// except look for the view in the templates/ folder
+'ApplicationController' => 'ToDoList.php',
+
+// BaseView is the name of your base template inside of the templates
+// folder. This base view generally provides the overall framework
+// of output for your application
+'BaseView' => 'layout.tpl',</pre></p>
+<p>Once that is done, it should now be serving my new files.</p>
+<p style="text-align: center; font-size: 10px; font-weight: bold;"><a href="http://static.velvetcache.org/pages/2010/06/07/phpainfree-test-drive/002_first_try.png" rel="lightbox" target="_blank"><img src="http://static.velvetcache.org/pages/2010/06/07/phpainfree-test-drive/002_first_try.sm.png" alt="Exciting" /></a></p>
+
+<h2>Building The Application</h2>
+<p>That's great and all, and we learned about the processing pipeline and stuff, but really, we didn't do anything.</p><p>So let's get down to it. I like a nice MVC pattern, with convention over configuration, so here is how I'm laying out my application. Note that you <u>do not</u> have to do it this way, PHPainfree is written to encourage you to do it, well, just about any way you want.</p>
+<p><pre lang="text">.
++-- includes
+|   +-- Autoload
+|   |   `-- BaseController.php
+|   +-- controllers
+|   |   +-- list.php
+|   |   `-- todo.php
+|   +-- main.php
+|   `-- PainfreeConfig.php
+`-- templates
+    +-- layout.tpl
+    +-- list
+    |   `-- index.tpl
+    `-- todo
+        `-- index.tpl</pre></p>
+<h3>Routing Requests</h3>
+<p>To make my structure work, I had to create my own routing system. I couldn't find anything built into PHPainfree that would do this for me, but that's okay because it's pretty simple.  I set my <tt>ApplicationController</tt> option to "main.php" and placed this in there.</p>
+<p><b>Listing: <tt>includes/main.php</tt></b><pre lang="php" line="1"><?php
+  $controller = 'list';
+  $method = 'index';
+  $arguments = array();
+
+  // When the path is empty it routes to $PainfreeConfig['DefaultRoute']
+  $path = explode( '/', $Painfree->route );
+
+  if( 1 <= count( $path ) )
+    $controller = preg_replace( '/[^a-z0-9_-]/', '', strtolower( $path[0] ) );
+
+  if( 2 <= count( $path ) )
+    $method = preg_replace( '/[^a-z0-9_-]/', '', strtolower( $path[1] ) );
+
+  if( 3 <= count( $path ) )
+    $arguments = array_slice( $path, 2 );
+
+  $Controller = new Base_Controller(); // Will be replaced by a real controller
+  require_once( 'controllers/' . $controller . '.php' );</pre></p>
+
+<h3>BaseController</h3>
+<p>Note that on line 18 I instantiate a class called <tt>BaseController</tt>.  This is a stub class that I created for all of my controllers to inherit from, that way I have a consistent interface to call in my templates.</p><p>My <tt>BaseController.php</tt> file will be placed into <tt>includes/Autoload</tt> to take advantage of the loading feature of PHPainfree. Any file placed into the <tt>includes/Autoload</tt> folder will be automatically included at runtime, just after the configuration file is loaded and just before the logic file is ran.  This is useful for loading libraries, or to do some request pre-processing.</p>
+<p><b>Listing: <tt>includes/Autoload/BaseController.php</tt></b><pre lang="php" line="1"><?php
+  class Base_Controller {
+
+    protected $data = array();
+
+    public function title () {
+      return "ToDo List";
+    }
+
+    public function render () {
+      global $PainfreeConfig, $method;
+      // Make data available to view
+      $data =& $this->data;
+      // Make the controller available to the view
+      $Controller =& $this;
+      require_once(
+        $PainfreeConfig['TemplateFolder'] . '/' .
+        // My controller classes all end in "_controller", so I cut that off here
+        strtolower( substr( get_called_class(), 0, -11 ) ) .
+        '/' . $method . '.tpl'
+      );
+    }
+
+  }</pre></p>
+<h2>The Database</h2>
+<p>Up to this point I haven't touched a database, which PHPainfree has some support for.  Real quick I'll set up a MySQL database for our ToDo application.</p>
+<p><b>MySQL Transcript</b><pre lang="mysql">mysql> create database todolist;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> grant all on todolist.* to painfree@localhost identified by 'password';
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> flush privileges;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> use todolist;
+Database changed
+mysql> CREATE TABLE lists ( id INT(6) UNSIGNED AUTO_INCREMENT, name VARCHAR(255), PRIMARY KEY (id) );
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CREATE TABLE todos ( id INT(6) UNSIGNED AUTO_INCREMENT, list_id INT(6) UNSIGNED, title VARCHAR(255), created DATETIME, completed DATETIME, PRIMARY KEY(id) );
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> INSERT INTO lists ( name ) VALUES ( 'Yard Work' );
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO todos ( list_id, title, created ) VALUES ( 1, 'Mow Grass', NOW() ), ( 1, 'Weed Garden', NOW() );
+Query OK, 2 rows affected (0.00 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql></pre></p>
+<h3>Configuring The Database</h3>
+<p>Configuring the database connection in PHPainfree is relatively straightforward.  Just open up <tt>includes/PainfreeConfig.php</tt> and find the <tt>Database</tt> key.  This is an array of MySQL connections, which cascade if they fail.</p><p>For instance, if you have a development environment and a production environment, you could place your dev configuration after the production configuration.</p><p>In development, the production connection would fail and then load the development configuration. Nothing to change, no environment variables to set, it just works.</p><p><b>Listing: <tt>includes/PainfreeConfig.php</tt></b><pre lang="php" line="45">  'Database' => array(
+    'Primary' => array(
+      'type'   => 'mysql',
+      'host'   => 'localhost',
+      'user'   => 'painfree',
+      'pass'   => 'password',
+      'schema' => 'todolist',
+      'port'   => 3306
+    )
+  ),</pre></p>
+<h3>Using The Database</h3>
+<p>Using the database is easy too. The <tt>$Painfree</tt> global variable has a member called <tt>db</tt> which provides access to our configured database.  But what is <tt>$Painfree->db</tt>?  Well, a little bit of digging into the PHPainfree core and we find out it is just a normal MySQLi link object. Nothing fancy, no database abstractions.</p>
+<p><b>Listing: <tt>includes/core/DBD/mysql.php</tt></b><pre lang="php" line="1"><?php
+
+  class mysql {
+    static function connect($host,$user,$pass,$schema,$port) {
+      $db = @new mysqli($host,$user,$pass,$schema,$port);
+      if ( ! mysqli_connect_errno() ) {
+        return $db;
+      } else {
+        return false; //mysqli_connect_errno() . ']: ' . mysqli_connect_error();
+      }
+    }
+
+
+  }</pre></p>
+<h2>Bringing It Together</h2>
+<p>Applying all this knowledge and configuration, let's start our first controller, the <tt>List_Controller</tt>. This first version will simply fetch all the active lists from the database and get them ready for the template.</p>
+<p><b>Listing: <tt>includes/controllers/list.php</tt></b><pre lang="php" line="1"><?php
+  class List_Controller extends Base_Controller {
+
+    public function title () {
+      return "List";
+    }
+
+    public function lists () {
+      $lists = array();
+
+      $stmt = $this->db->prepare( "SELECT id, name FROM lists" );
+      $stmt->execute();
+      $stmt->bind_result( $id, $name );
+      while( $stmt->fetch() )
+        $lists[] = array( 'id' => $id, 'name' => $name );
+      $stmt->close();
+
+      return $lists;
+    }
+
+  }
+
+  $Controller = new List_Controller();</pre></p>
+<p>Now we need to make our template to use this controller. Again, very basic.</p>
+<p><b>Listing: <tt>templates/list/index.tpl</tt></b><pre lang="php" line="1"><h1>ToDo Lists</h1>
+
+<ul>
+<?php foreach( $Controller->lists() as $list ): ?>
+	<li><a href="list/view/<?php echo $list['id']; ?>"><?php echo $list['name']; ?></a></li>
+<?php endforeach; ?>
+</ul></pre></p>
+<p>At this point, we should be able to render this view:</p>
+<p style="text-align: center; font-size: 10px; font-weight: bold;"><a href="http://static.velvetcache.org/pages/2010/06/07/phpainfree-test-drive/003_lists.png" rel="lightbox" target="_blank"><img src="http://static.velvetcache.org/pages/2010/06/07/phpainfree-test-drive/003_lists.sm.png" alt="A List of Lists" /></a><br/>A List of Lists</p>
+<h2>Finishing Up</h2>
+<p>From here it is a short work to finish the application with another controller and a few more actions.  Rather than post a bunch of reptitive code snippets I'll provide my completed source, <a href="http://static.velvetcache.org/pages/2010/06/07/phpainfree-test-drive/PHPainfree-TodoList.tar.gz">here</a>.</p>
+<p style="text-align: center; font-size: 10px; font-weight: bold;"><a href="http://static.velvetcache.org/pages/2010/06/07/phpainfree-test-drive/004_todos.png" rel="lightbox" target="_blank"><img src="http://static.velvetcache.org/pages/2010/06/07/phpainfree-test-drive/004_todos.sm.png" alt="A List of ToDo's" /></a><br/>A List of ToDo's</p>
+<h2>Conclusions</h2>
+<p>So, there is my first PHPainfree application. As with any new tool, my usage is probably flawed until I learn more about it. So take this review with a grain of salt.</p>
+<h3>Con's</h3>
+<p>PHPainfree is a young framework, and it's a thin one. Coming from a heavier framework background, it feels too thin to me.  I missed having an ORM, and built in helpers (think Form, Link, Validation). Also, there is no real exception stack that I could find, just <tt>$Painfree->debug()</tt> for you to use.</p><p>MySQL is the only option right now, though it is easily extended. For example, I wrote this in just a few seconds to add SQLite3 support.</p>
+<p><b>Listing: <tt>includes/core/DBD/sqlite.php</tt></b><pre lang="php" line="1"><?php
+
+  class sqlite {
+    static function connect($host,$user,$pass,$schema,$port) {
+      try {
+        $db = @new SQLite3( $host, SQLITE3_OPEN_READWRITE );
+        return $db;
+      } catch( Exception $e ) {
+        return false;
+      }
+    }
+
+
+  }</pre></p>
+<p>However, having multiple drivers is shallow when there is no abstraction element. Since it uses native driver objects, I can't just switch from MySQL to SQLite3, because I would then have to switch all of my method calls. Using <a href="http://www.php.net/manual/en/book.pdo.php" target="_blank">PDO</a> would be a good option for PHPainfree, IMHO.</p>
+<p>My other qualm is the rendering stream.  I'm used to the standard MVC pattern, where the controller fetches data with models and publishes it via views.  There may be a way to work like that in PHPainfree, but it's not readily apparent.</p>
+<h3>Pro's</h3>
+<p>It's light, at the cost of including minimal features. And it's fairly easy to understand. According to <a href="http://www.dwheeler.com/sloccount/" target="_blank">SLOCCount</a> there are only 101 lines of source (after removing the config file and default controller).  You can read the whole framework in a few minutes.</p>
+<p>Really, I think this is a framework to build your own framework. The core idea of PHPainfree is to stay out of your way.  If I intended to use PHPainfree on a regular basis, I would set it up the way I like it, dumping libraries into <tt>includes/Autoload</tt> and then keep a tracking version in git with all my addons.</p>
+<h3>Finally...</h3>
+<p>I think that where you can draw the most value from this framework is building something you love on top of this common core code. So give it a try at <a href="http://github.com/februaryfalling/PHPainfree" target="_blank">http://github.com/februaryfalling/PHPainfree</a></p>

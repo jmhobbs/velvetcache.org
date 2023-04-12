@@ -1,0 +1,178 @@
+---
+category:
+- Geek
+creator: admin
+date: 2009-03-31
+permalink: /2009/03/30/imagemagick-thumbnails-and-contact-sheets/
+tags:
+- BASH
+- Computers
+- Graphics
+- Photos
+- Programming
+title: ImageMagick Thumbnails and Contact Sheets
+type: post
+wp_id: "345"
+---
+<div class="update"><p><b>Update (2010-06-14)</b><br/>Thanks to Glenn Turnbull I've fixed a bug where the last contact sheet would not be created when the number of photos is evenly divisible by the contact sheet size.</p><p>Additionally, this script and others will now be kept updated at <a href="http://github.com/jmhobbs/helper-scripts" target="_blank">http://github.com/jmhobbs/helper-scripts</a></p></div>
+<div class="update"><p><b>Update (2012-04-10)</b><br/>Phillip Vuchetich wrote a neat script for making composite 4x6 out of wallet sized images, which he has allowed me to post about <a href="http://www.velvetcache.org/2012/04/10/imagemagick-wallet-maker">here</a>.</p></div>
+<p>Wow, long time no post.  Darcy and I got a digital camera about a week ago, a Nikon D90.  We haven't really had a chance to put it through it's paces, but we've taken a few pictures around the house to play with it.</p>
+<p>At about 3mb each (JPEG's) the images are <em>really</em> slow to preview in Konqueror.  I decided it would be better to be able to download all the photos from the card, then run a script to make my thumbnails.  That way I wouldn't have to wait around while I was viewing photos, instead I could just wait once at the beginning of the process.</p><p>My resulting script may have some holes, but it works well for me on Sidux.  It takes all of the images in the current directory and makes 600x600 base thumbnails into a directory called "thumb" then uses those to make 12 image contact sheets into a directory called "contact".</p>
+<p>
+<table style="float: right; font-size: 10px;" border="1">
+	<tr>
+		<th></th>
+		<th><em>real</em></th>
+		<th><em>user</em></th>
+		<th><em>sys</em></th>
+	</tr>
+	<tr>
+		<td><strong>resize</strong></td>
+		<td align="right">0m43.478s</td>
+		<td align="right">0m40.625s</td>
+		<td align="right">0m2.525s</td>
+	</tr>
+	<tr>
+		<td><strong>scale</strong></td>
+		<td align="right">0m25.449s</td>
+		<td align="right">0m22.975s</td>
+		<td align="right">0m2.236s</td>
+	</tr>
+	<tr>
+		<td><strong>sample</strong></td>
+		<td align="right">0m18.362s</td>
+		<td align="right">0m15.983s</td>
+		<td align="right">0m2.211s</td>
+	</tr>
+	<tr>
+		<td colspan="4"><strong><em>Script times for 16 JPEG images at 3Mb each<br/>To 600x600 thumbnails and 200x200 contact sheet frames.</strong></td>
+	</tr>
+</table>Your results will vary, but I ran it with three different scaling types (resize, scale, sample).  I'm fine with the output from the fastest one (sample) but you can do as you please.  I didn't add command line options because I wanted to have consistent sizes and qualities every time I use it.</p>
+<p><table><tr><td align="center"><a href="http://static.velvetcache.org/pages/2009/03/30/imagemagick-thumbnails-and-contact-sheets/dsc_0096_each.jpg" target="_blank"><img src="http://static.velvetcache.org/pages/2009/03/30/imagemagick-thumbnails-and-contact-sheets/dsc_0096_each_sm.jpg" /></a><br/><em>Side By Side Resize Method Comparison<br/>Click For Fullsize</em></td><td align="center"><a href="http://static.velvetcache.org/pages/2009/03/30/imagemagick-thumbnails-and-contact-sheets/contact.jpg" target="_blank"><img src="http://static.velvetcache.org/pages/2009/03/30/imagemagick-thumbnails-and-contact-sheets/contact_sm.jpg" /></a><br/><em>Sample Contact Sheet<br/>Click For Full Size</em></td></tr></table></p>
+<p>It keeps you updated so you know it hasn't stalled, here is a sample run.</p>
+<pre lang="bash">
+jmhobbs@asuka:~/Desktop/D90/dcim/example$ digiCamProc.sh
+Processing 16 Images
+
+Creating Thumbnails
+100%
+
+Creating Contact Sheets
+1 of 2
+2 of 2
+jmhobbs@asuka:~/Desktop/D90/dcim/example$
+</pre>
+<p>And here it is.  Feel free to comment your changes!</p>
+<pre lang="bash" line="1">#!/bin/bash
+
+# Digital camera thumbnail/contact sheet tool.
+# http://www.velvetcache.org/2009/03/30/imagemagick-thumbnails-and-contact-sheets
+# http://github.com/jmhobbs/helper-scripts
+#
+# Copyright (c) 2009-2010 John Hobbs
+#
+# Permission is hereby granted, free of charge, to any person
+# obtaining a copy of this software and associated documentation
+# files (the "Software"), to deal in the Software without
+# restriction, including without limitation the rights to use,
+# copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following
+# conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+# OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# OTHER DEALINGS IN THE SOFTWARE.
+
+# CHANGELOG
+# 2010-06-14 - Fixed contact sheet problem, thanks to Glenn Turnbull. (John Hobbs)
+# 2009-03-30 - Created script. (John Hobbs)
+
+### SETTINGS ###
+
+# Scaling Methods:
+# resize (Best/Slow)
+# scale (Middle/Middle)
+# sample (Worst/Fast)
+METHOD="sample"
+
+# Thumbnail Size
+THUMBSIZE="600x600"
+# Thumbnail Directory
+THUMBDIR="thumb"
+# Thumbnail Quality
+THUMBQUALITY="80"
+
+# Contact Item Size
+CONTACTSIZE="200x200"
+# Contact Sheet Max Width
+CONTACTWIDTH="3"
+# Contact Sheet Max Height
+CONTACTHEIGHT="4"
+# Horizontal Spacing
+CONTACTSPACINGH="3"
+# Vertical Spacing
+CONTACTSPACINGV="3"
+# Contact Sheet Directory
+CONTACTDIR="contact"
+# Contact Sheet Quality
+CONTACTQUALITY="100"
+
+################
+
+
+CONTACTCOUNT=$(($CONTACTWIDTH * $CONTACTHEIGHT))
+PIX=$(ls -l *.jpg | wc -l)
+
+echo "Processing $PIX Images"
+echo
+echo "Creating Thumbnails"
+
+mkdir -p $THUMBDIR
+CTR=0
+echo -n "0%"
+for i in *.jpg; do
+    echo -ne "\r"
+    echo -n "$((100 * $CTR / $PIX))%"
+    convert -strip -quality ${THUMBQUALITY} -${METHOD} ${THUMBSIZE} "$i" "${THUMBDIR}/${i}"
+    CTR=$(($CTR + 1))
+done
+
+echo -ne "\r"
+echo "100%"
+
+echo
+echo "Creating Contact Sheets"
+
+mkdir -p $CONTACTDIR
+CTR=0
+PAGES=$(($PIX / $CONTACTCOUNT))
+if [ $(($PIX % $CONTACTCOUNT)) -ne 0 ]; then
+    PAGES=$(($PAGES + 1))
+fi
+
+PAGE=1
+LIST=""
+for i in ${THUMBDIR}/*.jpg; do
+    if [ $(($CTR % $CONTACTCOUNT)) -eq 0 ] && [ $CTR -ne 0 ]; then
+        echo "$PAGE of $PAGES"
+        montage -label %f -quality $CONTACTQUALITY -frame 5 -tile ${CONTACTWIDTH}x${CONTACTHEIGHT} -geometry ${CONTACTSIZE}+${CONTACTSPACINGH}+${CONTACTSPACINGV} $LIST jpg:- > ${CONTACTDIR}/${PAGE}.jpg
+        LIST=""
+        PAGE=$(($PAGE + 1))
+    fi
+    LIST="$LIST $i"
+    CTR=$(($CTR + 1))
+done
+
+if [ "" != "$LIST" ]; then
+    echo "$PAGE of $PAGES"
+    montage -label %f -quality $CONTACTQUALITY -frame 5 -tile ${CONTACTWIDTH}x${CONTACTHEIGHT} -geometry ${CONTACTSIZE}+${CONTACTSPACINGH}+${CONTACTSPACINGV} $LIST jpg:- > ${CONTACTDIR}/${PAGE}.jpg
+fi</pre>

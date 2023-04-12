@@ -1,0 +1,52 @@
+---
+category:
+- Consume
+- Geek
+creator: admin
+date: 2011-11-17
+permalink: /2011/11/16/fixing-broken-droid2-root/
+tags:
+- Android
+- Droid2
+- Exploit
+- Root
+title: Fixing Broken Droid2 Root
+type: post
+wp_id: "2048"
+---
+<p>I had previously rooted my Droid2, but it was broken when the OTA Gingerbread came down.  I don't really use root for much now that I don't really develop for Android anymore, but I found a need today, so I decided to re-root.</p>
+<p>I found a nicely packaged exploit on <a href="http://rootzwiki.com/topic/3216-rootunroot-droid-3-root-instructions-one-click-added-for-windows-linux-osx/" target="_blank">rootzwiki</a>, but when I ran it I hit a snag.</p>
+<p><pre lang="text" line="0">* daemon started successfully *
+* Running exploit [part 3 of 3]...
+remount succeeded
+5524 KB/s (1867568 bytes in 0.330s)
+651 KB/s (26264 bytes in 0.039s)
+5928 KB/s (196521 bytes in 0.032s)
+	pkg: /data/local/tmp/Superuser.apk
+Failure [INSTALL_FAILED_ALREADY_EXISTS]
+link failed File exists</pre></p>
+<p>My old root was blocking my new root. Lame.</p>
+<p>Easy to fix after poking around on the file system.</p>
+<p>Essentially it boils down to this:</p>
+<ol><li>Manually remove old Superuser.apk</li><li>Clean up Superuser.apk data files</li><li>Install new super user apk</li><li>Link up new su</li></ol>
+<p>Details below, but as always YMMV.</p>
+<h3>Manually remove old Superuser.apk</h3>
+<p>Make sure you know the full namespace before you delete this file, you will need it later (i.e. <tt>com.noshufou.android.su</tt>)</p>
+<p><pre lang="bash" line="0">jmhobbs@Cordelia:~/root$ ./adb.linux shell
+# cd /system/app
+# rm Superuser.apk</pre></p>
+<h3>Clean up Superuser.apk data files</h3>
+<p><pre lang="bash" line="0">jmhobbs@Cordelia:~/root$ ./adb.linux uninstall com.noshufou.android.su
+Success</pre></p>
+<h3>Install new super user apk</h3>
+<p>From here on out you are essentially just finishing up the root script that got skipped.</p>
+<p><pre lang="bash" line="0">jmhobbs@Cordelia:~/root$ ./adb.linux install Superuser.apk 
+3217 KB/s (196521 bytes in 0.059s)
+	pkg: /data/local/tmp/Superuser.apk
+Success</pre></p>
+<h3>Link up new su</h3>
+<p><pre lang="bash" line="0">jmhobbs@Cordelia:~/root$ ./adb.linux shell
+# cd /system/bin
+# mv su su.orig
+# ln -s /system/xbin/su /system/bin/su</pre></p>
+<p>All done! You should be rooted again.</p>

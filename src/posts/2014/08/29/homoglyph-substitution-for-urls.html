@@ -1,0 +1,46 @@
+---
+category:
+- Geek
+creator: admin
+date: 2014-08-29
+permalink: /2014/08/29/homoglyph-substitution-for-urls/
+tags:
+- Internet
+- Programming
+- Python
+- Work
+title: Homoglyph Substitution for URL's
+type: post
+wp_id: "2563"
+---
+<p>At <a href="http://packdog.com/" target="_blank">Pack</a> we use ascii-based unique identifiers in URL's a lot.  We call them slugs.  <a href="http://packdog.com/hannelore" target="_blank">Dogs have them</a>, <a href="http://packdog.com/human/johnhenry" alt="_blank">users have them</a>, <a href="http://packdog.com/breed/german-shepherd" target="_blank">breeds have them</a>, etc.</p>
+
+<p>I made the decision early on to keep the slugs plain old ascii.  No unicode.  These are primarily for URL's, and I wanted them easy to type.  Most slugs in the system are automatically generated.  These slugs are derived from names when a dog or user is created in the system.  This is a problem, because there are a lot of people in the world who use characters outside of the ascii set.</p>
+
+<p>Usually, the solution is just to drop non-ascii characters.  This is the simplest option, and it works.  For example, Designer News uses this technique.  In the case of John Henry MÃ¼ller, they simply drop the Ã¼ because of the umlaut, giving him the user URL of <a href="https://news.layervault.com/u/11655/john-henry-mller/" target="_blank">https://news.layervault.com/u/11655/john-henry-mller/</a>.  MÃ¼ller becomes mller.  I find this less than optimal.</p>
+
+<p>A second technique is to use homoglyph substitution.  A <a href="http://en.wikipedia.org/wiki/Homoglyph" target="_blank">homoglyph</a> is a character which is visually similar to another, to the point that they are difficult to quickly distinguish with just a glance. I'm familiar with them from the world of phishing, where people <a href="http://www.irongeek.com/i.php?page=security/out-of-character-use-of-punycode-and-homoglyph-attacks-to-obfuscate-urls-for-phishing" target="_blank" rel="nofollow">register domains that look very similar to other domains by using homoglyphs</a>.</p>
+
+<p>Once you build a list of homoglyphs, it's easy to create slugs that are ascii only through substitution.  We expanded the definition of homoglyph for our list to include anything you could squint at funny and think they were similar.  The method is a bit brute force, but it only ever runs once per string, and I think the outcome is worth it.</p>
+<pre lang="python" line="0"># -*- coding: utf-8 -*-
+
+UNICODE_ASCII_HOMOGLYPHS = (
+    ('a', u'AaÃ€ÃÃ‚ÃƒÃ„Ã…Ã Ã¡Ã¢Ã£Ã¤Ã¥É‘Î‘Î±Ð°áŽªï¼¡ï½Ä„Ä€ÄÄ‚ÄƒÄ…Ã€ÃÃ‚ÃƒÃ„Ã…Ã Ã¡Ã¢Ã£Ã¤Ã¥'),
+    ....
+    ('z', u'ZzÎ–áƒï¼ºï½šÅ¹ÅºÅ»Å¼Å½Å¾'),
+)
+
+
+def replace_homoglyphs(string):
+    '''If a string is unicode, replace all of the unicode homoglyphs with ASCII equivalents.'''
+    if unicode == type(string):
+        for homoglyph_set in UNICODE_ASCII_HOMOGLYPHS:
+            for homoglyph in homoglyph_set[1]:
+                string = string.replace(homoglyph, homoglyph_set[0])
+    return string</pre>
+
+<p>This works well for us, we get reasonable URL's for dogs like "HÃ³lmfrÃ­Ã°ur frÃ¡ Ã“lafsfjordur".  <a href="http://packdog.com/holmfriour-fra-olafsfjordur" target="_blank">holmfriour-fra-olafsfjordur</a> is not the same, but it's close enough for a URL that you don't mind, and it's better than using <strong>hlmfrur-fr-lafsfjordur</strong>.</p>
+
+<p style="text-align: center;"><img src="http://static.velvetcache.org/pages/2014/08/29/homoglyph-substitution/holmfriour-fra-olafsfjordur.jpg" alt="HÃ³lmfrÃ­Ã°ur frÃ¡ Ã“lafsfjordur" /></p>
+
+<p>Unfortunately, this doesn't work well for un-romanized languages, notably asian languages, such as "<a href="http://packdog.com/pack-dog-23" target="_blank">ã‚¯ãƒƒã‚­ãƒ¼</a>".  In this case, the system breaks down and we end up with no usable slug, so we build from a default.  I'm still seeking a solution for that.  Maybe I should use automatic translation on it.</p>

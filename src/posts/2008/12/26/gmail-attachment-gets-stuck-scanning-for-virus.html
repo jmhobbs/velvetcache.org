@@ -1,0 +1,15 @@
+---
+category:
+- Geek
+creator: admin
+date: 2008-12-26
+permalink: /2008/12/26/gmail-attachment-gets-stuck-scanning-for-virus/
+tags:
+- Computers
+- Google
+- Internet
+title: Gmail Attachment Gets Stuck Scanning For Virus
+type: post
+wp_id: "328"
+---
+<p>I've been having trouble with Gmail for my domain getting stuck scanning for viruses on my attachments, which means I can't download them, which is annoying.</p><p>I got fed up with waiting for Gmail, so I just got them through the old fashioned means.</p><p>Here's how...</p><p><img src="http://static.velvetcache.org/pages/2008/12/26/gmail-attachment-gets-stuck-scanning-for-virus/fail1.png" /><br/><b>Attachment is stuck...</b></p><p><img src="http://static.velvetcache.org/pages/2008/12/26/gmail-attachment-gets-stuck-scanning-for-virus/fail3.png" /><br/><b>View the original message...</b></p><p><a href="http://static.velvetcache.org/pages/2008/12/26/gmail-attachment-gets-stuck-scanning-for-virus/fail4.png"><img src="http://static.velvetcache.org/pages/2008/12/26/gmail-attachment-gets-stuck-scanning-for-virus/fail4_sm.png" border="0"/></a><br/><b>What that looks like (click image for bigger view)</b></p><p><a href="http://static.velvetcache.org/pages/2008/12/26/gmail-attachment-gets-stuck-scanning-for-virus/fail5.png"><img src="http://static.velvetcache.org/pages/2008/12/26/gmail-attachment-gets-stuck-scanning-for-virus/fail5_sm.png" border="0" style="width: 500px;" /></a><br/>Find the base64 encoded contents of your attachment (click image for bigger view)</p><p>Then you just copy and paste that into a file and run it through <tt>base64</tt>, a la <tt>$ base64 -d getImage.raw > getImage.php</tt></p>

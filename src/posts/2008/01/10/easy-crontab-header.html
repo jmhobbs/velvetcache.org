@@ -1,0 +1,20 @@
+---
+category:
+- Geek
+creator: admin
+date: 2008-01-10
+permalink: /2008/01/10/easy-crontab-header/
+tags:
+- Linux
+title: Easy Crontab Header
+type: post
+wp_id: "199"
+---
+<p>I made myself a new standard crontab header because I forget this stuff and yet use crontab all the time.  It's big, but fairly complete.
+<pre lang="bash" line="1"># +--------- Minute (0-59)                    | Output Dumper: >/dev/null 2>&1
+# | +------- Hour (0-23)                      | Multiple Values Use Commas: 3,12,47
+# | | +----- Day Of Month (1-31)              | Do every X intervals: */X  -> Example: */15 * * * *  Is every 15 minutes
+# | | | +--- Month (1 -12)                    | Aliases: @reboot -> Run once at startup; @hourly -> 0 * * * *;
+# | | | | +- Day Of Week (0-6) (Sunday = 0)   | @daily -> 0 0 * * *; @weekly -> 0 0 * * 0; @monthly ->0 0 1 * *;
+# | | | | |                                   | @yearly -> 0 0 1 1 *;
+# * * * * * COMMAND                           |</pre></p>

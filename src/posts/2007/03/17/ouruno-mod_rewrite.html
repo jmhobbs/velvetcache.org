@@ -1,0 +1,18 @@
+---
+category:
+- Geek
+creator: admin
+date: 2007-03-17
+permalink: /2007/03/17/ouruno-mod_rewrite/
+tags:
+- Internet
+- OurUNO
+- PHP
+- Programming
+- Projects
+title: OurUNO & mod_rewrite
+type: post
+wp_id: "142"
+---
+<p>Over the last day or so I've spent some time restructuring <a href="http://www.velvetcache.org/category/projects/ouruno/">OurUNO</a> to fix it up in time for the end of the semester.  One of the biggest and most visible things I've done is to start using mod_rewrite to make super-slick URLs for everything.  For example, in the old system to view Robert Fulkerson's information and get reviews, you would have to go to "http://www.ouruno.com/instructors.php?action=view&id=1".  With the new system you can simply go to "http://www.ouruno.com/instructor/fulkerson/robert/". mod_rewrite is darn cool.</p>
+<p>Along with that is a shift in the design paradigm, setting apart the actions on the site into 3 sets, (View/Edit/Create) and 3 sections (Course/Instructor/Review)  with a deeper backend and wiki style rollbacks on edits.  Also, at Dave's suggestion, I'm adding in the ability to generate a review or other content without signing up.  You just have to enter it, got to your UNO email, and click through on the link to validate your address.  Rad.</p>

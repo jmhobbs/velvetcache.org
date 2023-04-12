@@ -1,0 +1,44 @@
+---
+category:
+- Geek
+creator: admin
+date: 2008-03-10
+permalink: /2008/03/10/libcvfx/
+tags:
+- C
+- Graphics
+- libcvfx
+- OpenCV
+- Programming
+- Projects
+- Software
+title: libcvfx
+type: post
+wp_id: "210"
+---
+<p>I've been <a href="http://www.velvetcache.org/2008/02/26/playing-with-opencv">playing with OpenCV</a> recently and was having troubles with creating effects.  That's all over now thanks to the OpenCV mailing list, you can see the fix in the comments of <a href="http://www.velvetcache.org/2008/03/02/screwy-opencv-manipulations">this post</a>.  Since I can now manipulate colors and pixels with ease I've been writing a few more neat effects. And yes, I know that this is not what OpenCV is for, but it's a really handy library and I like it.</p>
+<p>I decided to pull them out of my test program and make them into a little library.  Having never made a library before I[m sure I did some things wrong, but it works and that's what I care about right now.</p>
+<p>I doubt my manipulation method is the fastest, but I've tried to be economical and share resources between effects.  I also included a test program so you can try out the filters.  These are all written by me so far, with inspiration but no code from other sources.  I'm hoping to port over some of effectv's super cool filters as time goes on.  You can click through on any of the pictures below for a 640x480 version.</p>
+<p><b>Baseline</b><br/>This is my normal image I get from my cheap labtec webcam.<br/>And yes, I am that good looking.<br/><a href="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205100472_none.jpg"><img src="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205100472_none_sm_.jpg" /></a><br/><a href="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205100480_none.jpg"><img src="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205100480_none_sm_.jpg" /></a></p>
+<p><b>Green</b><br/>Probably the simplest effect, it just involves turning off the blue and red channels.
+<a href="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205100482_green.jpg"><img src="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205100482_green_sm_.jpg" /></a></p>
+<p><b>Mirror</b><br/>Copies and flips the left side onto the right.
+<a href="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205100496_mirror.jpg"><img src="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205100496_mirror_sm_.jpg" /></a><br/><a href="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205100501_mirror.jpg"><img src="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205100501_mirror_sm_.jpg" /></a></p>
+<p><b>Monochrome</b><br/>Simple like green, just sums the three channels into one value.
+<a href="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205100507_monochrome.jpg"><img src="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205100507_monochrome_sm_.jpg" /></a></p>
+<p><b>Corners</b><br/>This one swaps the top left and bottom right corners. I'm going to swap top right and bottom left later.
+<a href="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205100513_corners.jpg"><img src="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205100513_corners_sm_.jpg" /></a></p>
+<p><b>Horizontal Flip</b><br/>
+<a href="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205100550_hFlip.jpg"><img src="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205100550_hFlip_sm_.jpg" /></a></p>
+<p><b>Vertical Flip</b><br/>
+<a href="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205100553_vFlip.jpg"><img src="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205100553_vFlip_sm_.jpg" /></a></p>
+<p><b>Memory</b><br/>This is one of the harder ones.  It stores three frames in memory and then combines them with the current frame for a ghosting type of effect.
+<a href="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205100546_memory.jpg"><img src="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205100546_memory_sm_.jpg" /></a><br/><a href="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205100532_memory.jpg"><img src="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205100532_memory_sm_.jpg" /></a></p>
+<p><b>Oompa Loompa</b><br/>For lack of a better name.
+<a href="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205100555_oompaLoompa.jpg"><img src="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205100555_oompaLoompa_sm_.jpg" /></a></p>
+<p><b>Invert</b><br/>
+<a href="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205108695_invert.jpg"><img src="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205108695_invert_sm_.jpg" /></a></p>
+<p><b>Pixelize</b><br/>This is the only one with parameters, and one of my favorites.<br/>The parameter is the "pixel size".<br/>From top down it is set at 2, 6 and 10.
+<a href="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205104992_pixelize.jpg"><img src="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205104992_pixelize_sm_.jpg" /></a><br/>
+<a href="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205100519_pixelize.jpg"><img src="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205100519_pixelize_sm_.jpg" /></a><br/>
+<a href="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205104756_pixelize.jpg"><img src="http://static.velvetcache.org/pages/2008/3/10/libcvfx/cvfxTest_capture_1205104756_pixelize_sm_.jpg" /></a></p><p>You can grab the 0.01 source <a href="http://static.velvetcache.org/pages/2008/3/10/libcvfx/libcvfx-0.01.tar.gz">here</a> (doesn't have the invert filter) or browse the svn repo at <a href="http://svn.velvetcache.org/libcvfx/">http://svn.velvetcache.org/libcvfx/</a> for more current stuff.</p>

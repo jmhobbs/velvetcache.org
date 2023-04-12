@@ -1,0 +1,48 @@
+---
+category:
+- Geek
+creator: admin
+date: 2014-11-17
+permalink: /2014/11/17/updating-s3-cors-with-boto/
+tags:
+- AWS
+- CORS
+- Python
+- S3
+- Snippets
+title: Updating S3 CORS With Boto
+type: post
+wp_id: "2602"
+---
+<p>Sometimes you don't have access to the S3 console, but you do have keys for a bucket.  If you need to change CORS for that bucket, it turns out you can. Boto has API methods for this.</p>
+<p><pre lang="python"># -*- coding: utf-8 -*-
+
+from boto.s3.connection import S3Connection
+from boto.s3.bucket import Bucket
+
+AWS_ACCESS_KEY = 'YOUR KEY HERE'
+AWS_SECRET_KEY = 'YOUR KEY HERE'
+S3_BUCKET = 'YOUR BUCKET HERE'
+
+cors_xml = """
+<CORSConfiguration>
+  <CORSRule>
+    <AllowedOrigin>*</AllowedOrigin>
+    <AllowedMethod>GET</AllowedMethod>
+    <AllowedMethod>POST</AllowedMethod>
+    <AllowedHeader>*</AllowedHeader>
+  </CORSRule>
+</CORSConfiguration>
+"""
+
+connection = S3Connection(AWS_ACCESS_KEY, AWS_SECRET_KEY)
+bucket = Bucket(connection, S3_BUCKET)
+
+print "Current CORS:"
+print bucket.get_cors_xml()
+
+bucket.set_cors_xml(cors_xml)
+
+print "New CORS:"
+print bucket.get_cors_xml()
+</pre></p>

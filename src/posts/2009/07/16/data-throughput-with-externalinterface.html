@@ -1,0 +1,70 @@
+---
+category:
+- Geek
+creator: admin
+date: 2009-07-16
+permalink: /2009/07/16/data-throughput-with-externalinterface/
+tags:
+- actionscript
+- flash
+- JavaScript
+- Programming
+title: Data throughput with ExternalInterface
+type: post
+wp_id: "364"
+---
+<p>I've started tinkering with Flash and AS3, and I've used the ExternalInterface a lot.  For one project the amount of data to be pushed into JavaScript from AS3 was highly variable, could be huge.</p><p>I couldn't find a good reference for how much it can handle, so I threw this together.  In the end I made it to ~10Mb through at a time in both Firefox and Chrome. No IE testing :-)</p><p>The basic idea was to keep requesting large chunks until it broke, then go back and slowly work my way up to the max.</p><p>The JavaScript:<br/><pre lang="JavaScript">function $(e) { return document.getElementById(e); }
+
+var expect = 0;
+var interval = 100000;
+
+function callback (bytestring) {
+  $('logarea').innerHTML = 'Expect: '+expect+'<br/>';
+  $('logarea').innerHTML = 'Got: '+bytestring.length+'<br/>';
+  if(expect == bytestring.length) {
+    expect += interval;
+  }
+  else {
+    if(interval == 1) {
+      $('logarea').innerHTML += '<b>Final Value:'+bytestring.length+'</b><br/>';
+      return;
+    }
+    else {
+      expect -= interval;
+      interval = interval / 10;
+      expect += interval;
+    }
+  }
+
+  if(bytestring.length >= 10000000) { // ~10 Mb
+    $('logarea').innerHTML += '<b>Reached ~10 Mb, I give up.</b><br/>';
+    return;
+  }
+
+  setTimeout("$('eiEmbed').expect(expect)", 50);
+}</pre><br/>
+The ActionScript:<br/>
+<pre lang="ActionScript">import flash.external.ExternalInterface;
+
+if(!ExternalInterface.available)
+  trace('EI Not Available. What have you done?!');
+
+var returnval:String = '';
+var lastexpect:int = 0;
+
+function expect (bytes:int):void {
+  var toadd:int = bytes;
+
+  if(bytes < lastexpect)
+    returnval = '';
+  else
+    toadd = bytes - lastexpect;
+
+  for(var i = 0; i < toadd; ++i) {
+    returnval += "a";
+  }
+  lastexpect = bytes;
+  ExternalInterface.call('callback', returnval);
+}
+ExternalInterface.addCallback('expect', expect);</pre></p>
+<p>You can run it yourself <a href="http://static.velvetcache.org/pages/2009/07/16/data-throughput-with-externalinterface/index.html">here</a>. Or download it <a href="http://static.velvetcache.org/pages/2009/07/16/data-throughput-with-externalinterface/eiTest.tar.gz">here</a>.</p>

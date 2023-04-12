@@ -1,0 +1,41 @@
+---
+category:
+- Geek
+creator: admin
+date: 2009-12-12
+permalink: /2009/12/11/fh-team-statistics-scraper/
+tags:
+- BASH
+- F@h
+- Linux
+- Programming
+- Snippets
+title: F@H Team Statistics Scraper
+type: post
+wp_id: "745"
+---
+<p>I created a team for <a href="http://www.littlefilament.com/" target="_blank">Little Filament</a> on Folding@home.  Our team number is <a href="http://fah-web.stanford.edu/cgi-bin/main.py?qtype=teampage&teamnum=172406" target="_blank">172406</a> (in case you want to join), but I wanted to add our latest stats on the Little Filament site.  As far as I can tell there is no API for the stats, so I worked up a scraper in <tt>bash</tt>.</p><p>Basically all it does is fetch the page, then <tt>grep</tt> and <tt>sed</tt> it's way to the variables, finally dumping them into a <tt>json</tt> file (for easy JavaScript consumption).</p><p>The kicker is that the stats server is overloaded or down a lot, so we can't rely on it and we don't want to stress it out further. My decision was to poll it at a large interval, 12-24 hours.  I don't have enough clients on the team to exact significant change over 6-12 hours, but I don't want to fall too far out of date either.  So if the server is overloaded and drops it once or twice, not a big deal.</p><p>Without further ado, here is the script.</p><p><pre lang="bash">#!/bin/bash
+
+NOW=$(date +%s)
+THEN=$(cat fah_check.lock | tr -d '\n')
+
+if [ $NOW -gt $(($THEN + 86400)) ]; then
+	wget "http://fah-web.stanford.edu/cgi-bin/main.py?qtype=teampage&teamnum=172406" -O fah_check.html
+	if [ "$?" == "0" ]; then
+		grep "Grand Score" fah_check.html > /dev/null 2&>1
+		if [ "$?" == "0" ]; then
+			SCORE=$(grep -C 2 "Grand Score" fah_check.html | sed 's/[^0-9]//gm' | tr -d '\n')
+			WU=$(grep -C 2 "Work Unit Count" fah_check.html | sed 's/[^0-9]//gm' | tr -d '\n')
+			RANK=$(grep -C 1 "Team Ranking" fah_check.html | sed 's/[^0-9of]//gm' | tr -d '\n' | sed 's/f\([0-9]*\)of\([0-9]*\)/\1 of \2/')
+			echo "{\"score\": \"$SCORE\", \"work_units\": \"$WU\", \"rank\": \"$RANK\" }" > fah_check.json
+			echo "[$NOW] - Success!" >> fah_check.log
+			echo $NOW > fah_check.lock
+		else
+			echo "[$NOW] - Filter Failed" >> fah_check.log
+		fi
+	else
+		echo "[$NOW] - Download Failed" >> fah_check.log
+	fi
+else
+	echo "[$NOW] - Skip Update" >> fah_check.log
+fi</pre></p><p>That cranks out fah_check.json, which looks like this:<pre lang="javascript">{"score": "4355", "work_units": "20", "rank": "39881 of 169721" }</pre></p><p>To see it in action, check out the <a href="http://www.littlefilament.com/folding" target="_blank">Little Filament Folding</a> page.</p>
