@@ -96,6 +96,8 @@ body {
   min-height: 100vh;
   display: grid;
   grid-template-rows: auto 1fr auto;
+  grid-template-columns: 100%;
+  width: 100%;
 }
 
 main {
@@ -417,8 +419,8 @@ div.listing {
     list-style-type: none;
     margin: 2rem 0;
     padding: 0;
-    grid-template-columns: repeat(2, 1fr);
     display: grid;
+    grid-template-columns: repeat(2, 1fr);
     font-size: 1.5rem;
     color: var(--main-font-color-weak);
     li {
