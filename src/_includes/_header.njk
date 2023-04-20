@@ -26,8 +26,8 @@
   </head>
   <body>
     <script>
-      document.body.dataset['scheme'] = window.localStorage.getItem('scheme');
-      document.body.dataset['theme'] = window.localStorage.getItem('theme');
+      document.body.dataset['scheme'] = window.localStorage.getItem('scheme') || '';
+      document.body.dataset['theme'] = window.localStorage.getItem('theme') || '';
     </script>
     <header>
       <div class="constrained">

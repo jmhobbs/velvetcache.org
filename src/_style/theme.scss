@@ -386,7 +386,29 @@ blockquote {
   a, a:active, a:visited {
     color: var(--main-bg-color);
     &:hover {
-      color: var(--theme-color);
+      color: var(--theme-color-weak);
+    }
+  }
+
+  cite {
+    font-size: 1rem;
+    text-align: right;
+    display: block;
+    margin-top: 1rem;
+  }
+}
+
+aside {
+  background: var(--main-font-color);
+  color: var(--main-bg-color);
+  margin: 1.5rem 0;
+  padding: 0.1rem 1rem 1.6rem 1rem;
+  border-left: 1rem solid var(--theme-color);
+
+  a, a:active, a:visited {
+    color: var(--main-bg-color);
+    &:hover {
+      color: var(--theme-color-weak);
     }
   }
 
