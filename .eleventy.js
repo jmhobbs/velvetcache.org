@@ -3,6 +3,7 @@ const { DateTime } = require("luxon");
 const slugify = require('@sindresorhus/slugify');
 const util = require('util');
 const syntaxHighlight = require('eleventy-plugin-highlightjs');
+const pluginRss = require("@11ty/eleventy-plugin-rss");
 
 const categories = require('./src/_data/categories.json');
 const post_tags = require('./src/_data/post_tags.json');
@@ -14,6 +15,7 @@ module.exports = function(eleventy) {
   eleventy.addPassthroughCopy("./src/_redirects");
 
   eleventy.addPlugin(syntaxHighlight);
+  eleventy.addPlugin(pluginRss);
 
   eleventy.addFilter("strftime", function(dateObj, format) {
     return DateTime.fromJSDate(dateObj, {zone: 'utc'}).toFormat(format);

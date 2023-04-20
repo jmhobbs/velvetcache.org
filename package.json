@@ -5,6 +5,7 @@
   "main": "",
   "devDependencies": {
     "@11ty/eleventy": "^2.0.1",
+    "@11ty/eleventy-plugin-rss": "github:11ty/eleventy-plugin-rss",
     "@sindresorhus/slugify": "^1.1.2",
     "eleventy-plugin-highlightjs": "^1.1.0",
     "luxon": "^1.21.2",
