@@ -21,6 +21,10 @@ and made the best Wordpress hosting in the world at [Flywheel](https://getflywhe
 
 To get in touch, just send me an email, [john@velvetcache.org](mailto:john@velvetcache.org)
 
+## Uses
+
+[What I use...](/uses/)
+
 ## Buttercup Farm
 
 My wife and I live with our kids on 11 acres just outside of Omaha.
