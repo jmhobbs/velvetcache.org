@@ -8,7 +8,7 @@ tags:
 - Programming
 title: CHIP-8 BCD
 type: post
-permalink: /2024/01/31/chip-8-bcd
+permalink: /2024/01/31/chip-8-bcd/
 summary: While implementing a CHIP-8 emulator, I came across a new concept.
 ---
 
