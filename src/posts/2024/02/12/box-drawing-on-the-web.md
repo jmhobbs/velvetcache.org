@@ -9,7 +9,7 @@ tags:
 - Python
 title: Box drawing on the web
 type: post
-permalink: /2024/02/12/box-drawing-on-the-web
+permalink: /2024/02/12/box-drawing-on-the-web/
 summary: "Boxes: Harder than you thought."
 ---
 
