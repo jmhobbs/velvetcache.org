@@ -137,7 +137,7 @@ hr {
 }
 
 code {
-  padding: 0 0.3rem 0.1rem 0.3rem;
+  padding: 0.2rem 0.3rem 0.1rem 0.3rem;
   background-color: var(--monokai-background);
   font-family: var(--mono-font);
   font-size: 0.9rem;
@@ -154,6 +154,11 @@ pre > code {
   display: block;
   overflow: auto;
   tab-size: 2;
+  line-height: 1.25;
+}
+
+pre > code.language-console {
+  line-height: 1;
 }
 
 table {
