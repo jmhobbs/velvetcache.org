@@ -252,66 +252,6 @@ body > footer nav a[data-scheme=dark] {
   background-color: #{map.get($dark_scheme, "background")};
 }
 
-/* Homepage Introduction */
-
-section.introduction {
-  background: var(--main-font-color);
-  color: var(--main-bg-color);
-  border-left: 1rem solid var(--theme-color);
-  font-size: 1.25rem;
-  margin: 3rem 0 0.5rem 0;
-  padding: 2rem;
-
-  a, a:active, a:visited {
-    color: var(--main-bg-color);
-    &:hover {
-      color: var(--theme-color);
-    }
-  }
-
-  display: grid;
-
-  ul {
-    margin-block-start: 0;
-    margin-block-end: 0;
-    margin-inline-start: 0;
-    margin-inline-end: 0;
-    margin-top: 1rem;
-    padding-inline-start: 0;
-
-    li {
-      display: inline;
-      margin-right: 0.5rem;
-    }
-  }
-
-  img {
-    border: 1px solid var(--theme-color);
-    border-radius: 5%;
-  }
-}
-
-@media only screen and (max-width: 699px)  {
-  section.introduction {
-    grid-template-rows: auto auto;
-    picture {
-      max-width: 200px;
-    }
-  }
-}
-
-@media only screen and (min-width: 700px)  {
-  section.introduction {
-    grid-template-columns: auto 25%;
-    column-gap: 1rem;
-
-    picture {
-      order: 2;
-    }
-  }
-}
-
-
 /* posts */
 
 article {
@@ -340,7 +280,15 @@ article footer {
   font-family: var(--mono-font);
 }
 
-article footer a,  article footer a:visited, article footer a:active {
+a.tag {
+  padding: 0.25rem 0.3rem;
+  font-size: 0.7em;
+  font-family: var(--mono-font);
+}
+
+article footer a,  article footer a:visited, article footer a:active,
+a.tag, a.tag:visited, a.tag:active
+{
   background: var(--theme-color);
   color: var(--main-font-color-strong);
   padding: 0.25rem 0.3rem;
@@ -348,11 +296,10 @@ article footer a,  article footer a:visited, article footer a:active {
   text-decoration: none;
   margin-left: 0.15rem;
 }
-article footer a:hover {
+article footer a:hover, a.tag:hover {
   color: var(--theme-color-weak);
   background: var(--main-font-color-strong);
 }
-
 
 blockquote {
   &::before {
@@ -433,6 +380,15 @@ div.listing {
   div {
     border-bottom: 1px solid var(--theme-color);
     padding: 1.5rem 0;
+    .tags {
+      border-bottom: none;
+      padding: 0.5rem 0 1.5rem 0;
+      text-align: right;
+    }
+    &:first-child {
+      border-top: 1px solid var(--theme-color);
+      margin-top: 3rem;
+    }
   }
   time {
     font-size: 0.95rem;
@@ -455,6 +411,11 @@ div.listing {
     }
   }
 
+  h1:first-child {
+    border-bottom: 1px solid var(--theme-color);
+    padding-bottom: 1.5rem;
+    margin-bottom: 0;
+  }
 }
 
 table.theme-demo {
@@ -497,5 +458,22 @@ ul.tag-cloud {
     display: inline-block;
     margin: 0.5rem 1rem 0.5rem 0;
     font-size: 1.25rem;
+  }
+}
+
+/* page/post specific styles */
+body.page-about {
+  img {
+    width: 80%;
+    padding: 1.5rem 10% 0.5rem 10%;
+    height: auto;
+  }
+  @media only screen and (min-width: 475px) {
+    img {
+      width: 200px;
+      height: 200px;
+      float: right;
+      padding: 1rem;
+    }
   }
 }

@@ -21,6 +21,16 @@ noindex: true
     <h2><a href="{{ post.url }}">{{ post.data.title }}</a></h2>
     <time datetime="{{ post.date.toISOString() }}">{{ post.date | strftime("LLL d, y") }}</time>
     {%- if post.data.summary -%}<p>{{ post.data.summary }}</p>{%- endif -%}
+    {%- if post.data.tags or post.data.category -%}
+      <div class="tags">
+      {%- for tag in post.data.tags -%}
+        <a href="/tags/{{ tag | wp_tag_slug }}" class="tag">{{ tag }}</a>
+      {%- endfor -%}
+      {%- for category in post.data.category -%}
+        <a href="/category/{{ category | wp_category_slug }}" class="tag">{{ category }}</a>
+      {%- endfor -%}
+      </div>
+    {%- endif -%}
   </div>
   {%- endfor -%}
 </div>

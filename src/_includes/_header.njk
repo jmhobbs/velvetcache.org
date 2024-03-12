@@ -20,7 +20,7 @@
     <link href="/static/source-code-pro-8ef7711.css" rel="stylesheet">
     <link href="/static/hljs-monokai.css" rel="stylesheet">
   </head>
-  <body>
+  <body{% if type == 'page' %} class="page-{{title|slugify}}"{% endif %}>
     <script>
       document.body.dataset['scheme'] = window.localStorage.getItem('scheme') || '';
       document.body.dataset['theme'] = window.localStorage.getItem('theme') || '';
@@ -28,6 +28,9 @@
     <header>
       <div class="constrained">
         <a href="/">jmhobbs</a>
+        <nav>
+          <a href="/about/">About</a>
+        </nav>
       </div>
     </header>
     <main>

@@ -9,6 +9,13 @@ type: page
 wp_id: "2"
 ---
 
+<picture>
+    <source srcset="https://static.velvetcache.org/jmhobbs.avif" type="image/avif" />
+    <source srcset="https://static.velvetcache.org/jmhobbs.webp" type="image/webp" />
+    <source srcset="https://static.velvetcache.org/jmhobbs.jpg" type="image/jpeg" />
+    <img width="200" height="200" src="https://static.velvetcache.org/jmhobbs.jpg" alt="John Hobbs" />
+</picture>
+
 My name is John Hobbs, and I do computer stuff.
 I have a Bachelors in MIS from the University of Nebraska at Omaha.
 Currently, I help the world build better UI through testing at [Chromatic](https://chromatic.com)
@@ -56,13 +63,15 @@ Martha is an all-in-one mushroom fruiting chamber automation system written in G
 
 ## Other Sites
 
-- [Mastodon](https://noc.social/@jmhobbs)
-- [LinkedIn](https://www.linkedin.com/in/johnhobbs)
-- [GitHub](https://github.com/jmhobbs)
-- [Instagram](https://www.instagram.com/johndoesitwrong/)
-- [Last.fm](https://www.last.fm/user/pinesolpirate)
-- [goodreads](https://www.goodreads.com/user/show/964552)
-- [YouTube.com](https://www.youtube.com/profile?user=pinesolpirate)
-- [Slide Share](https://slideshare.net/jmhobbs)
-- [About.me](https://about.me/jmhobbs)
-- [Twitter](https://twitter.com/jmhobbs)
+## Links
+
+- <a rel="me" href="https://noc.social/@jmhobbs">Mastodon</a>
+- <a rel="me" href="https://www.linkedin.com/in/johnhobbs">LinkedIn</a>
+- <a rel="me" href="https://github.com/jmhobbs">GitHub</a>
+- <a rel="me" href="https://www.instagram.com/johndoesitwrong/">Instagram</a>
+- <a rel="me" href="https://www.last.fm/user/pinesolpirate">Last.fm</a>
+- <a rel="me" href="https://www.goodreads.com/user/show/964552">goodreads</a>
+- <a rel="me" href="https://www.youtube.com/profile?user=pinesolpirate">YouTube.com</a>
+- <a rel="me" href="https://slideshare.net/jmhobbs">Slide Share</a>
+- <a rel="me" href="https://about.me/jmhobbs">About.me</a>
+- <a rel="me" href="https://twitter.com/jmhobbs">Twitter</a>
