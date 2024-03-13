@@ -43,7 +43,7 @@ module.exports = function(eleventy) {
       const slug = title.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
       const pathHash = createHash('sha1');
       pathHash.update(path.replace(/^\.\//, ''));
-      return `/static/og/${slug}-${pathHash.digest('hex')}.png`;
+      return `/static/og/generated/${slug}-${pathHash.digest('hex')}.png`;
     }
     return null;
   });
