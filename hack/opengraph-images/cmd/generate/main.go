@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/jmhobbs/velvetcache.org/hack/opengraph-images/internal/opengraph"
@@ -13,9 +14,10 @@ import (
 
 func main() {
 
-	if len(os.Args) != 4 {
-		fmt.Fprintln(os.Stderr, "usage: generate <src> <output> <cache>")
+	if len(os.Args) != 5 {
+		fmt.Fprintln(os.Stderr, "usage: generate <root> <src> <output> <cache>")
 		fmt.Fprintln(os.Stderr, "")
+		fmt.Fprintln(os.Stderr, "  root     the root directory that the other directories are based on")
 		fmt.Fprintln(os.Stderr, "  src      the source directory to search for posts (markdown only)")
 		fmt.Fprintln(os.Stderr, "  output   the directory to write opengraph images to")
 		fmt.Fprintln(os.Stderr, "  cache    the directory to read/write cached opengraph images from")
@@ -23,12 +25,15 @@ func main() {
 	}
 
 	root := os.Args[1]
-	output := os.Args[2]
-	cache := os.Args[3]
+	source := os.Args[2]
+	output := filepath.Join(root, os.Args[3])
+	cache := filepath.Join(root, os.Args[4])
 
-	log.Printf("Collecting posts from %s", root)
+	log.Printf("Collecting posts from %s", filepath.Join(root, source))
+	log.Printf("Writing opengraph images to %s", output)
+	log.Printf("Using cache at %s", cache)
 
-	posts, err := collectPosts(root)
+	posts, err := collectPosts(root, source)
 	if err != nil {
 		log.Fatal(err)
 	}
