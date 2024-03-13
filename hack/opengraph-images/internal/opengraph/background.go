@@ -1,4 +1,4 @@
-package main
+package opengraph
 
 import (
 	"bytes"
@@ -11,12 +11,13 @@ import (
 	"strings"
 
 	"github.com/fogleman/gg"
+	"github.com/mazznoer/colorgrad"
 	"github.com/pravj/geopattern"
 	"github.com/srwiley/oksvg"
 	"github.com/srwiley/rasterx"
 )
 
-var backgrounds []string = []string{
+var patterns []string = []string{
 	"chevrons",
 	"diamonds",
 	"hexagons",
@@ -30,6 +31,9 @@ var backgrounds []string = []string{
 	"triangles",
 	"xes",
 	// these aren't geopattern patterns, we implement them
+}
+
+var gradients []string = []string{
 	"gradient-linear-ltr",
 	"gradient-linear-rtl",
 	"gradient-linear-ttb",
@@ -60,7 +64,7 @@ func rasterizeSVG(svg string, baseColor string) (*image.RGBA, error) {
 		return nil, fmt.Errorf("unable to extract pattern height: %w", err)
 	}
 
-	icon, err := oksvg.ReadIconStream(bytes.NewReader([]byte(svg)), oksvg.WarnErrorMode)
+	icon, err := oksvg.ReadIconStream(bytes.NewReader([]byte(svg)), oksvg.IgnoreErrorMode)
 	if err != nil {
 		return nil, fmt.Errorf("unable to read icon stream: %w", err)
 	}
@@ -82,12 +86,9 @@ func drawBackground(dc *gg.Context, title string, pattern string, baseColor stri
 
 }
 
-func drawBackgroundGradient(dc *gg.Context, pattern string, baseColor string) error {
-	red, green, blue, err := hexColorToRGB(baseColor)
-	if err != nil {
-		return fmt.Errorf("could not convert color %q: %w", baseColor, err)
-	}
+const GRADIENT_DENSITY uint = 100
 
+func drawBackgroundGradient(dc *gg.Context, pattern string, baseColor string) error {
 	var fromX, fromY, toX, toY float64
 	switch pattern {
 	case "gradient-linear-ltr":
@@ -108,9 +109,53 @@ func drawBackgroundGradient(dc *gg.Context, pattern string, baseColor string) er
 		fromX, fromY, toX, toY = outputWidth, outputHeight, 0, 0
 	}
 
+	colors := []color.Color{}
+
+	// simple color to white gradient
+	if baseColor[0] == '#' {
+		red, green, blue, err := hexColorToRGB(baseColor)
+		if err != nil {
+			return fmt.Errorf("could not convert color %q: %w", baseColor, err)
+		}
+
+		colors = append(colors, color.RGBA{red, green, blue, 255})
+		colors = append(colors, color.RGBA{255, 255, 255, 255})
+	} else {
+		switch pattern {
+		case "RdBu":
+			colors = colorgrad.RdBu().Colors(GRADIENT_DENSITY)
+		case "RdYlBu":
+			colors = colorgrad.RdYlBu().Colors(GRADIENT_DENSITY)
+		case "RdYlGn":
+			colors = colorgrad.RdYlGn().Colors(GRADIENT_DENSITY)
+		case "Spectral":
+			colors = colorgrad.Spectral().Colors(GRADIENT_DENSITY)
+		case "Turbo":
+			colors = colorgrad.Turbo().Colors(GRADIENT_DENSITY)
+		case "Viridis":
+			colors = colorgrad.Viridis().Colors(GRADIENT_DENSITY)
+		case "Inferno":
+			colors = colorgrad.Inferno().Colors(GRADIENT_DENSITY)
+		case "Plasma":
+			colors = colorgrad.Plasma().Colors(GRADIENT_DENSITY)
+		case "Warm":
+			colors = colorgrad.Warm().Colors(GRADIENT_DENSITY)
+		case "Cool":
+			colors = colorgrad.Cool().Colors(GRADIENT_DENSITY)
+		case "YlOrRd":
+			colors = colorgrad.YlOrRd().Colors(GRADIENT_DENSITY)
+		case "Rainbow":
+			colors = colorgrad.Rainbow().Colors(GRADIENT_DENSITY)
+		case "Sinebow":
+			colors = colorgrad.Sinebow().Colors(GRADIENT_DENSITY)
+		}
+	}
+
 	gradient := gg.NewLinearGradient(fromX, fromY, toX, toY)
-	gradient.AddColorStop(0, color.RGBA{red, green, blue, 255})
-	gradient.AddColorStop(1, color.RGBA{255, 255, 255, 255})
+
+	for i, c := range colors {
+		gradient.AddColorStop(float64(i)/float64(len(colors)), c)
+	}
 	dc.SetFillStyle(gradient)
 	dc.DrawRectangle(0, 0, outputWidth, outputHeight)
 	dc.Fill()

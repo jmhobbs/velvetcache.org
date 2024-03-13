@@ -1,4 +1,4 @@
-package main
+package opengraph
 
 import "strconv"
 
@@ -9,6 +9,30 @@ var colors []string = []string{
 	"#9e86c8",
 	"#b05279",
 	"#6c99bb",
+}
+
+var gradientColors []string = []string{
+	"#e5b567",
+	"#b4d273",
+	"#e87d3e",
+	"#9e86c8",
+	"#b05279",
+	"#6c99bb",
+	"RdBu",
+	"RdYlBu",
+	"RdYlGn",
+	"Spectral",
+	"Turbo",
+	"Viridis",
+	"Inferno",
+	"Plasma",
+	"Warm",
+	"Cool",
+	"YlOrRd",
+	"Rainbow",
+	"Sinebow",
+	"gold-hotpink-darkturquoise",
+	"deeppink-gold-seagreen",
 }
 
 // #xxxxxx -> (r, g, b)

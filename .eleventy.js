@@ -37,6 +37,10 @@ module.exports = function(eleventy) {
     return this.getVariables()[name];
   });
 
+  eleventy.addFilter('opengraphImageUrl', function (title) {
+    return ""
+  });
+
   eleventy.addCollection("page", function (collections) {
     return collections.getAllSorted().filter(function (item) {
       return "page" == item.data.type
