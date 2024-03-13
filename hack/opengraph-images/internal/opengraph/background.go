@@ -119,7 +119,7 @@ func drawBackgroundGradient(dc *gg.Context, pattern string, baseColor string) er
 		}
 
 		colors = append(colors, color.RGBA{red, green, blue, 255})
-		colors = append(colors, color.RGBA{255, 255, 255, 255})
+		colors = append(colors, color.RGBA{214, 214, 214, 255})
 	} else {
 		switch pattern {
 		case "RdBu":
