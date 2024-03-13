@@ -11,6 +11,7 @@ title: Box drawing on the web
 type: post
 permalink: /2024/02/12/box-drawing-on-the-web/
 summary: "Boxes: Harder than you thought."
+opengraph_image: /static/og/2024-02-12-box-drawing-on-the-web.png
 ---
 
 I enjoy a nice TUI, and [box-drawing characters](https://en.wikipedia.org/wiki/Box-drawing_character) are the heart and soul of a good one.  However, I noticed that my box-drawing elements were not rendering on this blog with the correct alignment. It looks _fine_ I guess, but not as tight as in a terminal. See how it doesn't line up on the right?
