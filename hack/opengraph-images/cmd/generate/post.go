@@ -22,7 +22,7 @@ func (p *post) Path(root string) string {
 
 func (p *post) Name() string {
 	h := sha1.New()
-	h.Write([]byte(p.SourcePath))
+	h.Write([]byte(strings.TrimPrefix(p.SourcePath, "./")))
 	bs := h.Sum(nil)
 	return fmt.Sprintf("%s-%x.png", slugify(p.Frontmatter["title"]), bs)
 }
@@ -31,14 +31,15 @@ var nonAlphaNum *regexp.Regexp = regexp.MustCompile("[^a-z0-9]+")
 var dasher *regexp.Regexp = regexp.MustCompile("-+")
 
 func slugify(s string) string {
-	return dasher.ReplaceAllString(nonAlphaNum.ReplaceAllString(strings.ToLower(s), "-"), "-")
+	return strings.Trim(dasher.ReplaceAllString(nonAlphaNum.ReplaceAllString(strings.ToLower(s), "-"), "-"), "-")
 }
-func collectPosts(root string) ([]*post, error) {
+
+func collectPosts(root, src string) ([]*post, error) {
 	posts := []*post{}
 
 	fileSystem := os.DirFS(root)
 
-	err := fs.WalkDir(fileSystem, ".", func(path string, d fs.DirEntry, err error) error {
+	err := fs.WalkDir(fileSystem, src, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			log.Fatal(err)
 		}

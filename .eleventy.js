@@ -4,6 +4,7 @@ const slugify = require('@sindresorhus/slugify');
 const util = require('util');
 const syntaxHighlight = require('eleventy-plugin-highlightjs');
 const pluginRss = require("@11ty/eleventy-plugin-rss");
+const { createHash } = require('crypto');
 
 const categories = require('./src/_data/categories.json');
 const post_tags = require('./src/_data/post_tags.json');
@@ -37,8 +38,14 @@ module.exports = function(eleventy) {
     return this.getVariables()[name];
   });
 
-  eleventy.addFilter('opengraphImageUrl', function (title) {
-    return ""
+  eleventy.addFilter('opengraphImageUrl', function (title, path) {
+    if(title) {
+      const slug = title.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+      const pathHash = createHash('sha1');
+      pathHash.update(path.replace(/^\.\//, ''));
+      return `/static/og/${slug}-${pathHash.digest('hex')}.png`;
+    }
+    return null;
   });
 
   eleventy.addCollection("page", function (collections) {

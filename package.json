@@ -16,9 +16,10 @@
     "dev": "run-p dev:*",
     "dev:serve": "npm run build:11ty -- --serve",
     "dev:style": "npm run build:style -- --watch",
-    "build": "run-s build:style build:11ty",
+    "build": "run-s build:style build:og build:11ty",
     "build:style": "sass --load-path=node_modules/normalize.css/ ./src/_style/theme.scss ./src/static/theme.css",
-    "build:11ty": "npx @11ty/eleventy --input=./src --output=./dist"
+    "build:11ty": "npx @11ty/eleventy --input=./src --output=./dist",
+    "build:og": "mkdir -p ./.cache/og && mkdir -p ./src/static/og && cd hack/opengraph-images/ && go run ./cmd/generate ../../ src/posts src/static/og .cache/og"
   },
   "author": "John Hobbs <john@velvetcache.org>",
   "dependencies": {

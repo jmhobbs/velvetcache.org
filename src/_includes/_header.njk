@@ -20,15 +20,22 @@
 
     <link rel="preload" href="/static/hljs-monokai.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="/static/hljs-monokai.css"></noscript>
-    {% if title %}
+
+    {%- if title -%}
     <title>{{ title | safe }} | {{ blog.title | safe }}</title>
-    {% else %}
+    {%- else -%}
     <title>{{ blog.title | safe }}</title>
-    {% endif %}
-    {% if noindex %}
+    {%- endif -%}
+
+    {%- if noindex -%}
     <meta name="robots" content="noindex" />
-    {% endif %}
-    <meta property="og:image" content="{% if opengraph_image %}{{ opengraph_image }}{% else %}{{ page.inputPath | inputPathToOGImage }}{% endif %}" />
+    {%- endif -%}
+
+    {%- if opengraph_image -%}
+    <meta property="og:image" content="{{ opengraph_image }}" />
+    {%- elif title | opengraphImageUrl(page.inputPath) !== null -%}
+    <meta property="og:image" content="{{ title | opengraphImageUrl(page.inputPath) }}" />
+    {%- endif -%}
   </head>
   <body{% if type == 'page' %} class="page-{{title|slugify}}"{% endif %}>
     <script>
