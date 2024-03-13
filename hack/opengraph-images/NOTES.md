@@ -1,0 +1,2 @@
+- more colors
+- look at these pretty gradients: https://github.com/mazznoer/colorgrad

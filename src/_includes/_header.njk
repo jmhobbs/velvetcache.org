@@ -28,6 +28,7 @@
     {% if noindex %}
     <meta name="robots" content="noindex" />
     {% endif %}
+    <meta property="og:image" content="{% if opengraph_image %}{{ opengraph_image }}{% else %}{{ page.inputPath | inputPathToOGImage }}{% endif %}" />
   </head>
   <body{% if type == 'page' %} class="page-{{title|slugify}}"{% endif %}>
     <script>
