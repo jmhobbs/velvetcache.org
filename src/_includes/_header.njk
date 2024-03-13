@@ -23,6 +23,8 @@
 
     {%- if title -%}
     <title>{{ title | safe }} | {{ blog.title | safe }}</title>
+    <meta property="og:title" content="{{ title | safe }}" />
+    <meta property="og:site_name" content="{{ blog.title | safe }}" />
     {%- else -%}
     <title>{{ blog.title | safe }}</title>
     {%- endif -%}
@@ -31,13 +33,18 @@
     <meta name="robots" content="noindex" />
     {%- endif -%}
 
+    {%- if summary -%}
+    <meta name="description" content="{{ summary | safe }}" />
+    <meta property="og:description" content="{{ summary | safe }}">
+    {%- endif -%}
+
     {%- if opengraph_image -%}
-    <meta property="og:image" content="{{ opengraph_image }}" />
+    <meta property="og:image" content="{{ opengraph_image | safe }}" />
     {%- elif title | opengraphImageUrl(page.inputPath) !== null -%}
-    <meta property="og:image" content="{{ title | opengraphImageUrl(page.inputPath) }}" />
+    <meta property="og:image" content="{{ title | opengraphImageUrl(page.inputPath) | safe }}" />
     {%- endif -%}
   </head>
-  <body{% if type == 'page' %} class="page-{{title|slugify}}"{% endif %}>
+  <body{% if type == 'page' %} class="page-{{title|slugify|safe}}"{% endif %}>
     <script>
       document.body.dataset['scheme'] = window.localStorage.getItem('scheme') || '';
       document.body.dataset['theme'] = window.localStorage.getItem('theme') || '';
