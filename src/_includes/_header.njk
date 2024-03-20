@@ -39,7 +39,7 @@
     <meta property="og:image" content="{{ title | opengraphImageUrl(page.inputPath) | safe }}" />
     {%- endif -%}
   </head>
-  <body{% if type == 'page' %} class="page-{{title|slugify|safe}}"{% endif %}>
+  <body{% if type == 'page' %} class="page-{{ title | slugify | safe }}"{% endif %}>
     <script>
       document.body.dataset['scheme'] = window.localStorage.getItem('scheme') || '';
       document.body.dataset['theme'] = window.localStorage.getItem('theme') || '';

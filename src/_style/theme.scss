@@ -189,6 +189,7 @@ body > header {
   font-size: 1.2rem;
   padding: 0.7rem 1rem;
   background-color: var(--theme-color);
+  border-bottom: 1px solid var(--theme-color-weak);
 }
 
 body > header a, body > footer a {
@@ -233,6 +234,7 @@ body > footer {
   margin-top: 5rem;
   font-size: 0.7rem;
   padding: 0.2rem 0;
+  border-top: 1px solid var(--theme-color-weak);
 }
 
 body > footer nav a {
@@ -405,8 +407,7 @@ div.listing {
       text-align: right;
     }
     &:first-child {
-      border-top: 1px solid var(--theme-color);
-      margin-top: 3rem;
+      margin-top: 1.5rem;
     }
   }
   time {
