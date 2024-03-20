@@ -6,6 +6,7 @@ import (
 	"image"
 	"image/color"
 	"image/draw"
+	"log"
 	"regexp"
 	"strconv"
 	"strings"
@@ -30,7 +31,6 @@ var patterns []string = []string{
 	"tessellation",
 	"triangles",
 	"xes",
-	// these aren't geopattern patterns, we implement them
 }
 
 var gradients []string = []string{
@@ -41,7 +41,7 @@ var gradients []string = []string{
 	"gradient-linear-tlbr",
 	"gradient-linear-trbl",
 	"gradient-linear-bltr",
-	"gradient-linear-rltb",
+	"gradient-linear-brtl",
 }
 
 func rasterizeSVG(svg string, baseColor string) (*image.RGBA, error) {
@@ -107,48 +107,47 @@ func drawBackgroundGradient(dc *gg.Context, pattern string, baseColor string) er
 		fromX, fromY, toX, toY = 0, outputHeight, outputWidth, 0
 	case "gradient-linear-brtl":
 		fromX, fromY, toX, toY = outputWidth, outputHeight, 0, 0
+	default:
+		log.Fatalf("unknown gradient layout %q", pattern)
 	}
 
 	colors := []color.Color{}
 
-	// simple color to white gradient
-	if baseColor[0] == '#' {
-		red, green, blue, err := hexColorToRGB(baseColor)
+	switch baseColor {
+	case "RdBu":
+		colors = colorgrad.RdBu().Colors(GRADIENT_DENSITY)
+	case "RdYlBu":
+		colors = colorgrad.RdYlBu().Colors(GRADIENT_DENSITY)
+	case "RdYlGn":
+		colors = colorgrad.RdYlGn().Colors(GRADIENT_DENSITY)
+	case "Spectral":
+		colors = colorgrad.Spectral().Colors(GRADIENT_DENSITY)
+	case "Turbo":
+		colors = colorgrad.Turbo().Colors(GRADIENT_DENSITY)
+	case "Viridis":
+		colors = colorgrad.Viridis().Colors(GRADIENT_DENSITY)
+	case "Inferno":
+		colors = colorgrad.Inferno().Colors(GRADIENT_DENSITY)
+	case "Plasma":
+		colors = colorgrad.Plasma().Colors(GRADIENT_DENSITY)
+	case "Warm":
+		colors = colorgrad.Warm().Colors(GRADIENT_DENSITY)
+	case "Cool":
+		colors = colorgrad.Cool().Colors(GRADIENT_DENSITY)
+	case "YlOrRd":
+		colors = colorgrad.YlOrRd().Colors(GRADIENT_DENSITY)
+	case "Rainbow":
+		colors = colorgrad.Rainbow().Colors(GRADIENT_DENSITY)
+	case "Sinebow":
+		colors = colorgrad.Sinebow().Colors(GRADIENT_DENSITY)
+	default:
+		grad, err := colorgrad.NewGradient().
+			HtmlColors(strings.Split(baseColor, "-")...).
+			Build()
 		if err != nil {
-			return fmt.Errorf("could not convert color %q: %w", baseColor, err)
+			log.Fatalf("could not build gradient %q: %v", err)
 		}
-
-		colors = append(colors, color.RGBA{red, green, blue, 255})
-		colors = append(colors, color.RGBA{214, 214, 214, 255})
-	} else {
-		switch pattern {
-		case "RdBu":
-			colors = colorgrad.RdBu().Colors(GRADIENT_DENSITY)
-		case "RdYlBu":
-			colors = colorgrad.RdYlBu().Colors(GRADIENT_DENSITY)
-		case "RdYlGn":
-			colors = colorgrad.RdYlGn().Colors(GRADIENT_DENSITY)
-		case "Spectral":
-			colors = colorgrad.Spectral().Colors(GRADIENT_DENSITY)
-		case "Turbo":
-			colors = colorgrad.Turbo().Colors(GRADIENT_DENSITY)
-		case "Viridis":
-			colors = colorgrad.Viridis().Colors(GRADIENT_DENSITY)
-		case "Inferno":
-			colors = colorgrad.Inferno().Colors(GRADIENT_DENSITY)
-		case "Plasma":
-			colors = colorgrad.Plasma().Colors(GRADIENT_DENSITY)
-		case "Warm":
-			colors = colorgrad.Warm().Colors(GRADIENT_DENSITY)
-		case "Cool":
-			colors = colorgrad.Cool().Colors(GRADIENT_DENSITY)
-		case "YlOrRd":
-			colors = colorgrad.YlOrRd().Colors(GRADIENT_DENSITY)
-		case "Rainbow":
-			colors = colorgrad.Rainbow().Colors(GRADIENT_DENSITY)
-		case "Sinebow":
-			colors = colorgrad.Sinebow().Colors(GRADIENT_DENSITY)
-		}
+		colors = grad.Colors(GRADIENT_DENSITY)
 	}
 
 	gradient := gg.NewLinearGradient(fromX, fromY, toX, toY)
