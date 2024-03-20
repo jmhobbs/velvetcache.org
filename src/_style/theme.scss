@@ -202,8 +202,27 @@ body > header a:hover, body > footer a:hover {
 body > header nav, body > footer nav {
   float: right;
 }
-body > header nav a, body > footer nav a {
+body > footer nav a {
   padding: 0 0 0 2rem;
+}
+ 
+body > header nav {
+  svg {
+    height: 25px;
+    shape-rendering: "geometricPrecision";
+    text-rendering: "geometricPrecision";
+    image-rendering: "optimizeQuality";
+
+    .primary {
+      fill: var(--theme-color);
+    }
+    .alternate {
+      fill: var(--main-font-color-strong);
+    }
+  }
+  a:hover svg .alternate {
+    fill: var(--main-bg-color);
+  }
 }
 
 /* page footer */
