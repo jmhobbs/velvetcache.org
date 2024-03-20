@@ -7,7 +7,9 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
+	"sync"
 
 	"github.com/jmhobbs/velvetcache.org/hack/opengraph-images/internal/opengraph"
 )
@@ -48,17 +50,78 @@ func main() {
 
 	last_len := 0
 
-	for idx, post := range posts {
-		extraSpaces := ""
-		if last_len > len(post.SourcePath) {
-			extraSpaces = strings.Repeat(" ", last_len-len(post.SourcePath))
-		}
-		fmt.Print("\r", idx+1, " of ", len(posts), " (", skipped+copiedFromCache+generated+missingTitle+errors, ")", " ", post.SourcePath, extraSpaces)
-		last_len = len(post.SourcePath)
+	var wg sync.WaitGroup
+	postsChan := make(chan *post, len(posts))
+	resultsChan := make(chan result, len(posts))
+	done := make(chan struct{})
 
+	go func() {
+		ctr := 0
+		for r := range resultsChan {
+			ctr++
+			extraSpaces := ""
+			if last_len > len(r.Post.SourcePath) {
+				extraSpaces = strings.Repeat(" ", last_len-len(r.Post.SourcePath))
+			}
+			fmt.Print("\r", ctr, " of ", len(posts), " (", skipped+copiedFromCache+generated+missingTitle+errors, ")", " ", r.Post.SourcePath, extraSpaces)
+			last_len = len(r.Post.SourcePath)
+			if r.Skipped {
+				skipped++
+			}
+			if r.CopiedFromCache {
+				copiedFromCache++
+			}
+			if r.Generated {
+				generated++
+			}
+			if r.MissingTitle {
+				missingTitle++
+			}
+			if r.Err != nil {
+				log.Println(r.Err)
+				last_len = 0
+				errors++
+			}
+		}
+		fmt.Println("")
+		close(done)
+	}()
+
+	for i := 0; i < runtime.GOMAXPROCS(0); i++ {
+		wg.Add(1)
+		go Worker(cache, output, &wg, postsChan, resultsChan)
+	}
+
+	for _, post := range posts {
+		postsChan <- post
+	}
+	close(postsChan)
+	wg.Wait()
+	close(resultsChan)
+	<-done
+
+	log.Printf("Copied from cache : %d", copiedFromCache)
+	log.Printf("   Already exists : %d", skipped)
+	log.Printf("          Created : %d", generated)
+	log.Printf("    Missing title : %d", missingTitle)
+	log.Printf("           Failed : %d", errors)
+}
+
+type result struct {
+	Post            *post
+	Err             error
+	Skipped         bool
+	CopiedFromCache bool
+	Generated       bool
+	MissingTitle    bool
+}
+
+func Worker(cache, output string, wg *sync.WaitGroup, posts <-chan *post, results chan result) {
+	defer wg.Done()
+
+	for post := range posts {
 		if title, ok := post.Frontmatter["title"]; !ok || title == "" {
-			log.Println("No title found in frontmatter for", post.SourcePath)
-			missingTitle++
+			results <- result{Post: post, MissingTitle: true}
 			continue
 		}
 
@@ -66,56 +129,45 @@ func main() {
 		cachePath := post.Path(cache)
 
 		if _, err := os.Stat(outputPath); err == nil {
-			// skip it, it already exists in place
-			skipped++
+			results <- result{Post: post, Skipped: true}
 			continue
 		}
 
 		if _, err := os.Stat(cachePath); err == nil {
 			err = copyFile(cachePath, outputPath)
 			if err != nil {
-				log.Printf("error copying file from cache: %v", err)
+				results <- result{Post: post, Err: err}
 			} else {
-				copiedFromCache++
+				results <- result{Post: post, CopiedFromCache: true}
 				continue
 			}
 		}
 
 		png, err := opengraph.Generate(post.Frontmatter["title"], "", "")
 		if err != nil {
-			log.Printf("unable to generate opengraph image: %v", err)
-			errors++
+			results <- result{Post: post, Err: err}
 			continue
 		}
 
 		out, err := os.Create(outputPath)
 		if err != nil {
-			log.Printf("unable to create file: %v", err)
-			errors++
+			results <- result{Post: post, Err: err}
 			continue
 		}
 		defer out.Close()
 
 		_, err = io.Copy(out, png)
 		if err != nil {
-			log.Printf("unable to write file: %v", err)
-			errors++
+			results <- result{Post: post, Err: err}
 			continue
 		}
 
 		err = copyFile(outputPath, cachePath)
 		if err != nil {
-			log.Printf("error copying file to cache: %v", err)
+			results <- result{Post: post, Err: err}
 		}
-		generated++
+		results <- result{Post: post, Generated: true}
 	}
-	fmt.Println("")
-
-	log.Printf("Copied from cache : %d", copiedFromCache)
-	log.Printf("   Already exists : %d", skipped)
-	log.Printf("          Created : %d", generated)
-	log.Printf("    Missing title : %d", missingTitle)
-	log.Printf("           Failed : %d", errors)
 }
 
 func copyFile(src, dst string) error {
