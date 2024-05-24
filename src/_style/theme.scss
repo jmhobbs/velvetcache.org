@@ -500,24 +500,23 @@ body.page-about {
 
 
 // ansi highlighting
-/* Based on colors from PuTTY */
 :root {
-  --ansi-black: rgb(0,0,0);
-  --ansi-red: rgb(187, 0, 0);
-  --ansi-green: rgb(190,201,74);
-  --ansi-yellow: rgb(218,158,54);
-  --ansi-blue: rgb(0, 0, 187);
-  --ansi-magenta: rgb(187, 0, 187);
-  --ansi-cyan: rgb(99,195,241);
-  --ansi-white: rgb(187, 187, 187);
-  --ansi-bright-black: dimgray;
-  --ansi-bright-red: rgb(255, 85, 85);
-  --ansi-bright-green: rgb(85, 255, 85);
-  --ansi-bright-yellow: rgb(255, 255, 85);
-  --ansi-bright-blue: rgb(85, 85, 255);
-  --ansi-bright-magenta: rgb(255, 85, 255);
-  --ansi-bright-cyan: rgb(85, 255, 255);
-  --ansi-bright-white: rgb(255, 255, 255)
+  --ansi-black: #282828;
+  --ansi-red: #f43753;
+  --ansi-green:  #c9d05c; // #87d05c;
+  --ansi-yellow: #ffc24b;
+  --ansi-blue: #b3deef;
+  --ansi-magenta: #9e86c8 // #d3b987;
+  --ansi-cyan: #73cef4;
+  --ansi-white: #eeeeee;
+  --ansi-bright-black: #4c4c4c;
+  --ansi-bright-red: #f43753;
+  --ansi-bright-green: #c9d05c; // ##82e04a;
+  --ansi-bright-yellow: #ffc24b;
+  --ansi-bright-blue: #b3deef;
+  --ansi-bright-magenta: #9e86c8 // #bb93fd; // #d3b987;
+  --ansi-bright-cyan: #73cef4;
+  --ansi-bright-white: #feffff;
 }
 
 .ansi {
