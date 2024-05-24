@@ -5,6 +5,7 @@ const util = require('util');
 const syntaxHighlight = require('eleventy-plugin-highlightjs');
 const pluginRss = require("@11ty/eleventy-plugin-rss");
 const { createHash } = require('crypto');
+const path = require('path');
 
 const categories = require('./src/_data/categories.json');
 const post_tags = require('./src/_data/post_tags.json');
@@ -20,6 +21,13 @@ module.exports = function(eleventy) {
 
   eleventy.addFilter("strftime", function(dateObj, format) {
     return DateTime.fromJSDate(dateObj, {zone: 'utc'}).toFormat(format);
+  });
+
+  eleventy.addFilter("fileSha", function(file) {
+    const fs = require('fs');
+    const fileHash = createHash('sha1');
+    fileHash.update(fs.readFileSync(path.join(__dirname, 'src', file)))
+    return fileHash.digest('hex');
   });
 
   eleventy.addFilter('console', function(value) {

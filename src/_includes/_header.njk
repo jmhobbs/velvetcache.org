@@ -8,13 +8,13 @@
     <meta name="generator" content="Eleventy" />
     <link rel="alternate" type="application/atom+xml" title="RSS Feed for velvetcache.org" href="/feed.xml" />
 
-    <link rel="stylesheet" href="/static/theme.css?v=1" />
+    <link rel="stylesheet" href="/static/theme.css?v={{ 'static/theme.css' | fileSha }}" />
 
     <link rel="preload" href="/static/source-code-pro-8ef7711.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="/static/source-code-pro-8ef7711.css"></noscript>
 
-    <link rel="preload" href="/static/hljs-monokai.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="/static/hljs-monokai.css"></noscript>
+    <link rel="preload" href="/static/hljs-monokai.css?v={{ 'static/hljs-monokai.css' | fileSha }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="/static/hljs-monokai.css?v={{ 'static/hljs-monokai.css' | fileSha }}"></noscript>
 
     {%- if title -%}
     <title>{{ title | safe }} | {{ blog.title | safe }}</title>
