@@ -243,9 +243,9 @@ Following that we have a string of "keywords".  These are tags for describing th
 ┗━━━━━━━━┷━━━━━━━━━━━━━━━━━━━━━━━━━┷━━━━━━━━━━━━━━━━━━━━━━━━━┷━━━━━━━━┷━━━━━━━━┷━━━━━━━━━━┛
 </code></pre>
 
-Lastly, we have Game ID, which is a 64-bit integer, representing the Appd ID.  App ID's apparently were originally 16 bits, as mentioned above.  Since the number of apps grew too large, they moved to 64 bits, but couldn't alter the protocol.  So when Game ID is present in the EDF, it supercedes the value in the App ID field.  According to the docs, the App ID is in the lower 24 bits of this field, but this was clearly another case of undercount, as our App ID is larger than that.
+Lastly, we have Game ID, which is a 32-bit integer, representing the Appd ID.  App ID's apparently were originally 16 bits, as mentioned above.  Since the number of apps grew too large, they moved to 32 bits, but couldn't alter the protocol.  So when Game ID is present in the EDF, it supercedes the value in the App ID field.  According to the docs, the App ID is in the lower 24 bits of this field, so just `03 5F AC`.
 
-It is safe to assume that this field will have the App ID as a long int, and the whole thing will be valid.  The value we get is `00000158ac5f03`, which is `221100` in decimal.  This is the App ID for DayZ.
+I'm not sure why they chose to just use three bytes for App ID, since we're sending all four bytes anyway. It is fairly safe to assume that this field will have 0's in the first byte, so you can cast it as a long int, and the whole thing will be valid.  The value we get is `00000158ac5f03`, which is `221100` in decimal.  This is the App ID for DayZ.
 
 <pre><code class="ansi">┏━━━━━━━━┯━━━━━━━━━━━━━━━━━━━━━━━━━┯━━━━━━━━━━━━━━━━━━━━━━━━━┯━━━━━━━━┯━━━━━━━━┯━━━━━━━━━┓
 ┃<span class="ansi ansi-fg-bright-black">00000158</span>│ <span class="ansi ansi-fg-bright-yellow">ac</span> <span class="ansi ansi-fg-bright-cyan">5f</span> <span class="ansi ansi-fg-bright-yellow">03</span> <span class="ansi ansi-fg-bright-black">00</span>             ┊                         │<span class="ansi ansi-fg-bright-yellow">x</span><span class="ansi ansi-fg-bright-cyan">_</span><span class="ansi ansi-fg-bright-yellow">x</span><span class="ansi ansi-fg-bright-black">⋄</span>    ┊        │ Game ID ┃
