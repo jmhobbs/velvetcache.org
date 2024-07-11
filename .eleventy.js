@@ -46,6 +46,10 @@ module.exports = function(eleventy) {
     return this.getVariables()[name];
   });
 
+  eleventy.addFilter('outOfDate', function(page) {
+    return (Date.now() - page.date) / (5*365*86400000) >= 1.0;
+  });
+
   eleventy.addFilter('opengraphImageUrl', function (title, path) {
     if(title) {
       const slug = title.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');

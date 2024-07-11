@@ -1,6 +1,11 @@
 {% include "_header.njk" %}
 
 <article>
+  {% if page | outOfDate %}
+    <aside>
+      <p>This post is not recent, any technical information may be out of date. You have been warned!</p>
+    </aside>
+  {% endif %}
   <header>
     <h1>{{ title }}</h1>
     <time datetime="{{ page.date.toISOString() }}">{{ page.date | strftime("LLL d, y") }}</time>
