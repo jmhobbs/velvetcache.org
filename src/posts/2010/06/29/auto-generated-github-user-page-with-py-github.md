@@ -14,12 +14,29 @@ title: Auto-Generated Github User Page With py-github
 type: post
 wp_id: "1211"
 ---
-<div class="update"><p><b>Update (2010-06-30)</b></p><p>So I got antsy about this and I upgraded to using <a href="http://github.com/defunkt/pystache" target="_blank">pystache</a> instead of my homebrew templating system.  This was my first run in with mustache, and I have to say I like it, even though I used the bare minimum feature set.</p><p>New code is at <a href="http://github.com/jmhobbs/jmhobbs.github.com" target="_blank">http://github.com/jmhobbs/jmhobbs.github.com</a></p></div><p>Github has a cool feature called "<a href="http://pages.github.com/" target="_blank">Github Pages</a>" that let you host static content on a subdomain of github, e.g. <a href="http://jmhobbs.github.com/" target="_blank">http://jmhobbs.github.com/</a>.</p>
-<p>They also provide an auto-generator for project pages that has a nice clean format which I really like.  So I decided to make my user page match the look and feel of the project pages.  And to boot I wanted to be able have it auto-generate since I want it to be "hands free", otherwise I'll forget to update it.</p>
-<p>To make this happen I whipped up my template and then grabbed the excellent <a href="http://github.com/dustin/py-github" target="_blank">py-github</a> from Dustin Sallings, which I have <a href="http://jmhobbs.github.com/github-watcher/" target="_blank">used before</a>.</p>
-<p>Without furthur ado I'll just show you the source. It's not complicated, just some API calls then search replace on a template file.  If you want to use it, be sure to get the most recent version from <a href="http://github.com/jmhobbs/jmhobbs.github.com" target="_blank">http://github.com/jmhobbs/jmhobbs.github.com</a>.</p>
-<p>Throw in a cron job and you are set. Beware of lot's of "page build" notices from Github though.</p>
-<p><pre lang="python" line="1"># -*- coding: utf-8 -*-
+
+<aside>
+
+**Update (2010-06-30)**
+
+So I got antsy about this and I upgraded to using [pystache](http://github.com/defunkt/pystache) instead of my homebrew templating system.  This was my first run in with mustache, and I have to say I like it, even though I used the bare minimum feature set.
+
+New code is at [http://github.com/jmhobbs/jmhobbs.github.com](http://github.com/jmhobbs/jmhobbs.github.com)
+
+</aside>
+
+Github has a cool feature called "[Github Pages](http://pages.github.com/)" that let you host static content on a subdomain of github, e.g. [http://jmhobbs.github.com/](http://jmhobbs.github.com/).
+
+They also provide an auto-generator for project pages that has a nice clean format which I really like.  So I decided to make my user page match the look and feel of the project pages.  And to boot I wanted to be able have it auto-generate since I want it to be "hands free", otherwise I'll forget to update it.
+
+To make this happen I whipped up my template and then grabbed the excellent [py-github](http://github.com/dustin/py-github) from Dustin Sallings, which I have [used before](http://jmhobbs.github.com/github-watcher/).
+
+Without furthur ado I'll just show you the source. It's not complicated, just some API calls then search replace on a template file.  If you want to use it, be sure to get the most recent version from [http://github.com/jmhobbs/jmhobbs.github.com](http://github.com/jmhobbs/jmhobbs.github.com).
+
+Throw in a cron job and you are set. Beware of lot's of "page build" notices from Github though.
+
+```python
+# -*- coding: utf-8 -*-
 
 import github.github as github
 import yaml
@@ -131,5 +148,7 @@ def main ():
   print "Done!"
 
 if __name__ == "__main__":
-  main()</pre></p>
-<p>Wow. You actually scrolled through all of that. Amazing.</p>
+  main()
+```
+
+Wow. You actually scrolled through all of that. Amazing.
