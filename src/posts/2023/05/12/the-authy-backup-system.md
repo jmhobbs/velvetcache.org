@@ -3,7 +3,6 @@ tags:
 - Security
 - Authy
 - golang
-- go
 - http
 date: 2023-05-12
 title: The Authy Backup System

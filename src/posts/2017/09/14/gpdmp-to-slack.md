@@ -5,7 +5,6 @@ creator: admin
 date: 2017-09-15
 permalink: /2017/09/14/gpdmp-to-slack/
 tags:
-- go
 - golang
 - Programming
 - Projects

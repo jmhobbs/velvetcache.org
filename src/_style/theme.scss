@@ -12,6 +12,24 @@ $themes: (
   blue: #6c99bb
 );
 
+$safeText: (
+  yellow: #111111,
+  green: #111111,
+  orange: #111111,
+  purple: #111111,
+  pink: #f7f7f7,
+  blue: #111111,
+);
+
+$safeTextInverse: (
+  yellow: #f7f7f7,
+  green: #f7f7f7,
+  orange: #f7f7f7,
+  purple: #f7f7f7,
+  pink: #111111,
+  blue: #f7f7f7,
+);
+
 :root {
   --monokai-background: #2e2e2e;
   --monokai-comments: #797979;
@@ -22,6 +40,8 @@ $themes: (
   --body-font: Optima, Candara, 'Noto Sans', source-sans-pro, sans-serif;
   --mono-font: 'Source Code Pro', ui-monospace, 'Cascadia Code', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
   --theme-color: var(--monokai-blue);
+  --theme-font-safe: #111111;
+  --theme-font-safe-inverse: #f7f7f7;
 }
 
 @each $name, $color in $themes {
@@ -29,6 +49,9 @@ $themes: (
     --theme-color: #{$color};
     --theme-color-light: #{color.scale($color, $lightness: 25%)};
     --theme-color-dark: #{color.scale($color, $lightness: -25%)};
+    // color which is safe for text on top of --theme-color
+    --theme-font-safe: #{map.get($safeText, $name)};
+    --theme-font-safe-inverse: #{map.get($safeTextInverse, $name)};
   }
 }
 
@@ -192,16 +215,25 @@ body > header {
   border-bottom: 1px solid var(--theme-color-weak);
 }
 
-body > header a, body > footer a {
-  text-decoration: none;
+body > header, body > footer {
+  a, a:active, a:visited {
+    color: var(--theme-font-safe);
+    text-decoration: none;
+  }
 }
 
 body > header a:hover, body > footer a:hover {
-  color: #333;
+  color: var(--theme-font-safe-inverse);
 }
 
-body > header nav, body > footer nav {
+body > header nav {
   float: right;
+}
+
+@media only screen and (min-width: 800px) {
+  body > footer nav {
+    float: right;
+  }
 }
 body > footer nav a {
   padding: 0 0 0 2rem;
@@ -218,11 +250,11 @@ body > header nav {
       fill: var(--theme-color);
     }
     .alternate {
-      fill: var(--main-font-color-strong);
+      fill: var(--theme-font-safe);
     }
   }
   a:hover svg .alternate {
-    fill: var(--main-bg-color);
+    fill: var(--theme-font-safe-inverse);
   }
 }
 
@@ -232,17 +264,18 @@ body > footer {
   background-color: var(--theme-color);
   font-family: var(--mono-font);
   margin-top: 5rem;
-  font-size: 0.7rem;
+  font-size: 1.0rem;
   padding: 0.2rem 0;
   border-top: 1px solid var(--theme-color-weak);
+  color: var(--theme-font-safe);
 }
 
 body > footer nav a {
   display: inline-block;
-  width: 0.7rem;
-  height: 0.7rem;
+  width: 1.0rem;
+  height: 1.0rem;
   padding: 0;
-  border: 1px solid #eee;
+  border: 1px solid #111;
   border-radius: 50%;
   position: relative;
   top: 0.15rem;
@@ -311,7 +344,7 @@ article footer a,  article footer a:visited, article footer a:active,
 a.tag, a.tag:visited, a.tag:active
 {
   background: var(--theme-color);
-  color: var(--main-font-color-strong);
+  color: var(--theme-font-safe);
   padding: 0.25rem 0.3rem;
   border-radius: 5%;
   text-decoration: none;

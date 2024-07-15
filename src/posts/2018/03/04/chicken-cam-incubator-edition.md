@@ -8,7 +8,6 @@ permalink: /2018/03/04/chicken-cam-incubator-edition/
 tags:
 - Chickens
 - Electronics
-- go
 - golang
 - Projects
 - Raspberry Pi

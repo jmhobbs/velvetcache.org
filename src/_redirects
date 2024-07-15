@@ -8,3 +8,5 @@
 /things /about/ 301
 /writing/ /about/ 301
 /writing /about/ 301
+/tags/go/ /tags/golang/ 301
+/tags/go /tags/golang/ 301

@@ -6,7 +6,6 @@ date: 2018-06-13
 permalink: /2018/06/13/party-gopher/
 tags:
 - GIF
-- go
 - golang
 - Party Parrot
 title: Party Gopher!

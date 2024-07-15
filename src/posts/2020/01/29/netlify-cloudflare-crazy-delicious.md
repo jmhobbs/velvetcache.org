@@ -5,7 +5,7 @@ creator: admin
 date: 2020-01-30
 tags:
 - Cult of the Party Parrot
-- go
+- golang
 - Google Cloud Platform
 - How To
 title: Netlify + Cloudflare = Crazy Delicious

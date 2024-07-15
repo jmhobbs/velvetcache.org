@@ -1,7 +1,6 @@
 ---
 date: 2024-03-19
 tags:
-- go
 - golang
 - 11ty
 title: Generating Open Graph preview images for 11ty

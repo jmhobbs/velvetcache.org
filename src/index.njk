@@ -6,6 +6,7 @@ pagination:
 permalink: "/{% if pagination.pageNumber > 0 %}posts/{{ pagination.pageNumber }}/{% endif %}"
 eleventyImport:
   collections: ["post"]
+summary: The collected thoughts and experiments of John Hobbs
 ---
 {% include "_header.njk" %}
 
@@ -30,8 +31,8 @@ eleventyImport:
 
   <nav>
     <ol>
-      <li>{% if pagination.href.previous %}<a href="{{ pagination.href.previous }}" rel="prev">&laquo; Previous</a>{% else %}&laquo; Previous{% endif %}</li>
-      <li>{% if pagination.href.next %}<a href="{{ pagination.href.next }}" rel="next">Next &raquo;</a>{% else %}Next &raquo;{% endif %}</li>
+      <li>{% if pagination.href.previous %}<a href="{{ pagination.href.previous }}" rel="prev">&laquo; Previous</a>{% endif %}</li>
+      <li>{% if pagination.href.next %}<a href="{{ pagination.href.next }}" rel="next">Next &raquo;</a>{% endif %}</li>
     </ol>
   </nav>
 </div>
