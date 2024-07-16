@@ -16,6 +16,9 @@
     <link rel="preload" href="/static/hljs-monokai.css?v={{ 'static/hljs-monokai.css' | fileSha }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="/static/hljs-monokai.css?v={{ 'static/hljs-monokai.css' | fileSha }}"></noscript>
 
+    <link rel="preload" href="/static/ansi.css?v={{ 'static/ansi.css' | fileSha }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="/static/ansi.css?v={{ 'static/ansi.css' | fileSha }}"></noscript>
+
     {%- if title -%}
     <title>{{ title | safe }} | {{ blog.title | safe }}</title>
     <meta property="og:title" content="{{ title | safe }}" />

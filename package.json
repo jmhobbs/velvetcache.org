@@ -17,7 +17,7 @@
     "dev:serve": "npm run build:11ty -- --serve",
     "dev:style": "npm run build:style -- --watch",
     "build": "run-s build:style build:og build:11ty",
-    "build:style": "sass --load-path=node_modules/normalize.css/ ./src/_style/theme.scss ./src/static/theme.css",
+    "build:style": "sass --style compressed --load-path=node_modules/normalize.css/ ./src/_style/theme.scss ./src/static/theme.css",
     "build:11ty": "npx @11ty/eleventy --input=./src --output=./dist",
     "build:og": "mkdir -p ./.cache/og && mkdir -p ./src/static/og/generated && cd hack/opengraph-images/ && go run ./cmd/generate ../../ src/posts src/static/og/generated .cache/og"
   },
