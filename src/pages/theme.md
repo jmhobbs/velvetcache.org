@@ -84,16 +84,3 @@ a[data-theme="purple"] {
     color: black;
 }
 </style>
-
-<script>
-  document.querySelectorAll('a.theme-switcher').forEach(a => a.addEventListener('click', (e) => {
-    e.preventDefault();
-    document.body.dataset['theme'] = e.target.dataset['theme'];
-    window.localStorage.setItem('theme', e.target.dataset['theme']);
-  }));
-  document.querySelectorAll('a.scheme-switcher').forEach(a => a.addEventListener('click', (e) => {
-    e.preventDefault();
-    document.body.dataset['scheme'] = e.target.dataset['scheme'];
-    window.localStorage.setItem('scheme', e.target.dataset['scheme']);
-  }));
-</script>

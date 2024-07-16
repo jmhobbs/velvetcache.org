@@ -10,15 +10,6 @@
 
     <link rel="stylesheet" href="/static/theme.css?v={{ 'static/theme.css' | fileSha }}" />
 
-    <link rel="preload" href="/static/source-code-pro-8ef7711.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="/static/source-code-pro-8ef7711.css"></noscript>
-
-    <link rel="preload" href="/static/hljs-monokai.css?v={{ 'static/hljs-monokai.css' | fileSha }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="/static/hljs-monokai.css?v={{ 'static/hljs-monokai.css' | fileSha }}"></noscript>
-
-    <link rel="preload" href="/static/ansi.css?v={{ 'static/ansi.css' | fileSha }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="/static/ansi.css?v={{ 'static/ansi.css' | fileSha }}"></noscript>
-
     {%- if title -%}
     <title>{{ title | safe }} | {{ blog.title | safe }}</title>
     <meta property="og:title" content="{{ title | safe }}" />
@@ -43,10 +34,6 @@
     {%- endif -%}
   </head>
   <body{% if type == 'page' %} class="page-{{ title | slugify | safe }}"{% endif %}>
-    <script>
-      document.body.dataset['scheme'] = window.localStorage.getItem('scheme') || '';
-      document.body.dataset['theme'] = window.localStorage.getItem('theme') || '';
-    </script>
     <header>
       <div class="constrained">
         <a href="/">jmhobbs</a>
