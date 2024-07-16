@@ -2,15 +2,15 @@ document.body.dataset['scheme'] = window.localStorage.getItem('scheme') || '';
 document.body.dataset['theme'] = window.localStorage.getItem('theme') || '';
 
 document.addEventListener('DOMContentLoaded', function() {
-  var preloadStylesheetCallback = function () {
+  const preloadStylesheetCallback = function () {
     this.removeEventListener('load', preloadStylesheetCallback);
     this.rel = 'stylesheet';
   };
 
-  var lazyStylesheets = document.querySelectorAll('link[rel="preload"]');
-  lazyStylesheets.forEach(function(lazyStylesheet) {
+  document.querySelectorAll('link[data-lazy]').forEach(function(lazyStylesheet) {
     lazyStylesheet.addEventListener('load', preloadStylesheetCallback);
     lazyStylesheet.href = lazyStylesheet.dataset.href;
+    lazyStylesheet.rel = 'preload';
   });
 
   document.querySelectorAll('a.theme-switcher').forEach(a => a.addEventListener('click', (e) => {
