@@ -230,15 +230,6 @@ body > header nav {
   float: right;
 }
 
-@media only screen and (min-width: 800px) {
-  body > footer nav {
-    float: right;
-  }
-}
-body > footer nav a {
-  padding: 0 0 0 2rem;
-}
- 
 body > header nav {
   svg {
     height: 25px;
@@ -264,46 +255,10 @@ body > footer {
   background-color: var(--theme-color);
   font-family: var(--mono-font);
   margin-top: 5rem;
-  font-size: 1.0rem;
+  font-size: 0.75rem;
   padding: 0.2rem 0;
   border-top: 1px solid var(--theme-color-weak);
   color: var(--theme-font-safe);
-}
-
-body > footer nav a {
-  display: inline-block;
-  width: 1.0rem;
-  height: 1.0rem;
-  padding: 0;
-  border: 1px solid #111;
-  border-radius: 50%;
-  position: relative;
-  top: 0.15rem;
-}
-
-body > footer nav a[data-theme=blue] {
-  background-color: var(--monokai-blue);
-}
-body > footer nav a[data-theme=pink] {
-  background-color: var(--monokai-pink);
-}
-body > footer nav a[data-theme=yellow] {
-  background-color: var(--monokai-yellow);
-}
-body > footer nav a[data-theme=green] {
-  background-color: var(--monokai-green);
-}
-body > footer nav a[data-theme=orange] {
-  background-color: var(--monokai-orange);
-}
-body > footer nav a[data-theme=purple] {
-  background-color: var(--monokai-purple);
-}
-body > footer nav a[data-scheme=light] {
-  background-color: #{map.get($light_scheme, "background")};
-}
-body > footer nav a[data-scheme=dark] {
-  background-color: #{map.get($dark_scheme, "background")};
 }
 
 /* posts */

@@ -2,98 +2,98 @@
 eleventyExcludeFromCollections: true
 noindex: true
 permalink: /theme/
+title: Theme
 ---
 
-<hr/>
-<h1>Theme Colors</h1>
-<hr/>
+I've always preferred Monokai/Molokai and it's many derivative color schemes in my editor. At my last redesign, I decided to make my website available in six classic Monokai colors, as well as light and dark mode versions.  The default is blue, but pick whatever combination you like best.
 
-<table class="theme-demo">
-  <tr><td class="light"></td><td><code>--main-font-color-light</code></td></tr>
-  <tr><td class="dark"></td><td><code>--main-font-color-dark</code></td></tr>
-  <tr><td class="weak"></td><td><code>--main-font-color-weak</code></td></tr>
-  <tr><td class="strong"></td><td><code>--main-font-color-strong</code></td></tr>
-  <tr><td class="theme"></td><td><code>--theme-color</code></td></tr>
-  <tr><td class="theme-light"></td><td><code>--theme-color-light</code></td></tr>
-  <tr><td class="theme-dark"></td><td><code>--theme-color-dark</code></td></tr>
-  <tr><td class="theme-weak"></td><td><code>--theme-color-weak</code></td></tr>
-  <tr><td class="theme-strong"></td><td><code>--theme-color-strong</code></td></tr>
-</table>
+<noscript>
 
-<hr/>
-<h1>Example Tags</h1>
-<hr/>
+## Oh no!
 
-<h1>Heading One</h1>
-<h2>Heading Two</h2>
-<h3>Heading Three</h3>
-<h4>Heading Four</h4>
+My theme and color scheme switching requires JavaScript to work.
 
-<blockquote>
-  Block Quote, Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-</blockquote>
+</noscript>
 
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+## Color
 
-<pre>
+<ul>
+    <li><a href="#" class="theme-switcher" data-theme="blue" aria-label="Switch to blue color theme">Blue</a></li>
+    <li><a href="#" class="theme-switcher" data-theme="pink" aria-label="Switch to pink color theme">Pink</a></li>
+    <li><a href="#" class="theme-switcher" data-theme="yellow" aria-label="Switch to yellow color theme">Yellow</a></li>
+    <li><a href="#" class="theme-switcher" data-theme="green" aria-label="Switch to green color theme">Green</a></li>
+    <li><a href="#" class="theme-switcher" data-theme="orange" aria-label="Switch to orange color theme">Orange</a></li>
+    <li><a href="#" class="theme-switcher" data-theme="purple" aria-label="Switch to purple color theme">Purple</a></li>
+</ul>
 
-     .--------.
-     | Hello. |
-     '--. .--'     /`-._
-         \|       /_,.._`:-
-          \   ,.-'  ,   `-:..-')
-             : o ):';      _  {
-              `-._ `'__,.-'\`-.)
-                  `\\  \,.-'`
+## Mode
 
-</pre>
+<ul>
+    <li><a href="#" class="scheme-switcher" data-scheme="light" aria-label="Switch to light scheme">Light</a></li>
+    <li><a href="#" class="scheme-switcher" data-scheme="dark" aria-label="Switch to dark scheme">Dark</a></li>
+</ul>
 
-```go
-package main
 
-import "fmt"
-
-func main() {
-    messages := make(chan string)
-
-    go func() { messages <- "ping" }()
-
-    msg := <-messages
-    fmt.Println(msg)
+<style>
+ul {
+    margin: 0;
+    padding: 0;
 }
-```
+li {
+    margin: 0;
+    list-style-type: none;
+}
+li a {
+    display: block;
+    padding: 0.5em;
+    text-align: center;
+    text-decoration: none;
+}
 
-<hr/>
-<h1>Listing View</h1>
-<hr/>
+a[data-scheme="light"] {
+    background-color: white;
+    color: black;
+}
+a[data-scheme="dark"] {
+    background-color: black;
+    color: white;
+}
 
-<div class="listing">
-  <div>
-    <h2><a href="/2023/04/05/moving-from-wordpress-to-11ty/">Moving from WordPress to 11ty</a></h2>
-    <time datetime="2023-04-05T00:00:00.000Z">Apr 5, 2023</time>
-    <p>After 17 years with WordPress, it's time for something different. Here's how I migrated 500 posts to a static site generator.</p>
-  </div>
-  <div>
-    <h2><a href="/2023/03/26/a-peek-inside-pinentry/">A peek inside pinentry</a></h2>
-    <time datetime="2023-03-27T00:00:00.000Z">Mar 27, 2023</time>
-    <p>I interact with pinenty daily, but I don't really understand it. This post dives into how it is invoked and can be used outside of GPG for your own projects.</p>
-  </div>
-</div>
+a[data-theme="blue"] {
+    background-color: var(--monokai-blue);
+    color: black;
+}
+a[data-theme="pink"] {
+    background-color: var(--monokai-pink);
+    color: white;
+}
+a[data-theme="yellow"] {
+    background-color: var(--monokai-yellow);
+    color: black;
+}
+a[data-theme="green"] {
+    background-color: var(--monokai-green);
+    color: black;
+}
+a[data-theme="orange"] {
+    background-color: var(--monokai-orange);
+    color: black;
+}
+a[data-theme="purple"] {
+    background-color: var(--monokai-purple);
+    color: black;
+}
+</style>
 
-<div class="listing">
-  <nav>
-    <ol>
-      <li>« Previous</li>
-      <li><a href="#" rel="next">Next »</a></li>
-    </ol>
-  </nav>
-</div>
-
-
-<hr/>
-<h1>Article</h1>
-<hr/>
-
-<article>
-  <h1>Sup</h1>
-</article>
+<script>
+  document.querySelectorAll('a.theme-switcher').forEach(a => a.addEventListener('click', (e) => {
+    e.preventDefault();
+    document.body.dataset['theme'] = e.target.dataset['theme'];
+    window.localStorage.setItem('theme', e.target.dataset['theme']);
+  }));
+  document.querySelectorAll('a.scheme-switcher').forEach(a => a.addEventListener('click', (e) => {
+    e.preventDefault();
+    document.body.dataset['scheme'] = e.target.dataset['scheme'];
+    window.localStorage.setItem('scheme', e.target.dataset['scheme']);
+  }));
+</script>
