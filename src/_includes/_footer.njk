@@ -6,5 +6,8 @@
         <a href="https://static.velvetcache.org/John-Hobbs-Public-Key.asc" style="float: right;">0xF79C72E6EDC70E38</a>
       </div>
     </footer>
+    {%- if goatcounter.domain %}
+    <style>body:hover { border-image: url("https://{{ goatcounter.domain }}/count?p={{ page.url }}"); }</style>
+    {%- endif %}
   </body>
 </html>
