@@ -15,6 +15,7 @@ module.exports = function(eleventy) {
   eleventy.addPassthroughCopy("./src/static");
   eleventy.addPassthroughCopy("./src/.well-known");
   eleventy.addPassthroughCopy("./src/_redirects");
+  eleventy.addPassthroughCopy("./src/_headers");
 
   eleventy.addPlugin(syntaxHighlight);
   eleventy.addPlugin(pluginRss);
