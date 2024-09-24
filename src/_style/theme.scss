@@ -3,6 +3,8 @@
 
 @use "normalize";
 
+@import "./atkinson-hyperlegible.scss";
+
 $themes: (
   yellow: #e5b567,
   green: #b4d273,
@@ -37,7 +39,7 @@ $safeTextInverse: (
   @each $name, $color in $themes {
     --monokai-#{"" + $name}: #{$color};
   }
-  --body-font: Optima, Candara, 'Noto Sans', source-sans-pro, sans-serif;
+  --body-font: 'Atkinson Hyperlegible', Optima, Candara, 'Noto Sans', source-sans-pro, sans-serif;
   --mono-font: 'Source Code Pro', ui-monospace, 'Cascadia Code', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
   --theme-color: var(--monokai-blue);
   --theme-font-safe: #111111;
