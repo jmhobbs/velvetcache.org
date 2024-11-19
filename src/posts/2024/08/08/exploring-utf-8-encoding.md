@@ -8,7 +8,7 @@ tags:
 title: Exploring UTF-8 Encoding
 type: post
 permalink: /2024/08/08/exploring-utf-8-encoding/
-summary: Let's use Go to poking at UTF-8 encoded text and better understand the most common encoding in the world.
+summary: Let's use Go to poke at UTF-8 encoded text and better understand the most common encoding in the world.
 ---
 
 [A coworker](https://michaelarestad.com/) shared a great conference talk by Dylan Beattie called "[Plain Text](https://www.youtube.com/watch?v=gd5uJ7Nlvvo)".  It's well worth your time to watch if you're at all interested in the internals of your computer, and the history and quirks behind them.
