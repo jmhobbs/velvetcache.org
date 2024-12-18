@@ -10,13 +10,14 @@ This is a list of the things I use, in the spirit of [uses.tech](https://uses.te
 
 # 💻 Hardware
 
-I work in my unfinished basement, so it's not the prettiest setup.
+I work (and play) in my unfinished basement, so it's not the prettiest setup.
 
  - 16" Apple MacBook M2 Pro
+ - [ROG Ally Z1 Extreme](https://rog.asus.com/us/gaming-handhelds/rog-ally/rog-ally-2023/)
  - Monoprice 32" Zero-G Monitor 2560x1440 (Primary)
  - Dell 23" [P2317H](https://www.dell.com/ae/business/p/dell-p2317h-monitor/pd) 1080x1920 Monitor (Secondary, Vertical)
- - Tesoro Durandal Ultimate G1NL Keyboard with [Cherry Brown MX Switches](https://www.cherrymx.de/en/cherry-mx/mx-original/mx-brown.html)
- - [VicTsing MM057](https://www.victsing.com/products/victsing-mm057-2-4g-wireless-optical-mouse-with-usb-receiver-2400-dpi-5-adjustable-levels-6-buttons-for-pc-laptop-black?variant=39679161958467) Mouse
+ - [Ducky Origin Phantom Black](https://www.duckychannel.com.tw/en/Ducky-Origin-PhantomBlack) - Keyboard
+ - [Razer Basilisk V3](https://www.razer.com/gaming-mice/razer-basilisk-v3) - Mouse
  - [Yubikey 5C NFC](https://www.yubico.com/product/yubikey-5-series/yubikey-5c-nfc/)
  - [ATH-M50X](https://www.audio-technica.com/en-us/ath-m50x) Headphones
  - [IKEA Trotten](https://www.ikea.com/us/en/p/trotten-desk-sit-stand-white-s79429602/) Standing Desk
@@ -26,6 +27,7 @@ I work in my unfinished basement, so it's not the prettiest setup.
 
  - [Gerber US1](https://www.gerbergear.com/en-us/shop/knives/all-knives/us1-31-003040) Folding Knife
  - [Paper Wallet](https://paperwallet.com/)
+ - [Slim Pickings](https://covertinstruments.com/products/slim-pickings) Lockpicks
 
 ## 🎒 Backpack
 
@@ -56,12 +58,14 @@ My current config is available in [my dotfiles repo](https://github.com/jmhobbs/
 |--|--|
 |[Airline](https://github.com/vim-airline/vim-airline)|Bottom status bar|
 |[CHADTree](https://github.com/ms-jpq/chadtree)|Tray file browser|
+|[Mason](https://github.com/williamboman/mason.nvim)|Install external tools|
 |[Telescope](https://github.com/nvim-telescope/telescope.nvim)|Fuzzy finders|
 |[coq](https://github.com/ms-jpq/coq_nvim)|Autocomplete|
+|[nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)|LSP easy mode|
 
 ## 🤓 Posix
 
-Software that I use on MacOS and on Linux.
+Core software that I use on MacOS and on Linux.
 
 |  |  |
 |--|--|
@@ -110,11 +114,14 @@ I greatly enjoy the process of making coffee, so I'm constantly fiddling with my
  - [1Zpresso JX-Pro](https://1zpresso.coffee/product/jxpro/) Manual Grinder
  - [Hario V60 02 Dripper](https://www.hario-usa.com/products/v60-plastic-coffee-dripper-02?variant=32782967210117)
  - [Six Cup Chemex](https://www.chemexcoffeemaker.com/six-cup-classic-series-coffeemaker.html)
- - [FreshRoast SR700](https://www.roastmasters.com/sr700.html) Roaster
+ - [Behmor 2000AB+](https://behmor.com/behmor-2000ab-plus/) Roaster
+ - [FreshRoast SR700](https://www.roastmasters.com/sr700.html) Roaster (mostly retired)
 
 # 👨‍🌾 Gardening
 
 Our family has a small market garden, [Buttercup Farm](https://buttercupfarmomaha.com/), so we do a lot of mid-scale gardening chores.
+
+We love [Fedco](https://fedcoseeds.com/trees/) for trees, bulbs, etc. We use [Johny's](https://www.johnnyseeds.com/) and [Seed Savers Exchange](https://seedsavers.org/) for seed.
 
 ## 🌱 Seed Starting
 
@@ -126,3 +133,11 @@ Our family has a small market garden, [Buttercup Farm](https://buttercupfarmomah
  - [Kubota BX23S](https://www.kubotausa.com/products/tractors/sub-compact/bx23s-new)
  - [Heavy Hitch](https://heavyhitch.com/product/category-1-receiver-hitch-and-suitcase-weight-bracket-for-3-point-hitch/?attribute_pa_color=orange)
  - [Ripper/Potato Plow Combo](https://heavyhitch.com/product/ripper-sub-soiler-potato-plow-middle-buster/?attribute_shank=Combo+Shank&attribute_pa_color=orange)
+
+## 🐝 Beekeeping
+
+I use 10-frame boxes, a mix and match from lots of suppliers.  I mostly run single deeps and migratory covers with quart jar feeders on top.
+
+ - [HillCo](https://www.hillco.buzz/) Enduro 6-Frame Manual Extractor
+ - Cold uncapping knife from an antique store
+ - [Lappes Bee Supply](https://www.lappesbeesupply.com/) bottles, tools, odds and ends
