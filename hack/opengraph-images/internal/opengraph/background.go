@@ -3,6 +3,7 @@ package opengraph
 import (
 	"bytes"
 	"fmt"
+	"hash/crc64"
 	"image"
 	"image/color"
 	"image/draw"
@@ -14,6 +15,7 @@ import (
 	"github.com/fogleman/gg"
 	"github.com/mazznoer/colorgrad"
 	"github.com/mazznoer/csscolorparser"
+	"github.com/ojrac/opensimplex-go"
 	"github.com/pravj/geopattern"
 	"github.com/srwiley/oksvg"
 	"github.com/srwiley/rasterx"
@@ -43,6 +45,8 @@ var gradients []string = []string{
 	"gradient-linear-trbl",
 	"gradient-linear-bltr",
 	"gradient-linear-brtl",
+	"gradient-noise",
+	"gradient-noise-sharp",
 }
 
 func rasterizeSVG(svg string, baseColor string) (*image.RGBA, error) {
@@ -81,7 +85,7 @@ func rasterizeSVG(svg string, baseColor string) (*image.RGBA, error) {
 
 func drawBackground(dc *gg.Context, title string, pattern string, baseColor string) error {
 	if strings.HasPrefix(pattern, "gradient-") {
-		return drawBackgroundGradient(dc, pattern, baseColor)
+		return drawBackgroundGradient(dc, pattern, baseColor, makeNoiseSeedFromString(title))
 	}
 	return drawBackgroundPattern(dc, title, pattern, baseColor)
 
@@ -89,7 +93,7 @@ func drawBackground(dc *gg.Context, title string, pattern string, baseColor stri
 
 const GRADIENT_DENSITY uint = 100
 
-func drawBackgroundGradient(dc *gg.Context, pattern string, baseColor string) error {
+func drawBackgroundGradient(dc *gg.Context, pattern string, baseColor string, noiseSeed int64) error {
 	var fromX, fromY, toX, toY float64
 	switch pattern {
 	case "gradient-linear-ltr":
@@ -108,49 +112,71 @@ func drawBackgroundGradient(dc *gg.Context, pattern string, baseColor string) er
 		fromX, fromY, toX, toY = 0, outputHeight, outputWidth, 0
 	case "gradient-linear-brtl":
 		fromX, fromY, toX, toY = outputWidth, outputHeight, 0, 0
+	case "gradient-noise-sharp":
+	case "gradient-noise":
+		// noop
 	default:
 		log.Fatalf("unknown gradient layout %q", pattern)
 	}
 
-	var colors []csscolorparser.Color
+	var (
+		colors []csscolorparser.Color
+		grad   colorgrad.Gradient
+		err    error
+	)
 
 	switch baseColor {
 	case "RdBu":
-		colors = colorgrad.RdBu().Colors(GRADIENT_DENSITY)
+		grad = colorgrad.RdBu()
 	case "RdYlBu":
-		colors = colorgrad.RdYlBu().Colors(GRADIENT_DENSITY)
+		grad = colorgrad.RdYlBu()
 	case "RdYlGn":
-		colors = colorgrad.RdYlGn().Colors(GRADIENT_DENSITY)
+		grad = colorgrad.RdYlGn()
 	case "Spectral":
-		colors = colorgrad.Spectral().Colors(GRADIENT_DENSITY)
+		grad = colorgrad.Spectral()
 	case "Turbo":
-		colors = colorgrad.Turbo().Colors(GRADIENT_DENSITY)
+		grad = colorgrad.Turbo()
 	case "Viridis":
-		colors = colorgrad.Viridis().Colors(GRADIENT_DENSITY)
+		grad = colorgrad.Viridis()
 	case "Inferno":
-		colors = colorgrad.Inferno().Colors(GRADIENT_DENSITY)
+		grad = colorgrad.Inferno()
 	case "Plasma":
-		colors = colorgrad.Plasma().Colors(GRADIENT_DENSITY)
+		grad = colorgrad.Plasma()
 	case "Warm":
-		colors = colorgrad.Warm().Colors(GRADIENT_DENSITY)
+		grad = colorgrad.Warm()
 	case "Cool":
-		colors = colorgrad.Cool().Colors(GRADIENT_DENSITY)
+		grad = colorgrad.Cool()
 	case "YlOrRd":
-		colors = colorgrad.YlOrRd().Colors(GRADIENT_DENSITY)
+		grad = colorgrad.YlOrRd()
 	case "Rainbow":
-		colors = colorgrad.Rainbow().Colors(GRADIENT_DENSITY)
+		grad = colorgrad.Rainbow()
 	case "Sinebow":
-		colors = colorgrad.Sinebow().Colors(GRADIENT_DENSITY)
+		grad = colorgrad.Sinebow()
 	default:
-		grad, err := colorgrad.NewGradient().
+		grad, err = colorgrad.NewGradient().
 			HtmlColors(strings.Split(baseColor, "-")...).
 			Build()
 		if err != nil {
 			log.Fatalf("could not build gradient %q: %v", baseColor, err)
 		}
-		colors = grad.Colors(GRADIENT_DENSITY)
 	}
 
+	if pattern == "gradient-noise" || pattern == "gradient-noise-sharp" {
+		if pattern == "gradient-noise-sharp" {
+			grad = grad.Sharp(7, 0.2)
+		}
+		noise := opensimplex.NewNormalized(noiseSeed)
+		for y := 0; y < int(outputHeight); y++ {
+			for x := 0; x < int(outputWidth); x++ {
+				t := noise.Eval2(float64(x)*0.0025, float64(y)*0.0025)
+				dc.SetColor(grad.At(t))
+				dc.SetPixel(x, y)
+			}
+		}
+		return nil
+	}
+
+	colors = grad.Colors(GRADIENT_DENSITY)
 	gradient := gg.NewLinearGradient(fromX, fromY, toX, toY)
 
 	for i, c := range colors {
@@ -180,4 +206,9 @@ func drawBackgroundPattern(dc *gg.Context, title string, pattern string, baseCol
 	dc.Fill()
 
 	return nil
+}
+
+func makeNoiseSeedFromString(in string) int64 {
+	table := crc64.MakeTable(crc64.ISO)
+	return int64(crc64.Checksum([]byte(in), table))
 }
