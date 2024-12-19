@@ -23,22 +23,14 @@ const (
 )
 
 func Generate(title, background, baseColor string) (io.Reader, error) {
-	useGradient, generatorIndex, colorIndex := stringToIndexes(title)
+	generatorIndex, colorIndex := stringToIndexes(title)
 
 	if background == "" {
-		if useGradient {
-			background = gradients[generatorIndex%len(gradients)]
-		} else {
-			background = patterns[generatorIndex%len(patterns)]
-		}
+		background = gradients[generatorIndex%len(gradients)]
 	}
 
 	if baseColor == "" {
-		if useGradient {
-			baseColor = gradientColors[colorIndex%len(gradientColors)]
-		} else {
-			baseColor = colors[colorIndex%len(colors)]
-		}
+		baseColor = gradientColors[colorIndex%len(gradientColors)]
 	}
 	/*
 		┌───────────────────────────────────────┐
@@ -76,10 +68,10 @@ func Generate(title, background, baseColor string) (io.Reader, error) {
 	// is calculated
 	var (
 		boxX float64 = margin
-		boxY float64 = margin
+		boxY float64
 
 		textX float64 = margin + padding
-		textY float64 = margin + padding
+		textY float64
 
 		boxWidth float64 = outputWidth - 2*margin
 
@@ -88,7 +80,7 @@ func Generate(title, background, baseColor string) (io.Reader, error) {
 
 		shadowOffset float64 = 20
 		shadowX      float64 = margin + shadowOffset
-		shadowY      float64 = margin + shadowOffset
+		shadowY      float64
 
 		lineSpacing float64 = 1.0
 		fontSize    float64 = 120
@@ -98,7 +90,7 @@ func Generate(title, background, baseColor string) (io.Reader, error) {
 
 	err := drawBackground(dc, title, background, baseColor)
 	if err != nil {
-		return nil, fmt.Errorf("unable to draw background SVG: %w", err)
+		return nil, fmt.Errorf("unable to draw background: %w", err)
 	}
 
 	// find best fit text dimensions
@@ -131,13 +123,13 @@ func Generate(title, background, baseColor string) (io.Reader, error) {
 	dc.DrawStringWrapped(title, textX, textY+textShiftY, 0, 0, textMaxWidth, lineSpacing, gg.AlignLeft)
 
 	ob := bytes.NewBuffer(nil)
-	dc.EncodePNG(ob)
+	err = dc.EncodePNG(ob)
 
-	return ob, nil
+	return ob, err
 }
 
 // take a string, hash it, then use the MSB to return values for flipping switches
-func stringToIndexes(s string) (bool, int, int) {
+func stringToIndexes(s string) (int, int) {
 	sum := sha256.Sum256([]byte(s))
-	return sum[0] > 128, int(binary.BigEndian.Uint32(sum[1:5])), int(binary.BigEndian.Uint32(sum[5:9]))
+	return int(binary.BigEndian.Uint32(sum[1:5])), int(binary.BigEndian.Uint32(sum[5:9]))
 }
