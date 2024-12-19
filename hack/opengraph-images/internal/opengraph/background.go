@@ -13,6 +13,7 @@ import (
 
 	"github.com/fogleman/gg"
 	"github.com/mazznoer/colorgrad"
+	"github.com/mazznoer/csscolorparser"
 	"github.com/pravj/geopattern"
 	"github.com/srwiley/oksvg"
 	"github.com/srwiley/rasterx"
@@ -111,7 +112,7 @@ func drawBackgroundGradient(dc *gg.Context, pattern string, baseColor string) er
 		log.Fatalf("unknown gradient layout %q", pattern)
 	}
 
-	colors := []color.Color{}
+	var colors []csscolorparser.Color
 
 	switch baseColor {
 	case "RdBu":
@@ -145,7 +146,7 @@ func drawBackgroundGradient(dc *gg.Context, pattern string, baseColor string) er
 			HtmlColors(strings.Split(baseColor, "-")...).
 			Build()
 		if err != nil {
-			log.Fatalf("could not build gradient %q: %v", err)
+			log.Fatalf("could not build gradient %q: %v", baseColor, err)
 		}
 		colors = grad.Colors(GRADIENT_DENSITY)
 	}
