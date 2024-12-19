@@ -22,6 +22,9 @@ func (p *post) Path(root string) string {
 
 func (p *post) Name() string {
 	h := sha1.New()
+	// revision value to increment replacements if algorithm is changed
+	// this value must match the value in .eleventy.js
+	h.Write([]byte("1"))
 	h.Write([]byte(strings.TrimPrefix(p.SourcePath, "./")))
 	bs := h.Sum(nil)
 	return fmt.Sprintf("%s-%x.png", slugify(p.Frontmatter["title"]), bs)

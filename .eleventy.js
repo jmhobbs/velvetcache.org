@@ -56,6 +56,9 @@ module.exports = function(eleventy) {
     if(title) {
       const slug = title.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
       const pathHash = createHash('sha1');
+      // revision value to increment replacements if algorithm is changed
+      // this value must match the value in the opengraph-images
+      pathHash.update("1");
       pathHash.update(path.replace(/^\.\//, ''));
       return `/static/og/generated/${slug}-${pathHash.digest('hex')}.png`;
     }
