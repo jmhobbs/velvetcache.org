@@ -111,6 +111,7 @@ I greatly enjoy the process of making coffee, so I'm constantly fiddling with my
  - [Gaggia Classic Pro](https://www.gaggia-na.com/products/gaggia-classic-pro) Espresso machine
  - [Normcore 58.5mm Puck Screen](https://www.normcorewares.com/products/normcore-lower-shower-screen-puck-screen-contact-screen-stainless-steel)
  - [IMS Baristapro 20g Nanotech](https://www.wholelattelove.com/products/baristapro-20g-nanotech-precision-portafilter-basket) Portafilter Basket
+ - [Eureka Mignon Zero](https://www.eureka.co.it/en/products/eureka+1920/mignon+grinders/zero+range/74.aspx) Grinder
  - [1Zpresso JX-Pro](https://1zpresso.coffee/product/jxpro/) Manual Grinder
  - [Hario V60 02 Dripper](https://www.hario-usa.com/products/v60-plastic-coffee-dripper-02?variant=32782967210117)
  - [Six Cup Chemex](https://www.chemexcoffeemaker.com/six-cup-classic-series-coffeemaker.html)
