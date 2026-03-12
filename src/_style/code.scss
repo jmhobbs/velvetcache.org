@@ -1,18 +1,26 @@
+@import "./source-code-pro-8ef7711.scss";
+@import "./prism-xonokai.scss";
+
+pre > code.language-console {
+  line-height: 1;
+}
+
+// ansi highlighting
 :root {
   --ansi-black: #282828;
   --ansi-red: #f43753;
-  --ansi-green:  #c9d05c;
+  --ansi-green:  #c9d05c; // #87d05c;
   --ansi-yellow: #ffc24b;
   --ansi-blue: #b3deef;
-  --ansi-magenta: #9e86c8;
+  --ansi-magenta: #9e86c8 // #d3b987;
   --ansi-cyan: #73cef4;
   --ansi-white: #eeeeee;
   --ansi-bright-black: #4c4c4c;
   --ansi-bright-red: #f43753;
-  --ansi-bright-green: #c9d05c;
+  --ansi-bright-green: #c9d05c; // ##82e04a;
   --ansi-bright-yellow: #ffc24b;
   --ansi-bright-blue: #b3deef;
-  --ansi-bright-magenta: #9e86c8;
+  --ansi-bright-magenta: #9e86c8 // #bb93fd; // #d3b987;
   --ansi-bright-cyan: #73cef4;
   --ansi-bright-white: #feffff;
 }

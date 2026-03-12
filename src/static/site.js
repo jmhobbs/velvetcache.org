@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('link[data-lazy]').forEach(function(lazyStylesheet) {
     lazyStylesheet.addEventListener('load', preloadStylesheetCallback);
     lazyStylesheet.href = lazyStylesheet.dataset.href;
-    lazyStylesheet.rel = 'preload';
   });
 
   document.querySelectorAll('a.theme-switcher').forEach(a => a.addEventListener('click', (e) => {

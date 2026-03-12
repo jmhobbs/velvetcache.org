@@ -3,5 +3,7 @@ node_modules/
 dist/
 src/static/theme.css
 src/static/theme.css.map
+src/static/code.css
+src/static/code.css.map
 .cache/
 src/static/og/generated/

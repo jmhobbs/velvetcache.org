@@ -2,7 +2,7 @@
 const { DateTime } = require("luxon");
 const slugify = require('@sindresorhus/slugify');
 const util = require('util');
-const syntaxHighlight = require('eleventy-plugin-highlightjs');
+const syntaxHighlight = require("@11ty/eleventy-plugin-syntaxhighlight");
 const pluginRss = require("@11ty/eleventy-plugin-rss");
 const { createHash } = require('crypto');
 const path = require('path');
