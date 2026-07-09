@@ -43,7 +43,7 @@ My implementation is the most straightforward I could think of.  There is probab
 do it, but I'm not great at those things.  My method was to modulo out the upper digits, and divide what remains
 to get each digit independently.
 
-```golang
+```go
 m.memory[m.I] = m.V[x(op)] / 100
 m.memory[m.I+1] = (m.V[x(op)] % 100) / 10
 m.memory[m.I+2] = ((m.V[x(op)] % 100) % 10) / 1

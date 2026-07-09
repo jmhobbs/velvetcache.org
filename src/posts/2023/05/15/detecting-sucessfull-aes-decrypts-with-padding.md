@@ -107,7 +107,7 @@ Some examples, all with block size of `16`, or `0x10`:
 
 We can leverage this to know when we have used the correct decryption key, since the last `N` bytes of the message should match the last byte of the message, where `N` is the integer value of the last byte of the message.
 
-```golang
+```go
 func removePKCS5Padding(size int, plaintext []byte) ([]byte, error) {
 	padding := plaintext[len(plaintext)-1]
 	paddingLength := int(padding)

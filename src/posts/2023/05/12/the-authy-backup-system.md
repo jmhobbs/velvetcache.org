@@ -292,7 +292,7 @@ The parameters `otp1`, `otp2` and `otp3` are from the device soft token for the 
 
 Authy tokens are 7 characters, with a 10 second window (see [the gist](https://gist.github.com/gboudreau/94bb0c11a6209c82418d01a59d958c93)), so we can check our assumption with a little Go.
 
-```golang
+```go
 package main
 
 import (

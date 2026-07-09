@@ -7,6 +7,7 @@ tags:
 - golang
 - Gaming
 - protocols
+- DayZ
 title: DayZ Server Browsers - Part Two
 type: post
 permalink: /2026/07/09/dayz-server-browsers-part-two/
@@ -21,7 +22,7 @@ Two years ago I wrote a post on [DayZ server browsers and the A2S protocol](/202
 
 To begin with, we will extend our existing Go code for sending Steam Server Queries.  Instead of sending `A2S_INFO` this time, we will instead send `A2S_RULES`, which is `0x56`. This is, again, guarded by the challenge system, so that code stays in place.  Our example server this time is the [WILDLANDZ](https://wildlandz.com) Green County server at `51.81.8.81:27017`.
 
-```golang
+```go
 package main
 
 import (

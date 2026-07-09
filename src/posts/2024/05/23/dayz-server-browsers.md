@@ -7,6 +7,7 @@ tags:
 - golang
 - Gaming
 - protocols
+- DayZ
 title: DayZ Server Browsers
 type: post
 permalink: /2024/05/23/dayz-server-browsers/
@@ -69,7 +70,7 @@ Before we can handle this challenge, let's take a look at the response packet.  
 
 At this point, we've reached the end of what is really viable to do with netcat, since we need to send raw bytes in response, and our little `printf` shenanigans won't get us there anymore.  Let's write a little client in Go instead!
 
-```golang
+```go
 package main
 
 import (

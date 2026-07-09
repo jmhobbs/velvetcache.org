@@ -166,7 +166,7 @@ root@macmini# cloudflared service install
 
 Since I had written my own server with Go, I figured I could add a "live viewer" count to it with WebSockets.  I added a map of open websocket connections, then a ticker which posts the size of the map over all open connections every five seconds.
 
-```golang
+```go
 var connections map[string]*websocket.Conn = make(map[string]*websocket.Conn)
 
 func countUpdater(ctx context.Context) {
@@ -219,7 +219,7 @@ I also added some flags in an attempt to cap the bitrate, though as the docs say
 
 One other tweak I made was to prefix all the HLS segments with a timestamp from when the process starts.  When I was restarting the server it would begin with a 0 for the sequence number, which collided with previous runs.  Since I had long cache lifetimes set, you would get the wrong segment from cache and it caused problems. Replacing the value of `-hls_segment_filename` from `"%d.ts"` to a little Go which bakes in a timestamp cleared up the problem.
 
-```golang
+```go
 path.Join(
     outputDir,
     fmt.Sprintf("%d_%%d.ts", time.Now().Unix()),
