@@ -254,3 +254,11 @@ I'm not sure why they chose to just use three bytes for App ID, since we're send
 # Next Steps
 
 That is it for A2S_INFO. There's a lot in there, but not everything we see in tools like DayZSA.  This post has gotten long, so I'm going to stop here, but in the next post I'll cover `A2S_RULES` which has a lot more data crammed into it.  Eventually I may get into server discovery and CM Client, but we will see.
+
+<aside>
+
+After a long delay, the second part is now up!
+
+&raquo; [DayZ Server Browsers - Part Two](/2026/07/09/dayz-server-browsers-part-two/)
+
+</aside>
