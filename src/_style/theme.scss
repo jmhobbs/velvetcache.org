@@ -167,6 +167,9 @@ code {
   font-family: var(--mono-font);
   font-size: 0.9rem;
   color: var(--monokai-white);
+  /* avoid line breaks in code blocks */
+  white-space-collapse: preserve;
+  text-wrap-mode: nowrap;
 }
 
 pre {
@@ -198,7 +201,7 @@ th {
 
 /* constrained width elements */
 main, .constrained {
-  max-width: 940px;
+  max-width: 1200px;
   width: 90%;
   margin: auto;
 }
