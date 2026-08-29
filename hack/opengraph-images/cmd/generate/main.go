@@ -63,7 +63,7 @@ func main() {
 			if last_len > len(r.Post.SourcePath) {
 				extraSpaces = strings.Repeat(" ", last_len-len(r.Post.SourcePath))
 			}
-			fmt.Print("\r", ctr, " of ", len(posts), " (", skipped+copiedFromCache+generated+missingTitle+errors, ")", " ", r.Post.SourcePath, extraSpaces)
+			fmt.Print("\r", ctr, " of ", len(posts), " ", r.Post.SourcePath, extraSpaces)
 			last_len = len(r.Post.SourcePath)
 			if r.Skipped {
 				skipped++
@@ -76,6 +76,7 @@ func main() {
 			}
 			if r.MissingTitle {
 				missingTitle++
+				fmt.Print("\r", "Missing title for ", r.Post.SourcePath, "\n")
 			}
 			if r.Err != nil {
 				log.Println(r.Err)
@@ -120,7 +121,9 @@ func Worker(cache, output string, wg *sync.WaitGroup, posts <-chan *post, result
 	defer wg.Done()
 
 	for post := range posts {
-		if title, ok := post.Frontmatter["title"]; !ok || title == "" {
+		var title string
+		var ok bool
+		if title, ok = post.Frontmatter["title"]; !ok || title == "" {
 			results <- result{Post: post, MissingTitle: true}
 			continue
 		}
@@ -143,7 +146,10 @@ func Worker(cache, output string, wg *sync.WaitGroup, posts <-chan *post, result
 			}
 		}
 
-		png, err := opengraph.Generate(post.Frontmatter["title"], "", "")
+		// strip quotes from titles
+		title = strings.TrimRight(strings.TrimLeft(title, `"'`), `"'`)
+
+		png, err := opengraph.Generate(title, "", "")
 		if err != nil {
 			results <- result{Post: post, Err: err}
 			continue
