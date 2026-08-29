@@ -6,7 +6,7 @@ tags:
 - golang
 - Gaming
 - Encoding
-title: "Discovering the DZE format"
+title: Discovering the DZE format
 type: post
 permalink: /2026/08/28/discovering-the-dze-format/
 summary: Poking at a format and seeing what's hidden inside.
