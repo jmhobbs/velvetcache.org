@@ -283,11 +283,13 @@ $ go run main.go
 7678818674203993341
 ```
 
-Ok, that is _way_ too big. Even assuming nanosecond precision, if that's a unix timestamp it's for the year 2213.  Looking at the diff again, I noticed on the fist file it's the same 4 bytes twice.  That'd be a wild coincidence for a timstamp, so what if it's actually _two_ timestamps? Created and modified?
+Ok, that is _way_ too big. Even assuming nanosecond precision, if that's a unix timestamp it's for the year 2213.
+
+Looking at the diff again, I noticed on the first file it's the same 4 bytes twice.  That'd be a wild coincidence for a timstamp, so what if it's actually _two_ timestamps? Created and modified?
 
 
 ```go
-ackage main
+package main
 
 import (
 	"encoding/binary"
@@ -428,3 +430,5 @@ Wrapping it up here is the final format we have sniffed out.
 So what next?  Well, more data is needed really.  I need to attribute the flags we observed, figure out why steam ID is in there twice (my guess is creator and last editor), and figure out some of those length fields.  Lastly is that long `1e 00...` segment which I have no idea about, and the trailer `64 00...`.
 
 Still, not bad for a first pass!  At a minimum, we should be able to parse locations out of here, which we can use for....something!
+
+I've got the beginnings of a decoder going [on GitHub](https://github.com/jmhobbs/go-dze), and will update it as I learn more.  If there's enough to be getting on with, maybe I'll write a follow up post.
