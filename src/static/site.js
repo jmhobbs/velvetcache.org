@@ -22,4 +22,13 @@ document.addEventListener('DOMContentLoaded', function() {
     document.body.dataset['scheme'] = e.target.dataset['scheme'];
     window.localStorage.setItem('scheme', e.target.dataset['scheme']);
   }));
+
+  document.getElementById('search-button').addEventListener('click', (e) => {
+    // launch the Pagefind modal search interface
+    const manager = window.PagefindComponents.getInstanceManager();
+    const instance = manager.getInstance('default');
+    const utilities = instance.getUtilities('modal');
+    utilities[0].open();
+    e.preventDefault();
+  });
 });

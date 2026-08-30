@@ -11,6 +11,7 @@
     "luxon": "^1.21.2",
     "normalize.css": "^8.0.1",
     "npm-run-all": "^4.1.5",
+    "pagefind": "^1.5.2",
     "sass": "^1.60.0"
   },
   "scripts": {
@@ -19,7 +20,8 @@
     "dev:style": "run-p build:style:theme build:style:code",
     "dev:style:theme": "npm run build:style:theme -- --watch",
     "dev:style:code": "npm run build:style:code -- --watch",
-    "build": "run-s build:style build:og build:11ty",
+    "build": "run-s build:style build:og build:11ty build:search",
+    "build:search": "pagefind --site ./dist",
     "build:style": "run-p build:style:theme build:style:code",
     "build:style:theme": "sass --style compressed --load-path=node_modules/normalize.css/ ./src/_style/theme.scss ./src/static/theme.css",
     "build:style:code": "sass --style compressed ./src/_style/code.scss ./src/static/code.css",
